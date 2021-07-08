@@ -1,0 +1,48 @@
+Matt's Crypto Portfolio Manager [MCMP]
+
+
+The problem I want to solve.
+
+Buying, selling and tracking many different crypto assets across multiple exchanges is difficult and time consuming. 
+
+
+
+The solution I propose.
+
+A PHP web based interface and reporting tool with the following key features
+
+ - Interface with Coinbase and Binance APIs
+ - Report on assets held, profit and loss, performance over time
+ - Creation of new orders in bulk, market and limit
+ - Creation of new sell orders in bulk, market and limt
+ - Monitoring of open orders
+ - Order chains - buy low, sell high
+
+
+Platform.
+
+PHP 8 with no dependancies. Wheel invention time :)
+MySQL (?)
+
+
+Modelling.
+
+I will model this project as simply as possible using real world objects and only abstract into concepts(?) where needed.
+
+
+CryptoAsset - Bitcoin, Doge etc
+Transaction - A purchase or sale
+Balance - Current held balance of a CryptoAsset
+Exchange - An exchange with an API
+Order - An order on an exchange, open or filled
+OrderChain - 
+
+
+Tasks I want to achive.
+
+ - Overview of my holdings, dashboard
+ - Individual asset dashboard and overview
+ - Place a buy order
+ - Place a sell order
+ - Place a multi order (buy £50 each of DOGE, ANKR, ETH)
+ - ....
