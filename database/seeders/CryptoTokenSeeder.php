@@ -15,8 +15,17 @@ class CryptoTokenSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('crypto_tokens')->insert(['name' => 'Bitcoin', 'tag' => 'BTC', 'created_at' => Carbon::now()->format('Y-m-d H:i:s'), 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')]);
-        DB::table('crypto_tokens')->insert(['name' => 'Litecoin', 'tag' => 'LTC', 'created_at' => Carbon::now()->format('Y-m-d H:i:s'), 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')]);
-        DB::table('crypto_tokens')->insert(['name' => 'Ethereum', 'tag' => 'ETH', 'created_at' => Carbon::now()->format('Y-m-d H:i:s'), 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')]);
+        $coins = array(
+            ['name' => 'Bitcoin', 'symbol' => 'BTC'],
+            ['name' => 'Litecoin', 'symbol' => 'LTC'],
+            ['name' => 'Ethereum', 'symbol' => 'ETH'],
+        );
+
+        $id = 1;
+        foreach($coins as $coin)
+        {
+            DB::table('crypto_tokens')->insert(['id' => $id, 'name' => $coin['name'], 'symbol' => $coin['symbol'], 'created_at' => Carbon::now()->format('Y-m-d H:i:s'), 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')]);
+            $id++;
+        }
     }
 }

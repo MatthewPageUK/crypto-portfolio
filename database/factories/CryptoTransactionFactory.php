@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\CryptoToken;
+use App\Models\CryptoTransaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class CryptoTokenFactory extends Factory
+class CryptoTransactionFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = CryptoToken::class;
+    protected $model = CryptoTransaction::class;
 
     /**
      * Define the model's default state.
@@ -22,8 +22,7 @@ class CryptoTokenFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->text(100),
-            'symbol' => str_replace(' ', '', strtoupper($this->faker->text(10))),
+            //
         ];
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CryptoToken extends Model
+class CryptoTransaction extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -19,15 +19,18 @@ class CryptoToken extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
-        'symbol',
+        'crypto_token_id',
+        'quantity',
+        'price',
+        'type',
+        'time',
     ];
 
     /**
-     * Transactions for this token
+     * The token this transaction applies to
      */
-    public function transactions()
+    public function token()
     {
-        return $this->hasMany('App\CryptoTransactions');
+        return $this->belongsTo('App\CryptoToken');
     }
 }
