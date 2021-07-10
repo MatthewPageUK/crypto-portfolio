@@ -23,7 +23,16 @@ class CryptoTransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(CryptoToken $token)
+    public function buy(CryptoToken $token)
+    {
+        dd($token);
+    }
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sell(CryptoToken $token)
     {
         dd($token);
     }

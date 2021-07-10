@@ -20,4 +20,20 @@ class CryptoTokenTest extends TestCase
         $tokens = CryptoToken::factory(5)->create();
         $this->assertDatabaseCount('crypto_tokens', 5);
     }
+
+    /**
+     * Test the dashboard can be displayed
+     */
+    public function test_dashboard_screen_can_be_rendered()
+    {
+        $response = $this->get('/dashboard');
+
+        $response->assertStatus(200);
+    }
 }
+
+
+
+
+
+

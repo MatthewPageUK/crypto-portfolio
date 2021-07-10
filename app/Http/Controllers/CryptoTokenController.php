@@ -25,7 +25,7 @@ class CryptoTokenController extends Controller
      */
     public function create()
     {
-        dd('Hello');
+        return view('addtoken');
     }
 
     /**
@@ -36,18 +36,25 @@ class CryptoTokenController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'symbol' => ['required', 'alpha_num', 'unique:crypto_tokens', 'max:25'],
+            'name' => ['required', 'unique:crypto_tokens', 'max:100'],
+        ]);
+
+        CryptoToken::create($request->all());
+
+        return redirect()->route('dashboard')->with('success', 'Token created');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\CryptoToken  $cryptoToken
+     * @param  \App\Models\CryptoToken  $token
      * @return \Illuminate\Http\Response
      */
-    public function show(CryptoToken $cryptoToken)
+    public function show(CryptoToken $token)
     {
-        //
+        return view('token', ['token' => $token]);
     }
 
     /**

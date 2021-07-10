@@ -31,6 +31,14 @@ class CryptoTransaction extends Model
      */
     public function token()
     {
-        return $this->belongsTo('App\CryptoToken');
+        return $this->belongsTo(CryptoToken::class);
+    }
+
+    /**
+     * The total value of this transaction
+     */
+    public function total()
+    {
+        return $this->quantity * $this->price;
     }
 }
