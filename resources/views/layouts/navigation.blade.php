@@ -15,6 +15,15 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link href="https://www.coinmarketcap.com" target="_blank">
+                        {{ __('Coin Market Cap') }}
+                    </x-nav-link>
+                    <x-nav-link href="https://pro.coinbase.com/trade/" target="_blank">
+                        {{ __('Coinbase Pro') }}
+                    </x-nav-link>
+                    <x-nav-link href="https://binance.com/en/my/wallet/account/overview" target="_blank">
+                        {{ __('Binance') }}
+                    </x-nav-link>
                 </div>
             </div>
 

@@ -5,13 +5,21 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    You're logged in!
-                </div>
-            </div>
+    <div class="flex flex-wrap">
+        <div class="w-1/6 p-6 m-5 bg-white shadow-lg rounded-lg">
+            <p><a href="{{ route('addtoken') }}" class="text-blue-500 hover:text-blue-800">Add Token</a></p>
         </div>
+        @foreach ($tokens as $token)
+            <div class="w-1/6 p-6 m-5 bg-white shadow-lg rounded-lg">
+                <h1>{{ $token->symbol }}</h1>
+                <h2>{{ $token->name }}</h2>
+                <p>Quantity : 0</p>
+                <p><a href="{{ route('addtransaction', $token->id) }}" class="text-blue-500 hover:text-blue-800">Add transaction</a></p>
+            </div>
+        @endforeach
     </div>
+
 </x-app-layout>
+
+
+

@@ -19,6 +19,15 @@ class CryptoTokenSeeder extends Seeder
             ['name' => 'Bitcoin', 'symbol' => 'BTC'],
             ['name' => 'Litecoin', 'symbol' => 'LTC'],
             ['name' => 'Ethereum', 'symbol' => 'ETH'],
+            ['name' => 'Dogecoin', 'symbol' => 'DOGE'],
+            ['name' => 'Matic', 'symbol' => 'MAT'],
+            ['name' => 'Curve', 'symbol' => 'CRV'],
+            ['name' => 'Ethereum Classic', 'symbol' => 'ETC'],
+            ['name' => 'VChain', 'symbol' => 'VET'],
+            ['name' => 'Forth Gov.', 'symbol' => 'FORTH'],
+            ['name' => 'NuCypher', 'symbol' => 'NU'],
+            ['name' => 'Graph', 'symbol' => 'GRT'],
+            ['name' => 'Chainlink', 'symbol' => 'LINK'],
         );
 
         $id = 1;

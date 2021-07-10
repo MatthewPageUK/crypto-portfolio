@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CryptoToken;
 use App\Models\CryptoTransaction;
 use Illuminate\Http\Request;
 
@@ -22,9 +23,9 @@ class CryptoTransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(CryptoToken $token)
     {
-        //
+        dd($token);
     }
 
     /**

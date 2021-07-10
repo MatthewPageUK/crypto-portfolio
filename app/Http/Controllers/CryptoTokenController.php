@@ -14,7 +14,8 @@ class CryptoTokenController extends Controller
      */
     public function index()
     {
-        //
+        $tokens = CryptoToken::all();
+        return view('portfolio', ['tokens' => $tokens]);
     }
 
     /**
@@ -24,7 +25,7 @@ class CryptoTokenController extends Controller
      */
     public function create()
     {
-        //
+        dd('Hello');
     }
 
     /**
