@@ -26,6 +26,10 @@ class CryptoTransaction extends Model
         'time',
     ];
 
+    protected $casts = [
+        'time' => 'datetime',
+    ];
+
     /**
      * The token this transaction applies to
      */

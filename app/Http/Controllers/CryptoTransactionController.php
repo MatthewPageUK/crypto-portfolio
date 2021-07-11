@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\CryptoToken;
 use App\Models\CryptoTransaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CryptoTransactionController extends Controller
 {
@@ -19,33 +21,48 @@ class CryptoTransactionController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new buy transaction.
      *
      * @return \Illuminate\Http\Response
      */
     public function buy(CryptoToken $token)
     {
-        dd($token);
+        return view('addtransaction', ['token' => $token, 'transType' => 'buy']);
     }
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new sell transaction.
      *
      * @return \Illuminate\Http\Response
      */
     public function sell(CryptoToken $token)
     {
-        dd($token);
+        return view('addtransaction', ['token' => $token, 'transType' => 'sell']);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created transaction in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
+        $token = CryptoToken::find($request->crypto_token_id);
+
+        // If selling then don't allow more than current balance
+        $lessThanBalance = ($request->type==='sell') ? 'lte:'.$token->balance : '';
+
+        $validatedData = $request->validate([
+            'crypto_token_id' => ['required', 'exists:crypto_tokens,id'],
+            'quantity' => ['required', 'gt:0', $lessThanBalance],
+            'price' => ['required', 'gte:0'],
+            'type' => ['required', Rule::in('buy', 'sell')],
+            'time' => ['required', 'date'],
+        ]);
+
+        CryptoTransaction::create($request->all());
+
+        return redirect()->route('token', ['token' => $request['crypto_token_id']])->with('success', 'Transaction added');
     }
 
     /**
@@ -83,13 +100,16 @@ class CryptoTransactionController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the transaction resource from storage.
      *
      * @param  \App\Models\CryptoTransaction  $cryptoTransaction
      * @return \Illuminate\Http\Response
      */
     public function destroy(CryptoTransaction $cryptoTransaction)
     {
-        //
+        $token_id = $cryptoTransaction->crypto_token_id;
+        $cryptoTransaction->delete();
+
+        return redirect()->route('token', ['token' => $token_id])->with('success', 'Transaction deleted');
     }
 }

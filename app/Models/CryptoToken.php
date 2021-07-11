@@ -46,7 +46,7 @@ class CryptoToken extends Model
      */
     public function transactions()
     {
-        return $this->hasMany(CryptoTransaction::class);
+        return $this->hasMany(CryptoTransaction::class)->orderByDesc('time');
     }
 
     /**

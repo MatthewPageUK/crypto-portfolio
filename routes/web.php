@@ -29,7 +29,9 @@ Route::get('/token/{token}', [CryptoTokenController::class, 'show'])->middleware
 
 Route::get('/buy/{token}', [CryptoTransactionController::class, 'buy'])->middleware('auth')->name('buy');
 Route::get('/sell/{token}', [CryptoTransactionController::class, 'sell'])->middleware('auth')->name('sell');
+
 Route::post('/buy/{token}', [CryptoTransactionController::class, 'store'])->middleware('auth')->name('storetransaction');
-Route::post('/sell/{token}', [CryptoTransactionController::class, 'store'])->middleware('auth')->name('storetransaction');
+
+Route::get('/transaction/{cryptoTransaction}/delete', [CryptoTransactionController::class, 'destroy'])->middleware('auth')->name('deletetransaction');
 
 require __DIR__.'/auth.php';
