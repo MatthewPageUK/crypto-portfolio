@@ -7,7 +7,7 @@
 
     <div class="flex items-centered">
         <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg text-right">
-            <p class="text-2xl text-center">{{ $token->balance }} {{ $token->symbol }}</p>
+            <p class="text-2xl text-center">{{ $token->balance }} <span class="text-sm">{{ $token->symbol }}</span></p>
         </div>
         <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg text-right">
             <p class="mt-3 text-sm uppercase flex items-center text-center">
