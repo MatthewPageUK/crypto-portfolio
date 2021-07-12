@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTransactionRequest;
 use App\Models\CryptoToken;
 use App\Models\CryptoTransaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class CryptoTransactionController extends Controller
 {
@@ -45,20 +45,14 @@ class CryptoTransactionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTransactionRequest $request)
     {
-        $token = CryptoToken::find($request->crypto_token_id);
+        // If selling then don't allow more than current balance [TO-DO]
+        // $token = CryptoToken::find($request->crypto_token_id);
+        // $lessThanBalance = ($request->type==='sell') ? 'lte:'.$token->balance : '';
+        // 'quantity' => ['required', 'gt:0', $lessThanBalance],
 
-        // If selling then don't allow more than current balance
-        $lessThanBalance = ($request->type==='sell') ? 'lte:'.$token->balance : '';
-
-        $validatedData = $request->validate([
-            'crypto_token_id' => ['required', 'exists:crypto_tokens,id'],
-            'quantity' => ['required', 'gt:0', $lessThanBalance],
-            'price' => ['required', 'gte:0'],
-            'type' => ['required', Rule::in('buy', 'sell')],
-            'time' => ['required', 'date'],
-        ]);
+        $validatedData = $request->validated();
 
         CryptoTransaction::create($request->all());
 

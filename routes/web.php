@@ -21,17 +21,12 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
-
 Route::get('/add', [CryptoTokenController::class, 'create'])->middleware('auth')->name('addtoken');
 Route::post('/add', [CryptoTokenController::class, 'store'])->middleware('auth')->name('storetoken');
-
 Route::get('/token/{token}', [CryptoTokenController::class, 'show'])->middleware('auth')->name('token');
-
 Route::get('/buy/{token}', [CryptoTransactionController::class, 'buy'])->middleware('auth')->name('buy');
 Route::get('/sell/{token}', [CryptoTransactionController::class, 'sell'])->middleware('auth')->name('sell');
-
-Route::post('/buy/{token}', [CryptoTransactionController::class, 'store'])->middleware('auth')->name('storetransaction');
-
+Route::post('/transaction/add/{token}', [CryptoTransactionController::class, 'store'])->middleware('auth')->name('storetransaction');
 Route::get('/transaction/{cryptoTransaction}/delete', [CryptoTransactionController::class, 'destroy'])->middleware('auth')->name('deletetransaction');
 
 require __DIR__.'/auth.php';

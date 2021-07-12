@@ -31,4 +31,3 @@ class CryptoTransactionFactory extends Factory
         ];
     }
 }
-//'-30m', 'today'

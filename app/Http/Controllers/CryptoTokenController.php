@@ -2,22 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTokenRequest;
 use App\Models\CryptoToken;
 use Illuminate\Http\Request;
 
 class CryptoTokenController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        $tokens = CryptoToken::all();
-        return view('portfolio', ['tokens' => $tokens]);
-    }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -34,12 +24,9 @@ class CryptoTokenController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTokenRequest $request)
     {
-        $validatedData = $request->validate([
-            'symbol' => ['required', 'alpha_num', 'unique:crypto_tokens', 'max:25'],
-            'name' => ['required', 'unique:crypto_tokens', 'max:100'],
-        ]);
+        $validatedData = $request->validated();
 
         CryptoToken::create($request->all());
 

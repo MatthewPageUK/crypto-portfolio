@@ -27,7 +27,6 @@ class CryptoToken extends Model
      * Calculated balance
      */
     public $balance = 0;
-    public $avgBuyPrice = 0;
 
     /**
      * Update the token balance on retrieval
@@ -55,7 +54,7 @@ class CryptoToken extends Model
     public function updateBalance()
     {
         $balance = 0;
-        foreach($this->transactions  as $transaction)
+        foreach($this->transactions as $transaction)
         {
             $balance += ( $transaction->type === "buy" ) ? $transaction->quantity : -$transaction->quantity;
         }
