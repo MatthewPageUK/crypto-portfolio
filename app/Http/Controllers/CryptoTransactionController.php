@@ -56,7 +56,7 @@ class CryptoTransactionController extends Controller
 
         CryptoTransaction::create($request->all());
 
-        return redirect()->route('token', ['token' => $request['crypto_token_id']])->with('success', 'Transaction added');
+        return redirect()->route('token.show', ['token' => $request['crypto_token_id']])->with('success', 'Transaction added');
     }
 
     /**
@@ -104,6 +104,6 @@ class CryptoTransactionController extends Controller
         $token_id = $cryptoTransaction->crypto_token_id;
         $cryptoTransaction->delete();
 
-        return redirect()->route('token', ['token' => $token_id])->with('success', 'Transaction deleted');
+        return redirect()->route('token.show', ['token' => $token_id])->with('success', 'Transaction deleted');
     }
 }

@@ -13,7 +13,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $tokens = CryptoToken::all();
+        $tokens = CryptoToken::all()->sortBy('symbol');
         return view('dashboard', ['tokens' => $tokens]);
     }
 }

@@ -73,8 +73,11 @@ class CryptoTokenController extends Controller
      * @param  \App\Models\CryptoToken  $cryptoToken
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CryptoToken $cryptoToken)
+    public function destroy(CryptoToken $token)
     {
-        //
+        $token->transactions()->delete();
+        $token->delete();
+
+        return redirect()->route('dashboard')->with('success', 'Token deleted');
     }
 }
