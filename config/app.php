@@ -13,7 +13,9 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Crypto Portfolio Tracker'),
+    'title' => 'Crypto Portfolio Tracker',
+    'description' => 'A simple single user app for recording crypto token purchases and sales.',
 
     /*
     |--------------------------------------------------------------------------

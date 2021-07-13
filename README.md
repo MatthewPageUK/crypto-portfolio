@@ -20,6 +20,7 @@
 
 
 
+
 :heavy_check_mark: Database migrations for User, Tokens and Transactions 'php artisan migrate'
 
 :heavy_check_mark: Database seeder for default tokens 'php artisan db:seed'
