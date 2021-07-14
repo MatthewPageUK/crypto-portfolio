@@ -1,8 +1,8 @@
 <x-guest-layout>
     <x-auth-card>
         <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+            <a href="/" title="{{ __('Homepage') }}">
+                <x-application-logo class="w-20 h-20" alt="{{ config('app.title') }}" />
             </a>
         </x-slot>
 
@@ -46,7 +46,7 @@
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
+                <a class="underline text-sm text-gray-600 hover:text-red-800" href="{{ route('login') }}">
                     {{ __('Already registered?') }}
                 </a>
 

@@ -4,6 +4,8 @@
 
 :heavy_check_mark: Install Laravel 8, Tailwind and Breeze as a starter
 
+:heavy_check_mark: Welcome page
+
 :heavy_multiplication_x: Add a new token
 
 :heavy_multiplication_x: Delete a token and transactions
