@@ -24,8 +24,8 @@ class StoreTokenRequest extends FormRequest
     public function rules()
     {
         return [
-            'symbol' => ['required', 'alpha_num', 'unique:crypto_tokens', 'max:25'],
-            'name' => ['required', 'unique:crypto_tokens', 'max:100'],
+            'symbol' => ['required', 'alpha_num', 'unique:crypto_tokens,deleted_at', 'max:25'],
+            'name' => ['required', 'unique:crypto_tokens,deleted_at', 'max:100'],
         ];
     }
 }

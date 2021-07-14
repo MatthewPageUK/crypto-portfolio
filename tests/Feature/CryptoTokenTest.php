@@ -32,4 +32,18 @@ class CryptoTokenTest extends TestCase
         $response = $this->actingAs($user)->get(route('token.show', ['token' => $token->id]));
         $response->assertSee($token->symbol);
     }
+
+    // Test the token create page is redirected for guests
+
+    // Test the token create page is rendered for users
+
+    // Test the token create page has correct fields
+
+    // Test the token store with valid data
+
+    // Test duplicate token symbols can not be stored
+
+    // Test the token store with invalid symbol
+
+    // Test the token store with invalid name
 }

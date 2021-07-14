@@ -15,10 +15,11 @@ class CreateCryptoTokensTable extends Migration
     {
         Schema::create('crypto_tokens', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100)->unique();
-            $table->string('symbol', 25)->unique();
+            $table->string('name', 100);
+            $table->string('symbol', 25);
             $table->timestamps($precision = 0);
             $table->softDeletes($column = 'deleted_at', $precision = 0);
+            $table->unique(['symbol', 'deleted_at']);
         });
     }
 
