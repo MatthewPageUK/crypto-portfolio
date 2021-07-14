@@ -1,10 +1,12 @@
-<x-guest-layout>
+<x-guest-layout title=" - Register your account">
     <x-auth-card>
         <x-slot name="logo">
             <a href="/" title="{{ __('Homepage') }}">
                 <x-application-logo class="w-20 h-20" alt="{{ config('app.title') }}" />
             </a>
         </x-slot>
+
+        <h1 class="text-2xl text-center mb-4">{{ __('Register') }}</h1>
 
         <!-- Validation Errors -->
         <x-auth-validation-errors class="mb-4" :errors="$errors" />

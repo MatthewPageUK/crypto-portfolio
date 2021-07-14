@@ -9,6 +9,8 @@
         <!-- Session Status -->
         <x-auth-session-status class="mb-4" :status="session('status')" />
 
+        <h1 class="text-2xl text-center mb-4">{{ __('Log in') }}</h1>
+
         <!-- Validation Errors -->
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
