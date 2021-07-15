@@ -25,6 +25,7 @@ Route::group(['prefix' => 'token', 'middleware' => 'auth', 'as'=> 'token.'], fun
     Route::post('/store', [CryptoTokenController::class, 'store'])->name('store');
     Route::get('/{token}', [CryptoTokenController::class, 'show'])->name('show');
     Route::get('/{token}/edit', [CryptoTokenController::class, 'edit'])->name('edit');
+    Route::post('/{token}/edit', [CryptoTokenController::class, 'update'])->name('update');
     Route::get('/{token}/delete', [CryptoTokenController::class, 'destroy'])->name('delete');
     Route::get('/{token}/buy', [CryptoTransactionController::class, 'buy'])->name('buy');
     Route::get('/{token}/sell', [CryptoTransactionController::class, 'sell'])->name('sell');

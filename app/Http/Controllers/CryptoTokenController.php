@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTokenRequest;
+use App\Http\Requests\UpdateTokenRequest;
 use App\Models\CryptoToken;
 use Illuminate\Http\Request;
 
@@ -50,9 +51,9 @@ class CryptoTokenController extends Controller
      * @param  \App\Models\CryptoToken  $cryptoToken
      * @return \Illuminate\Http\Response
      */
-    public function edit(CryptoToken $cryptoToken)
+    public function edit(CryptoToken $token)
     {
-        //
+        return view('edittoken', ['token' => $token]);
     }
 
     /**
@@ -62,9 +63,11 @@ class CryptoTokenController extends Controller
      * @param  \App\Models\CryptoToken  $cryptoToken
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CryptoToken $cryptoToken)
+    public function update(UpdateTokenRequest $request, CryptoToken $token)
     {
-        //
+        $token->update($request->validated());
+
+        return redirect()->route('token.show', $token)->with('success', 'Token updated');
     }
 
     /**
