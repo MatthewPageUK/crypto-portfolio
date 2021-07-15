@@ -30,7 +30,6 @@ Route::group(['prefix' => 'token', 'middleware' => 'auth', 'as'=> 'token.'], fun
     Route::get('/{token}/sell', [CryptoTransactionController::class, 'sell'])->name('sell');
 });
 
-
 Route::post('/transaction/add/{token}', [CryptoTransactionController::class, 'store'])->middleware('auth')->name('storetransaction');
 Route::get('/transaction/{cryptoTransaction}/delete', [CryptoTransactionController::class, 'destroy'])->middleware('auth')->name('deletetransaction');
 

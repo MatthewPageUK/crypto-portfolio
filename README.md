@@ -14,22 +14,27 @@
 
 
 
+
+:heavy_multiplication_x: Edit a token
+
 :heavy_multiplication_x: Delete a token and transactions
 
-:heavy_multiplication_x: Buy or sell crypto
+:heavy_multiplication_x: Buy / Sell crypto - add transaction
 
-:heavy_multiplication_x: View transactions / delete / edit
+:heavy_multiplication_x: Edit transaction
+
+:heavy_multiplication_x: Delete transactions
 
 :heavy_multiplication_x: Coinmarketcap API interface
 
-:heavy_multiplication_x: More
+:heavy_multiplication_x: More...
 
 
 
 
 :heavy_check_mark: Database migrations for User, Tokens and Transactions 'php artisan migrate'
 
-:heavy_check_mark: Database seeder for default tokens 'php artisan db:seed'
+:heavy_check_mark: Database seeder for default tokens and demo user 'php artisan db:seed'
 
 :heavy_check_mark: Feature Tests 'php artisan test' - Welcome page (3), Dashboard (5), Add Token (8)
 
