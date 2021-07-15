@@ -19,7 +19,6 @@ class CreateCryptoTokensTable extends Migration
             $table->string('symbol', 25);
             $table->timestamps($precision = 0);
             $table->softDeletes($column = 'deleted_at', $precision = 0);
-            $table->unique(['symbol', 'deleted_at']);
         });
     }
 

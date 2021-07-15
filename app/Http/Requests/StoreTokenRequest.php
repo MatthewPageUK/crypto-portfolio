@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreTokenRequest extends FormRequest
 {
@@ -24,8 +25,21 @@ class StoreTokenRequest extends FormRequest
     public function rules()
     {
         return [
-            'symbol' => ['required', 'alpha_num', 'unique:crypto_tokens,deleted_at', 'max:25'],
-            'name' => ['required', 'unique:crypto_tokens,deleted_at', 'max:100'],
+            'symbol' => [ 
+                'required',
+                Rule::unique('crypto_tokens')->where(function ($query) {
+                    return $query->where('deleted_at', NULL);
+                }), 
+                'max:25',
+            ],
+
+            'name' => [
+                'required',
+                Rule::unique('crypto_tokens')->where(function ($query) {
+                    return $query->where('deleted_at', NULL);
+                }),
+                'max:100',
+            ],
         ];
     }
 }

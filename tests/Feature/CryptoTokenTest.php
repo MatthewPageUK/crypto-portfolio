@@ -46,4 +46,8 @@ class CryptoTokenTest extends TestCase
     // Test the token store with invalid symbol
 
     // Test the token store with invalid name
+
+    // Test duplicate token symbols can not be created
+
+    // Test duplicate but deleted token symbols can be created
 }
