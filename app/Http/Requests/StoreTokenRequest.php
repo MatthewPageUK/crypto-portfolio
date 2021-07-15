@@ -31,6 +31,7 @@ class StoreTokenRequest extends FormRequest
                     return $query->where('deleted_at', NULL);
                 }), 
                 'max:25',
+                'alpha_num',
             ],
 
             'name' => [
