@@ -12,10 +12,9 @@
 
 :heavy_check_mark: Add a new token
 
+:heavy_check_mark: Edit a token
 
 
-
-:heavy_multiplication_x: Edit a token
 
 :heavy_multiplication_x: Delete a token and transactions
 
@@ -36,7 +35,7 @@
 
 :heavy_check_mark: Database seeder for default tokens and demo user 'php artisan db:seed'
 
-:heavy_check_mark: Feature Tests 'php artisan test' - Welcome page (3), Dashboard (5), Add Token (8)
+:heavy_check_mark: Feature Tests 'php artisan test' - Welcome page (3), Dashboard (5), Add Token (8), Edit Token (9)
 
 
 
