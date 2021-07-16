@@ -93,13 +93,11 @@ class AddTransactionTest extends TestCase
 
         $response = $this->actingAs($user)->post(route('transaction.store', [
             'crypto_token_id' => $token->id, 
-            'time' => now(),
+            'time' => now()->format('Y-m-d\TH:i:s'),
             'quantity' => '100',
             'price' => '12',
             'type' => 'buy'
         ]));
-
-        dd($response->content());
 
         $this->assertDatabaseCount('crypto_transactions', 1);
     }
@@ -112,9 +110,9 @@ class AddTransactionTest extends TestCase
         $user = User::factory()->create();
         $token = CryptoToken::factory()->create();
 
-        $response = $this->actingAs($user)->post(route('transaction.store', $token->id, [
+        $response = $this->actingAs($user)->post(route('transaction.store', [
             'crypto_token_id' => $token->id+1, 
-            'time' => now(),
+            'time' => now()->format('Y-m-d\TH:i:s'),
             'quantity' => 100,
             'price' => 12.5,
             'type' => 'buy',
@@ -131,15 +129,15 @@ class AddTransactionTest extends TestCase
         $token = CryptoToken::factory()->create();
         $transaction = CryptoTransaction::factory()->create([
             'crypto_token_id' => $token->id, 
-            'time' => now(),
+            'time' => now()->format('Y-m-d\TH:i:s'),
             'quantity' => 100,
             'price' => 12.5,
             'type' => 'buy',
         ]);
 
-        $response = $this->actingAs($user)->post(route('transaction.store', $token->id, [
+        $response = $this->actingAs($user)->post(route('transaction.store', [
             'crypto_token_id' => $token->id, 
-            'time' => now(),
+            'time' => now()->format('Y-m-d\TH:i:s'),
             'quantity' => 200,
             'price' => 12.5,
             'type' => 'sell',
@@ -156,16 +154,16 @@ class AddTransactionTest extends TestCase
         $user = User::factory()->create();
         $token = CryptoToken::factory()->create();
 
-        $response = $this->actingAs($user)->post(route('transaction.store', $token->id, [
+        $response = $this->actingAs($user)->post(route('transaction.store', [
             'crypto_token_id' => $token->id, 
-            'time' => now(),
+            'time' => now()->format('Y-m-d\TH:i:s'),
             'quantity' => 0,
             'price' => 12.5,
             'type' => 'buy',
         ]));
-        $response = $this->actingAs($user)->post(route('transaction.store', $token->id, [
+        $response = $this->actingAs($user)->post(route('transaction.store', [
             'crypto_token_id' => $token->id, 
-            'time' => now(),
+            'time' => now()->format('Y-m-d\TH:i:s'),
             'quantity' => -100,
             'price' => 12.5,
             'type' => 'buy',
@@ -182,9 +180,9 @@ class AddTransactionTest extends TestCase
         $user = User::factory()->create();
         $token = CryptoToken::factory()->create();
 
-        $response = $this->actingAs($user)->post(route('transaction.store', $token->id, [
+        $response = $this->actingAs($user)->post(route('transaction.store', [
             'crypto_token_id' => $token->id, 
-            'time' => now(),
+            'time' => now()->format('Y-m-d\TH:i:s'),
             'quantity' => 100,
             'price' => -12,
             'type' => 'buy',

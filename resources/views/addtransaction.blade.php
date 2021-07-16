@@ -10,7 +10,7 @@
         <!-- Validation Errors -->
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-        <form method="POST" action="{{ route('transaction.store', ['token' => $token->id]) }}">
+        <form method="POST" action="{{ route('transaction.store') }}">
             @csrf
 
             <!-- Token -->
@@ -23,14 +23,14 @@
             <div>
                 <x-label for="time" :value="__('Date / Time')" />
 
-                <x-input id="time" class="block mt-1 w-full" type="datetime-local" name="time" :value="old('time', Carbon\Carbon::now()->format('Y-m-d\TH:i:s'))" required autofocus />
+                <x-input id="time" class="block mt-1 w-full" type="datetime-local" name="time" :value="old('time', now()->format('Y-m-d\TH:i:s'))" required />
             </div>
 
             <!-- Quantity -->
             <div class="mt-4">
                 <x-label for="quantity" :value="__('Quantity')" />
 
-                <x-input id="quantity" class="block mt-1 w-full" type="text" name="quantity" :value="old('quantity')" required />
+                <x-input id="quantity" class="block mt-1 w-full" type="text" name="quantity" :value="old('quantity')" required autofocus />
             </div>
 
             <!-- Price paid -->

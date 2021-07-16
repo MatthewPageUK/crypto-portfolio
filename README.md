@@ -16,9 +16,9 @@
 
 :heavy_check_mark: Delete a token and transactions
 
+:heavy_check_mark: Buy / Sell - add transaction
 
 
-:heavy_multiplication_x: Buy / Sell crypto - add transaction
 
 :heavy_multiplication_x: Edit transaction
 
@@ -35,7 +35,7 @@
 
 :heavy_check_mark: Database seeder for default tokens and demo user 'php artisan db:seed'
 
-:heavy_check_mark: Feature Tests 'php artisan test' - Welcome page (3), Dashboard (5), Add Token (8), Edit Token (9), Delete Token (7)
+:heavy_check_mark: Feature Tests 'php artisan test' - Welcome page (3), Dashboard (5), Add Token (8), Edit Token (9), Delete Token (7), Add Transaction (10)
 
 
 

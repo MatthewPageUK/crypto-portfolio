@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\CryptoToken;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -24,9 +25,12 @@ class StoreTransactionRequest extends FormRequest
      */
     public function rules()
     {
+        $token = CryptoToken::find($this->input('crypto_token_id'));
+        $quantityRule = ($token && $this->input('type')==='sell') ? ['required', 'gt:0', 'lte:'.$token->balance] : ['required', 'gt:0'];
+
         return [
             'crypto_token_id' => ['required', 'exists:crypto_tokens,id'],
-            'quantity' => ['required', 'gt:0'],
+            'quantity' => $quantityRule,
             'price' => ['required', 'gte:0'],
             'type' => ['required', Rule::in('buy', 'sell')],
             'time' => ['required', 'date'],
