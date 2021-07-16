@@ -82,7 +82,7 @@
                                     <td class="py-3 px-2 text-right">
                                         <div class="flex item-center justify-center">
                                             <div class="w-4 mr-2 transform hover:scale-110">
-                                                <a href="{{ route('deletetransaction', ['cryptoTransaction' => $transaction->id]) }}" 
+                                                <a href="{{ route('transaction.delete', ['cryptoTransaction' => $transaction->id]) }}" 
                                                     class="text-gray-500 hover:text-red-500" 
                                                     onclick="return confirm('Delete this transaction?')"
                                                     title="Delete this transaction"

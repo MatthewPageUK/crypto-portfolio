@@ -10,7 +10,7 @@
         <!-- Validation Errors -->
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-        <form method="POST" action="{{ route('storetransaction', ['token' => $token->id]) }}">
+        <form method="POST" action="{{ route('transaction.store', ['token' => $token->id]) }}">
             @csrf
 
             <!-- Token -->
@@ -23,7 +23,7 @@
             <div>
                 <x-label for="time" :value="__('Date / Time')" />
 
-                <x-input id="time" class="block mt-1 w-full" type="datetime-local" name="time" :value="old('time', Carbon\Carbon::now()->format('Y-m-d\TH:i'))" required autofocus />
+                <x-input id="time" class="block mt-1 w-full" type="datetime-local" name="time" :value="old('time', Carbon\Carbon::now()->format('Y-m-d\TH:i:s'))" required autofocus />
             </div>
 
             <!-- Quantity -->
@@ -40,16 +40,8 @@
                 <x-input id="price" class="block mt-1 w-full" type="text" name="price" :value="old('price')" required />
             </div>
 
-            <!-- Fee charged -->
-            {{-- <div class="mt-4">
-                <x-label for="fee" :value="__('Fee')" />
-
-                <x-input id="fee" class="block mt-1 w-full" type="text" name="fee" :value="old('fee')" required />
-            </div> --}}
-
-
             <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('dashboard') }}">
+                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('token.show', $token->id) }}">
                     {{ __('Cancel') }}
                 </a>
 
