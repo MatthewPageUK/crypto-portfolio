@@ -33,7 +33,7 @@ class CryptoTransaction extends Model
     /**
      * The token this transaction applies to
      */
-    public function token()
+    public function cryptoToken()
     {
         return $this->belongsTo(CryptoToken::class);
     }

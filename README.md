@@ -24,6 +24,8 @@
 
 :heavy_multiplication_x: Delete transactions
 
+:heavy_multiplication_x: Avg buy price / Avg buy price of held tokens
+
 :heavy_multiplication_x: Coinmarketcap API interface
 
 :heavy_multiplication_x: More...

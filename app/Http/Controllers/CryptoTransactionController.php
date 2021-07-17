@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTransactionRequest;
+use App\Http\Requests\UpdateTransactionRequest;
 use App\Models\CryptoToken;
 use App\Models\CryptoTransaction;
 use Carbon\Carbon;
+use Database\Seeders\CryptoTokenSeeder;
 use Illuminate\Http\Request;
 
 class CryptoTransactionController extends Controller
@@ -47,13 +49,7 @@ class CryptoTransactionController extends Controller
      */
     public function store(StoreTransactionRequest $request)
     {
-        // If selling then don't allow more than current balance [TO-DO]
-        // $token = CryptoToken::find($request->crypto_token_id);
-        // $lessThanBalance = ($request->type==='sell') ? 'lte:'.$token->balance : '';
-        // 'quantity' => ['required', 'gt:0', $lessThanBalance],
-
         $validatedData = $request->validated();
-
         CryptoTransaction::create($request->all());
 
         return redirect()->route('token.show', ['token' => $request['crypto_token_id']])->with('success', 'Transaction added');
@@ -76,9 +72,10 @@ class CryptoTransactionController extends Controller
      * @param  \App\Models\CryptoTransaction  $cryptoTransaction
      * @return \Illuminate\Http\Response
      */
-    public function edit(CryptoTransaction $cryptoTransaction)
+    public function edit(CryptoTransaction $transaction)
     {
-        //
+        $tokens = CryptoToken::all()->sortBy('symbol');
+        return view('edittransaction', ['transaction' => $transaction, 'tokens' => $tokens]);
     }
 
     /**
@@ -88,9 +85,10 @@ class CryptoTransactionController extends Controller
      * @param  \App\Models\CryptoTransaction  $cryptoTransaction
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CryptoTransaction $cryptoTransaction)
+    public function update(UpdateTransactionRequest $request, CryptoTransaction $transaction)
     {
-        //
+        $transaction->update($request->validated());
+        return redirect()->route('token.show', $transaction->crypto_token_id)->with('success', 'Transaction updated');
     }
 
     /**
