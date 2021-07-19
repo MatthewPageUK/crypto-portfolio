@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class CryptoToken extends Model
 {
@@ -59,5 +60,29 @@ class CryptoToken extends Model
             $balance += ( $transaction->type === "buy" ) ? $transaction->quantity : -$transaction->quantity;
         }
         $this->balance = $balance;
+    }
+
+    /**
+     * Average buy price
+     */
+    public function averagePrice()
+    {
+        // $quantity = DB::table((new CryptoTransaction())->getTable())
+        //     ->where('crypto_token_id', $this->id)
+        //     ->where('type', 'buy')
+        //     ->sum('quantity');
+
+        // $total = DB::table((new CryptoTransaction())->getTable())
+        //     ->where(function ($query) {
+        //         $query->selectRaw('price * quantity as total')
+        //             ->from((new CryptoTransaction())->getTable())
+        //             ->where('crypto_token_id', $this->id)
+        //             ->where('type', 'buy');
+        //     })
+        //     ->avg('total');
+
+        // return $total / $quantity;
+        
+        return 0.00;
     }
 }

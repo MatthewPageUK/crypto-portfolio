@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\CryptoToken;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -11,24 +10,35 @@ class DashboardTest extends TestCase
 {
     use RefreshDatabase;
 
+    private User $user;
+
+    /**
+     * Setup some defaults, bad data and a user
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->user = User::factory()->create();
+    }
+
     /**
      * Test the dashboard is redirected for guests
      */
     public function test_dashboard_is_redirected_for_guests()
     {
-        $response = $this->get(route('dashboard'));
-        $response->assertStatus(302);
+        $this->get(route('dashboard'))
+            ->assertStatus(302)
+            ->assertRedirect(route('login'));
     }
 
     /**
      * Test the dashboard can be displayed for logged in user
      */
-    public function test_dashboard_screen_can_be_rendered()
+    public function test_dashboard_screen_can_be_rendered_for_users()
     {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->get(route('dashboard'));
-        $response->assertStatus(200);
+        $this->actingAs($this->user)->get(route('dashboard'))
+            ->assertStatus(200);
     }
 
     /**
@@ -36,11 +46,10 @@ class DashboardTest extends TestCase
      */
     public function test_dashboard_displays_tokens()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create(['name' => 'DummyCoin']);
-
-        $response = $this->actingAs($user)->get(route('dashboard'));
-        $response->assertSee('DummyCoin');   
+        $this->actingAs($this->user)->get(route('dashboard'))
+            ->assertSee($this->token->symbol)
+            ->assertSee($this->token->name)
+            ->assertSee(route('token.show', $this->token->id));   
     }
 
     /**
@@ -48,10 +57,8 @@ class DashboardTest extends TestCase
      */
     public function test_dashboard_displays_addtoken_link()
     {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->get(route('dashboard'));
-        $response->assertSee(route('token.create'));
+        $this->actingAs($this->user)->get(route('dashboard'))
+            ->assertSee(route('token.create'));
     }
 
     /**
@@ -59,10 +66,8 @@ class DashboardTest extends TestCase
      */
     public function test_dashboard_displays_logout_link()
     {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->get(route('dashboard'));
-        $response->assertSee(route('logout'));
+        $this->actingAs($this->user)->get(route('dashboard'))
+            ->assertSee(route('logout'));
     }
 
 }

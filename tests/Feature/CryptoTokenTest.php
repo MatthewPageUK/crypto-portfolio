@@ -16,10 +16,21 @@ class CryptoTokenTest extends TestCase
      *
      * @return void
      */
-    public function test_create_cryptotoken_data()
+    public function test_create_token_factory()
     {
-        $tokens = CryptoToken::factory(5)->create();
-        $this->assertDatabaseCount('crypto_tokens', 5);
+        CryptoToken::factory(5)->create();
+        $this->assertDatabaseCount((new CryptoToken())->getTable(), 5);
+    }
+
+    /**
+     * Test the token info page is redirected for guests
+     */
+    public function test_token_info_page_is_redirected_to_login_for_guests()
+    {
+        $token = CryptoToken::factory()->create();
+        $this->get(route('token.show', ['token' => $token->id]))
+            ->assertStatus(302)
+            ->assertRedirect(route('login'));
     }
 
     /** 
@@ -27,10 +38,10 @@ class CryptoTokenTest extends TestCase
      */
     public function test_token_info_page_can_rendered()
     {
-        $user = User::factory()->create();
         $token = CryptoToken::factory()->create();
-        $response = $this->actingAs($user)->get(route('token.show', ['token' => $token->id]));
-        $response->assertSee($token->symbol);
+        $this->actingAs (User::factory()->create())->get(route('token.show', ['token' => $token->id]))
+            ->assertSee($token->symbol)
+            ->assertSee($token->name);
     }
 
 }

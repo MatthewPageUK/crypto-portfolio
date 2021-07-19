@@ -12,16 +12,29 @@ class DeleteTokenTest extends TestCase
 {
     use RefreshDatabase;
 
+    private CryptoToken $token;
+    private String $table;
+    private User $user;
+
+    /**
+     * Setup some defaults, bad data and a user
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->token = CryptoToken::factory()->create();
+        $this->table = $this->token->getTable();
+        $this->user = User::factory()->create();
+    }
+
     /**
      * Test the delete token link is shown on token info page
      */
     public function test_delete_token_link_is_on_token_info_page()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create();
-
-        $response = $this->actingAs($user)->get(route('token.show', $token->id));
-        $response->assertSee(route('token.delete', $token->id));
+        $this->actingAs($this->user)->get(route('token.show', $this->token->id))
+            ->assertSee(route('token.delete', $this->token->id));
     }
 
     /**
@@ -29,11 +42,8 @@ class DeleteTokenTest extends TestCase
      */
     public function test_delete_token_link_has_js_confirm()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create();
-
-        $response = $this->actingAs($user)->get(route('token.show', $token->id));
-        $response->assertSee('Delete this token and ALL transactions');
+        $this->actingAs($this->user)->get(route('token.show', $this->token->id))
+            ->assertSee('Delete this token and ALL transactions');
     }
 
     /**
@@ -41,10 +51,9 @@ class DeleteTokenTest extends TestCase
      */
     public function test_delete_token_page_is_redirected_for_guests()
     {
-        $token = CryptoToken::factory()->create();
-
-        $response = $this->get(route('token.delete', $token->id));
-        $response->assertStatus(302);
+        $this->get(route('token.delete', $this->token->id))
+            ->assertStatus(302)
+            ->assertRedirect(route('login'));
     }
 
     /**
@@ -52,11 +61,8 @@ class DeleteTokenTest extends TestCase
      */
     public function test_token_is_soft_deleted()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create(['symbol' => 'DEL', 'name' => 'Delete token']);
-
-        $response = $this->actingAs($user)->get(route('token.delete', $token->id));
-        $this->assertSoftDeleted('crypto_tokens', ['symbol' => 'DEL']);
+        $this->actingAs($this->user)->get(route('token.delete', $this->token->id));
+        $this->assertSoftDeleted($this->table, ['id' => $this->token->id]);
     }
 
     /**
@@ -64,36 +70,29 @@ class DeleteTokenTest extends TestCase
      */
     public function test_token_is_not_hard_deleted()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create(['symbol' => 'DEL', 'name' => 'Delete token']);
-
-        $response = $this->actingAs($user)->get(route('token.delete', $token->id));
-        $this->assertDatabaseCount('crypto_tokens', 1);
+        $this->actingAs($this->user)->get(route('token.delete', $this->token->id));
+        $this->assertDatabaseCount($this->table, 1);
     }
 
     /**
      * Test transactions are soft deleted on token delete
      */
-    public function test_trabsactions_are_soft_deleted_on_token_delete()
+    public function test_transactions_are_soft_deleted_on_token_delete()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create(['symbol' => 'DEL', 'name' => 'Delete token']);
-        $trans = CryptoTransaction::factory()->create(['crypto_token_id' => $token->id]);
+        $transaction = CryptoTransaction::factory()->for($this->token)->create();
 
-        $response = $this->actingAs($user)->get(route('token.delete', $token->id));
-        $this->assertSoftDeleted('crypto_transactions', ['crypto_token_id' => $token->id]);
+        $this->actingAs($this->user)->get(route('token.delete', $this->token->id));
+        $this->assertSoftDeleted($this->table, ['id' => $transaction->id]);
     }
 
     /**
      * Test transactions are not hard deleted on token delete
      */
-    public function test_trabsactions_are_not_hard_deleted_on_token_delete()
+    public function test_transactions_are_not_hard_deleted_on_token_delete()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create(['symbol' => 'DEL', 'name' => 'Delete token']);
-        $trans = CryptoTransaction::factory()->create(['crypto_token_id' => $token->id]);
+        CryptoTransaction::factory()->for($this->token)->create();
 
-        $response = $this->actingAs($user)->get(route('token.delete', $token->id));
-        $this->assertDatabaseCount('crypto_transactions', 1);
+        $this->actingAs($this->user)->get(route('token.delete', $this->token->id));
+        $this->assertDatabaseCount($this->table, 1);
     }
 }

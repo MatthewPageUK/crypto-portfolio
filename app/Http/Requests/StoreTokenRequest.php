@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\CryptoToken;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -24,21 +25,20 @@ class StoreTokenRequest extends FormRequest
      */
     public function rules()
     {
+        $table = (new CryptoToken())->getTable();
+
         return [
             'symbol' => [ 
                 'required',
-                Rule::unique('crypto_tokens')->where(function ($query) {
-                    return $query->where('deleted_at', NULL);
-                }), 
+                Rule::unique($table)->where('deleted_at', NULL),
                 'max:25',
                 'alpha_num',
             ],
-
             'name' => [
                 'required',
-                Rule::unique('crypto_tokens')->where(function ($query) {
-                    return $query->where('deleted_at', NULL);
-                }),
+                Rule::unique($table)->where('deleted_at', NULL),
+                'regex:/^[a-zA-Z0-9\s]+$/',
+                'min:3',
                 'max:100',
             ],
         ];

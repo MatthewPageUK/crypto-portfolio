@@ -20,6 +20,8 @@ class StoreTransactionRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
+     * 
+     * Todo - future time validation before:xxxxx
      *
      * @return array
      */
@@ -33,7 +35,7 @@ class StoreTransactionRequest extends FormRequest
             'quantity' => $quantityRule,
             'price' => ['required', 'gte:0'],
             'type' => ['required', Rule::in('buy', 'sell')],
-            'time' => ['required', 'date'],
+            'time' => ['required', 'date', 'before:'.now()->format('Y-m-d\TH:i:s')],
         ];
     }
 }

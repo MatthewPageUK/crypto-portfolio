@@ -12,69 +12,102 @@ class AddTransactionTest extends TestCase
 {
     use RefreshDatabase;
 
+    private String $table;
+    private CryptoToken $token;
+    private User $user;
+    private Array $good;
+    private Array $bad;
+
+    /**
+     * Setup some defaults, bad data and a user
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->table = (new CryptoTransaction())->getTable();
+        $this->token = CryptoToken::factory()->create();
+        $this->user = User::factory()->create();
+        $this->good = [
+            'crypto_token_id' => $this->token->id, 
+            'time' => '2021-06-25T10:32:45',
+            'quantity' => 100,
+            'price' => 12,
+            'type' => 'buy',
+        ];
+        $this->bad = [
+            'time' => [
+                'empty' => '',
+                'future' => now()->addDays(1)->format('Y-m-d\TH:i:s'), 
+                'nottime' => 'half past one',
+            ],
+            'quantity' => [
+                'empty' => '',
+                'zero' => 0,
+                'negative' => -10, 
+                'notnum' => 'ten',
+            ],
+            'price' => [
+                'empty' => '',
+                'negative' => -10, 
+                'notnum' => 'ten quid',
+            ],
+            'type' => [
+                'empty' => '',
+                'wrong' => 'dump them', 
+            ],
+        ];
+    }
+
     /**
      * Test the Buy / Sell link is shown on the dashboard
      */
-    public function test_the_buy_sell_link_shown_on_dashboard()
+    public function test_transaction_buy_sell_link_rendered_on_dashboard()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create();
-        $transaction = CryptoTransaction::factory()->create(['crypto_token_id' => $token->id, 'quantity' => 1, 'price' => 10, 'type' => 'buy']);
+        CryptoTransaction::factory()->for($this->token)->create($this->good);
 
-        $response = $this->actingAs($user)->get(route('dashboard'));
-
-        $response->assertSee(route('token.buy', $token->id))
-            ->assertSee(route('token.sell', $token->id));
+        $this->actingAs($this->user)->get(route('dashboard'))
+            ->assertSee(route('token.buy', $this->token->id))
+            ->assertSee(route('token.sell', $this->token->id));
     }
 
     /**
      * Test the Buy / Sell link is shown on the token info page
      */
-    public function test_the_buy_sell_link_shown_on_token_info()
+    public function test_transaction_buy_sell_link_rendered_on_token_info()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create();
-        $transaction = CryptoTransaction::factory()->create(['crypto_token_id' => $token->id, 'quantity' => 1, 'price' => 10, 'type' => 'buy']);
+        CryptoTransaction::factory()->for($this->token)->create($this->good);
 
-        $response = $this->actingAs($user)->get(route('token.show', $token->id));
-
-        $response->assertSee(route('token.buy', $token->id))
-            ->assertSee(route('token.sell', $token->id));
+        $this->actingAs($this->user)->get(route('token.show', $this->token->id))
+            ->assertSee(route('token.buy', $this->token->id))
+            ->assertSee(route('token.sell', $this->token->id));
     }
 
     /**
      * Test the transaction create page is redirected for guests
      */
-    public function test_the_transaction_create_page_is_redirected_for_guests()
+    public function test_transaction_create_page_is_redirected_for_guests()
     {
-        $token = CryptoToken::factory()->create();
-
-        $response = $this->get(route('token.buy', $token->id));
-        $response->assertStatus(302);
+        $this->get(route('token.buy', $this->token->id))
+            ->assertStatus(302);
     }
 
     /**
      * Test the transaction create page is rendered for users
      */
-    public function test_the_transaction_create_page_is_rendered_for_users()
+    public function test_transaction_create_page_is_rendered_for_users()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create();
-
-        $response = $this->actingAs($user)->get(route('token.buy', $token->id));
-        $response->assertStatus(200);
+        $this->actingAs($this->user)->get(route('token.buy', $this->token->id))
+            ->assertStatus(200);
     }
 
     /**
      * Test the transaction create page has the correct fields
      */
-    public function test_the_transaction_create_page_has_correct_fields()
+    public function test_transaction_create_page_has_correct_fields()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create();
-
-        $response = $this->actingAs($user)->get(route('token.buy', $token->id));
-        $response->assertSee('name="crypto_token_id"', false)
+        $this->actingAs($this->user)->get(route('token.buy', $this->token->id))
+            ->assertSee('name="crypto_token_id"', false)
             ->assertSee('name="time"', false)
             ->assertSee('name="quantity"', false)
             ->assertSee('name="price"', false)
@@ -86,109 +119,90 @@ class AddTransactionTest extends TestCase
     /**
      * Test the transaction can be stored with valid data
      */
-    public function test_the_transaction_can_be_stored_with_valid_data()
+    public function test_transaction_can_be_stored_with_valid_data()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create();
-
-        $response = $this->actingAs($user)->post(route('transaction.store', [
-            'crypto_token_id' => $token->id, 
-            'time' => now()->format('Y-m-d\TH:i:s'),
-            'quantity' => '100',
-            'price' => '12',
-            'type' => 'buy'
-        ]));
-
-        $this->assertDatabaseCount('crypto_transactions', 1);
+        $this->actingAs($this->user)->post(route('transaction.store', $this->good));
+        $this->assertDatabaseHas($this->table, $this->good);
     }
 
     /**
      * Test the transaction can not be stored with invalid token
      */
-    public function test_the_transaction_can_not_be_stored_with_invalid_token()
+    public function test_transaction_can_not_be_stored_with_invalid_token()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create();
-
-        $response = $this->actingAs($user)->post(route('transaction.store', [
-            'crypto_token_id' => $token->id+1, 
-            'time' => now()->format('Y-m-d\TH:i:s'),
-            'quantity' => 100,
-            'price' => 12.5,
-            'type' => 'buy',
-        ]));
-        $this->assertDatabaseCount('crypto_transactions', 0);
+        $this->actingAs($this->user)->post(route('transaction.store', array_merge([
+            'crypto_token_id' => $this->token->id+1, 
+        ])));
+        $this->assertDatabaseCount($this->table, 0);
     }
 
     /**
      * Test the transaction can not be stored with negative balance
      */
-    public function test_the_transaction_can_not_be_stored_with_negative_balance()
+    public function test_transaction_can_not_be_stored_with_negative_balance()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create();
-        $transaction = CryptoTransaction::factory()->create([
-            'crypto_token_id' => $token->id, 
-            'time' => now()->format('Y-m-d\TH:i:s'),
-            'quantity' => 100,
-            'price' => 12.5,
-            'type' => 'buy',
-        ]);
+        CryptoTransaction::factory()->create($this->good);
 
-        $response = $this->actingAs($user)->post(route('transaction.store', [
-            'crypto_token_id' => $token->id, 
-            'time' => now()->format('Y-m-d\TH:i:s'),
-            'quantity' => 200,
-            'price' => 12.5,
+        $this->actingAs($this->user)->post(route('transaction.store', array_merge($this->good, [
+            'quantity' => $this->good['quantity']+1,
             'type' => 'sell',
-        ]));
-
-        $this->assertDatabaseCount('crypto_transactions', 1);
+        ])));
+        $this->assertDatabaseCount($this->table, 1);
     }
 
     /**
-     * Test the transaction can not be stored with 0 or negative quantity
+     * Test the transaction can not be stored with invalid quantity
      */
-    public function test_the_transaction_can_not_be_stored_with_zero_or_negative_quantity()
+    public function test_transaction_can_not_be_stored_with_invalid_quantity()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create();
-
-        $response = $this->actingAs($user)->post(route('transaction.store', [
-            'crypto_token_id' => $token->id, 
-            'time' => now()->format('Y-m-d\TH:i:s'),
-            'quantity' => 0,
-            'price' => 12.5,
-            'type' => 'buy',
-        ]));
-        $response = $this->actingAs($user)->post(route('transaction.store', [
-            'crypto_token_id' => $token->id, 
-            'time' => now()->format('Y-m-d\TH:i:s'),
-            'quantity' => -100,
-            'price' => 12.5,
-            'type' => 'buy',
-        ]));
-
-        $this->assertDatabaseCount('crypto_transactions', 0);
+        foreach($this->bad['quantity'] as $key => $value)
+        {
+            $this->actingAs($this->user)->post(route('transaction.store', array_merge($this->good, [
+                'quantity' => $value
+            ])));
+        }
+        $this->assertDatabaseCount($this->table, 0);
     }
 
     /**
-     * Test the transaction can not be stored with a negative price
+     * Test the transaction can not be stored with invalid price
      */
-    public function test_the_transaction_can_not_be_stored_with_negative_price()
+    public function test_transaction_can_not_be_stored_with_invalid_price()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create();
-
-        $response = $this->actingAs($user)->post(route('transaction.store', [
-            'crypto_token_id' => $token->id, 
-            'time' => now()->format('Y-m-d\TH:i:s'),
-            'quantity' => 100,
-            'price' => -12,
-            'type' => 'buy',
-        ]));
-
-        $this->assertDatabaseCount('crypto_transactions', 0);
+        foreach($this->bad['price'] as $key => $value)
+        {
+            $this->actingAs($this->user)->post(route('transaction.store', array_merge($this->good, [
+                'price' => $value
+            ])));
+        }
+        $this->assertDatabaseCount($this->table, 0);
     }
 
+    /**
+     * Test the transaction can not be stored with invalid time
+     */
+    public function test_transaction_can_not_be_stored_with_invalid_time()
+    {
+        foreach($this->bad['time'] as $key => $value)
+        {
+            $this->actingAs($this->user)->post(route('transaction.store', array_merge($this->good, [
+                'time' => $value
+            ])));
+        }
+        $this->assertDatabaseCount($this->table, 0);
+    }
+
+    /**
+     * Test the transaction can not be stored with invalid type
+     */
+    public function test_transaction_can_not_be_stored_with_invalid_type()
+    {
+        foreach($this->bad['type'] as $key => $value)
+        {
+            $this->actingAs($this->user)->post(route('transaction.store', array_merge($this->good, [
+                'type' => $value
+            ])));
+        }
+        $this->assertDatabaseCount($this->table, 0);
+    }
 }
