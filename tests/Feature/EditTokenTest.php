@@ -90,6 +90,15 @@ class EditTokenTest extends TestCase
         $this->assertDatabaseHas($this->table, $goodToken);
     }
 
+
+
+
+
+
+
+
+
+
     /**
      * Test the token can not be updated with invalid symbol
      */
@@ -110,6 +119,21 @@ class EditTokenTest extends TestCase
             ->assertDatabaseMissing($this->table, ['symbol' => $bad['long']])
             ->assertDatabaseMissing($this->table, ['symbol' => $bad['symbols']]);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Test the token can not updated with invalid name
@@ -132,6 +156,22 @@ class EditTokenTest extends TestCase
             ->assertDatabaseMissing($this->table, ['name' => $bad['symbols']]);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Test duplicate token symbols can not be updated
      */
@@ -147,6 +187,22 @@ class EditTokenTest extends TestCase
         $this->assertDatabaseMissing($this->table, ['name' => 'Second ABC token']);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     /**
      * Test duplicate but deleted token symbols can be updated
      */

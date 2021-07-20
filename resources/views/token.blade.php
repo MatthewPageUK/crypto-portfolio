@@ -43,7 +43,13 @@
             <p class="text-2xl text-center">{{ $token->balance }} <span class="text-sm">{{ $token->symbol }}</span></p>
         </div>
         <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-            <p class="text-2xl text-center"><span class="text-sm">{{ __('Avg. price') }}</span> <x-money>{{ $token->averagePrice() }}</x-money></p>
+            <p class="text-2xl text-center"><span class="text-sm">{{ __('Avg. price') }}</span> <x-money>{{ $token->averageBuyPrice() }}</x-money></p>
+        </div>
+        <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
+            <p class="text-2xl text-center"><span class="text-sm">{{ __('Avg. Hodl price') }}</span> <x-money>{{ $token->averageHodlBuyPrice() }}</x-money></p>
+        </div>
+        <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
+            <p class="text-2xl text-center"><span class="text-sm">{{ __('Avg. Sell price') }}</span> <x-money>{{ $token->averageSellPrice() }}</x-money></p>
         </div>
     </div>
 

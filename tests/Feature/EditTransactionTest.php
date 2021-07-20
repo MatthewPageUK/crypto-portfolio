@@ -12,17 +12,73 @@ class EditTransactionTest extends TestCase
 {
     use RefreshDatabase;
 
+    private String $table;
+    private User $user;
+    private CryptoToken $token;
+    private CryptoTransaction $transaction;
+    private Array $good;
+    private Array $bad;
+
+    /**
+     * Setup some defaults, bad data and a user
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->table = (new CryptoTransaction())->getTable();
+        $this->token = CryptoToken::factory()->create();
+        $this->user = User::factory()->create();
+        $this->good = [
+            'original' => [
+                'crypto_token_id' => $this->token->id, 
+                'time' => '2021-06-25T10:32:45',
+                'quantity' => 100,
+                'price' => 12,
+                'type' => 'buy',
+            ],
+            'edited' => [
+                'crypto_token_id' => $this->token->id, 
+                'time' => '2021-06-21T10:32:45',
+                'quantity' => 99,
+                'price' => 11,
+                'type' => 'buy',            
+            ],
+        ];
+        $this->bad = [
+            'time' => [
+                'empty' => '',
+                'future' => now()->addDays(1)->format('Y-m-d\TH:i:s'), 
+                'nottime' => 'half past one',
+            ],
+            'quantity' => [
+                'empty' => '',
+                'zero' => 0,
+                'negative' => -10, 
+                'notnum' => 'ten',
+            ],
+            'price' => [
+                'empty' => '',
+                'negative' => -10, 
+                'notnum' => 'ten quid',
+            ],
+            'type' => [
+                'empty' => '',
+                'wrong' => 'dump them', 
+            ],
+        ];
+
+        $this->transaction = CryptoTransaction::factory()->for($this->token)->create($this->good['original']);
+        $this->good['edited']['transaction'] = $this->transaction->id;
+    }
+
     /**
      * Test the edit transaction link is displayed on token info page
      */
     public function test_edit_transaction_link_is_rendered_on_token_info_page()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create();
-        $transaction = CryptoTransaction::factory()->for($token)->create();
-
-        $response = $this->actingAs($user)->get(route('token.show', $token->id));
-        $response->assertSee(route('transaction.edit', $transaction->id));
+        $this->actingAs($this->user)->get(route('token.show', $this->token->id))
+            ->assertSee(route('transaction.edit', $this->transaction->id));
     }
 
     /**
@@ -30,10 +86,9 @@ class EditTransactionTest extends TestCase
      */
     public function test_edit_transaction_page_is_redirected_for_guests()
     {
-        $transaction = CryptoTransaction::factory()->for(CryptoToken::factory()->create())->create();
-
-        $response = $this->get(route('transaction.edit', $transaction));
-        $response->assertStatus(302);
+        $this->get(route('transaction.edit', $this->transaction->id))
+            ->assertStatus(302)
+            ->assertRedirect(route('login'));
     }
 
     /**
@@ -41,11 +96,8 @@ class EditTransactionTest extends TestCase
      */
     public function test_edit_transaction_page_is_rendered_for_users()
     {
-        $user = User::factory()->create();
-        $transaction = CryptoTransaction::factory()->for(CryptoToken::factory()->create())->create();
-
-        $response = $this->actingAs($user)->get(route('transaction.edit', $transaction->id));
-        $response->assertStatus(200);
+        $this->actingAs($this->user)->get(route('transaction.edit', $this->transaction->id))
+            ->assertStatus(200);
     }
 
     /**
@@ -53,17 +105,14 @@ class EditTransactionTest extends TestCase
      */
     public function test_edit_transaction_page_has_correct_fields()
     {
-        $user = User::factory()->create();
-        $transaction = CryptoTransaction::factory()->for(CryptoToken::factory()->create())->create();
-
-        $response = $this->actingAs($user)->get(route('transaction.edit', $transaction->id));
-        $response->assertSee('name="crypto_token_id"', false)
+        $this->actingAs($this->user)->get(route('transaction.edit', $this->transaction->id))
+            ->assertSee('name="crypto_token_id"', false)
             ->assertSee('name="time"', false)
             ->assertSee('name="quantity"', false)
             ->assertSee('name="price"', false)
             ->assertSee('name="type', false)
             ->assertSee('type="submit"', false)
-            ->assertSee(route('transaction.update', $transaction->id));
+            ->assertSee(route('transaction.update', $this->transaction->id));
     }
 
     /**
@@ -71,18 +120,8 @@ class EditTransactionTest extends TestCase
      */
     public function test_transaction_can_be_updated_with_valid_data()
     {
-        $user = User::factory()->create();
-        $transaction = CryptoTransaction::factory()->for(CryptoToken::factory()->create())->create(['quantity' => 5, 'type' => 'buy']);
-
-        $response = $this->actingAs($user)->post(route('transaction.update', [
-            'transaction' => $transaction->id,
-            'crypto_token_id' => $transaction->crypto_token_id, 
-            'time' => $transaction->time->format('Y-m-d\TH:i:s'), 
-            'quantity' => 100,
-            'price' => $transaction->price,
-            'type' => $transaction->type,
-        ]));
-        $this->assertDatabaseHas('crypto_transactions', ['quantity' => 100]);
+        $this->actingAs($this->user)->post(route('transaction.update', $this->good['edited']));
+        $this->assertDatabaseHas($this->table, $this->good['edited']);
     }
 
     /**
@@ -90,19 +129,28 @@ class EditTransactionTest extends TestCase
      */
     public function test_transaction_can_not_be_updated_with_invalid_token()
     {
-        $user = User::factory()->create();
-        $transaction = CryptoTransaction::factory()->for(CryptoToken::factory()->create())->create(['quantity' => 5, 'type' => 'buy']);
+        $this->actingAs($this->user)->post(route('transaction.update', array_merge($this->good['edited'], [
+            'crypto_token_id' => $this->token->id + 1
+        ])));
 
-        $response = $this->actingAs($user)->post(route('transaction.update', [
-            'transaction' => $transaction->id,
-            'crypto_token_id' => $transaction->crypto_token_id + 1, 
-            'time' => $transaction->time->format('Y-m-d\TH:i:s'), 
-            'quantity' => 100,
-            'price' => $transaction->price,
-            'type' => $transaction->type,
-        ]));
-        $this->assertDatabaseHas('crypto_transactions', ['quantity' => 5]);
+        $this->assertDatabaseHas($this->table, $this->good['original']);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Test the transaction can not be updated with negative balance
@@ -122,8 +170,28 @@ class EditTransactionTest extends TestCase
             'price' => $transaction2->price,
             'type' => $transaction2->type,
         ]));
-        $this->assertDatabaseHas('crypto_transactions', ['quantity' => 3]);
+        $this->assertDatabaseHas($this->table, ['quantity' => 3]);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Test the transaction can not be updated with a negative price
@@ -141,8 +209,26 @@ class EditTransactionTest extends TestCase
             'price' => -5,
             'type' => $transaction->type,
         ]));
-        $this->assertDatabaseHas('crypto_transactions', ['price' => 5]);
+        $this->assertDatabaseHas($this->table, ['price' => 5]);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Test the transaction can not be updated with 0 or negative quantity
@@ -168,8 +254,14 @@ class EditTransactionTest extends TestCase
             'price' => $transaction->price,
             'type' => $transaction->type,
         ]));
-        $this->assertDatabaseHas('crypto_transactions', ['quantity' => 5]);
+        $this->assertDatabaseHas($this->table, ['quantity' => 5]);
     }
+
+
+
+
+
+
 
      /**
       * To do

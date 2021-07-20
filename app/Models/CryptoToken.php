@@ -52,7 +52,7 @@ class CryptoToken extends Model
     /**
      * Update the balance from transactions
      */
-    public function updateBalance()
+    public function updateBalance(): void
     {
         $balance = 0;
         foreach($this->transactions as $transaction)
@@ -62,27 +62,99 @@ class CryptoToken extends Model
         $this->balance = $balance;
     }
 
+
+
+
     /**
-     * Average buy price
+     * Average price from collection of transactions
+     * 
+     * @param EloquentCollection $transactions  Collection of transactions
+     * @param string $type  Transaction type / buy or sell
+     * @return float    The average price of all the buy transactions
      */
-    public function averagePrice()
+    private function calcAveragePrice( $type, $transactions ): float
     {
-        // $quantity = DB::table((new CryptoTransaction())->getTable())
-        //     ->where('crypto_token_id', $this->id)
-        //     ->where('type', 'buy')
-        //     ->sum('quantity');
+        $total = 0;
+        $quantity = 0;
 
-        // $total = DB::table((new CryptoTransaction())->getTable())
-        //     ->where(function ($query) {
-        //         $query->selectRaw('price * quantity as total')
-        //             ->from((new CryptoTransaction())->getTable())
-        //             ->where('crypto_token_id', $this->id)
-        //             ->where('type', 'buy');
-        //     })
-        //     ->avg('total');
+        foreach($transactions as $transaction)
+        {
+            if($transaction->type === $type)
+            {
+                $total += $transaction->quantity * $transaction->price;
+                $quantity += $transaction->quantity;
+            }
+        }
 
-        // return $total / $quantity;
-        
-        return 0.00;
+        return ($total > 0 && $quantity > 0) ? $total / $quantity : 0.0;
     }
+
+    /**
+     * Average buy price for this token
+     * 
+     * @return float    The average price of all the buy transactions
+     */
+    public function averageBuyPrice(): float
+    {
+        return $this->calcAveragePrice('buy', $this->transactions);
+    }
+
+    /**
+     * Average sell price for this token
+     * 
+     * @return float    The average price of all the sell transactions
+     */
+    public function averageSellPrice(): float
+    {
+        return $this->calcAveragePrice('sell', $this->transactions);
+    }
+
+    /**
+     * Average hodl buy price
+     * 
+     * The average buy price of tokens that are still being held. Sell orders will 
+     * remove tokens from the calculation - rule 'sell oldest tokens first'
+     * 
+     * @return float    The average price tokens being held
+     */
+    public function averageHodlBuyPrice()
+    {
+        $unsold = [];
+        $transactions = $this->transactions()->reorder('time')->get();
+        
+        foreach($transactions as $transaction)
+        {
+            if($transaction->type === 'buy')
+            {
+                $unsold[] = $transaction;
+            }
+            else
+            {
+                /* Remove the sold tokens from the unsold array */
+
+                $quantityToSell = $transaction->quantity;
+
+                /* While there are still unallocated sell tokens */
+                while($quantityToSell > 0)
+                {
+                    /* While the oldest buy transaction is less than unallocated */
+                    while($quantityToSell > $unsold[0]->quantity)
+                    {
+                        /* Deduct the transaction amount and remove from unsold array, we've sold it */
+                        $quantityToSell -= $unsold[0]->quantity;
+                        $unsold = array_slice($unsold, 1);
+                    }
+                    /* Deduct final amount from first unsold transaction */
+                    if($quantityToSell > 0)
+                    {
+                        $unsold[0]->quantity -= $quantityToSell;
+                        $quantityToSell = 0;
+                    }
+                }
+            }
+        }
+
+        return $this->calcAveragePrice('buy', $unsold);
+    }
+
 }
