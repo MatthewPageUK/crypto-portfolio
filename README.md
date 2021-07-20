@@ -2,25 +2,25 @@
 
 Welcome to my personal crypto portfolio tracker, it's early days...
 
-### Join the discussion :speaking_head:
+### :speaking_head: Join the discussion
 
 Why not drop by and say hello or share your ideas.
 
 https://github.com/MatthewPageUK/crypto-portfolio/discussions
 
-### Help out :hammer:
+### :hammer: Help out
 
 There are always some Issues on the go, feel free to work on them or get in touch if you'd need some help.
 
 https://github.com/MatthewPageUK/crypto-portfolio/issues
 
-### Trading wiki :mortar_board
+### :mortar_board: Trading wiki
 
 Explore the trading wiki for ideas and definitions of the terms used.
 
 https://github.com/MatthewPageUK/crypto-portfolio/wiki
 
-## Things to do :pencil:
+## :pencil: Things to do
 
 :heavy_check_mark: Install Laravel 8, Tailwind and Breeze as a starter
 
