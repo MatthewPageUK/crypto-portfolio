@@ -15,6 +15,7 @@ class EditTokenTest extends TestCase
     private User $user;
     private CryptoToken $token;
     private Array $good;
+    private Array $bad;
 
     /**
      * Setup some defaults and a new user
@@ -26,6 +27,20 @@ class EditTokenTest extends TestCase
         $this->user = User::factory()->create();
         $this->token = CryptoToken::factory()->create();
         $this->good = ['symbol' => 'GOOD', 'name' => 'Good token'];
+        $this->bad = [
+            'symbol' => [
+                'empty' => '',
+                'space' => 'b a d', 
+                'long' => str_repeat('a', 26), 
+                'symbols' => 'b$a£d',
+            ],
+            'name' => [
+                'empty' => '',
+                'short' => 'a', 
+                'long' => str_repeat('a', 101), 
+                'symbols' => 'b$a£d',
+            ],
+        ];
     }
 
     /**
@@ -68,151 +83,61 @@ class EditTokenTest extends TestCase
             ->assertSee(route('token.update', $this->token->id));
     }
 
-
-
-
-
-
-
-
-
-
-
-
     /**
      * Test the token can be updated with valid data
      */
     public function test_token_can_be_updated_with_valid_data()
     {
-        $goodToken = ['token' => $this->token->id, 'symbol' => 'GOOD', 'name' => 'Good token'];
-
-        $this->actingAs($this->user)->post(route('token.update', $goodToken));
-        $this->assertDatabaseHas($this->table, $goodToken);
+        $this->actingAs($this->user)->post(route('token.update', array_merge($this->good, ['token' => $this->token->id])));
+        $this->assertDatabaseHas($this->table, $this->good);
     }
-
-
-
-
-
-
-
-
-
 
     /**
      * Test the token can not be updated with invalid symbol
      */
     public function test_token_can_not_be_updated_with_invalid_symbol()
     {
-        $token = CryptoToken::factory()->create();
-        $bad = [
-            'space' => 'b a d', 
-            'long' => str_repeat('a', 26), 
-            'symbols' => 'b$a£d',
-        ];
-
-        foreach($bad as $key => $value)
+        foreach($this->bad['symbol'] as $key => $value)
         {
             $this->actingAs($this->user)->post(route('token.update', ['token' => $this->token->id, 'symbol' => $value, 'name' => $key]));
         }
-        $this->assertDatabaseMissing($this->table, ['symbol' => $bad['space']])
-            ->assertDatabaseMissing($this->table, ['symbol' => $bad['long']])
-            ->assertDatabaseMissing($this->table, ['symbol' => $bad['symbols']]);
+        $this->assertDatabaseHas($this->table, ['symbol' => $this->token['symbol']]);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /**
      * Test the token can not updated with invalid name
      */
     public function test_token_can_not_be_updated_with_invalid_name()
     {
-        $token = CryptoToken::factory()->create();
-        $bad = [
-            'short' => 'b', 
-            'long' => str_repeat('a', 101), 
-            'symbols' => 'b$a£d',
-        ];
-
-        foreach($bad as $key => $value)
+        foreach($this->bad['name'] as $key => $value)
         {
             $this->actingAs($this->user)->post(route('token.update', ['token' => $this->token->id, 'symbol' => $key, 'name' => $value]));
         }
-        $this->assertDatabaseMissing($this->table, ['name' => $bad['short']])
-            ->assertDatabaseMissing($this->table, ['name' => $bad['long']])
-            ->assertDatabaseMissing($this->table, ['name' => $bad['symbols']]);
+        $this->assertDatabaseHas($this->table, ['name' => $this->token['name']]);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /**
      * Test duplicate token symbols can not be updated
      */
     public function test_duplicate_token_can_not_be_updated()
     {
-        CryptoToken::factory()->create([
-            'symbol' => 'ABC',
-            'name' => 'Original ABC token',
-        ]);
-        $token = CryptoToken::factory()->create();
+        $token2 = CryptoToken::factory()->create();
 
-        $this->actingAs($this->user)->post(route('token.update', ['token' => $this->token->id, 'symbol' => 'ABC', 'name' => 'Second ABC token']));
-        $this->assertDatabaseMissing($this->table, ['name' => 'Second ABC token']);
+        $this->actingAs($this->user)->post(route('token.update', ['token' => $token2->id, 'symbol' => $this->token->symbol, 'name' => 'Second token']));
+        $this->assertDatabaseMissing($this->table, ['name' => 'Second token']);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     
     /**
      * Test duplicate but deleted token symbols can be updated
      */
     public function test_duplicate_but_deleted_token_can_be_updated()
     {
+        $symbol = $this->token->symbol;
         $this->token->delete();
         $newToken = CryptoToken::factory()->create();
 
-        $this->actingAs($this->user)->post(route('token.update', ['token' => $newToken->id, 'symbol' => 'ABC', 'name' => 'A new ABC token']));
-        $this->assertDatabaseHas($this->table, ['symbol' => 'ABC', 'name' => 'A new ABC token']);
+        $this->actingAs($this->user)->post(route('token.update', ['token' => $newToken->id, 'symbol' => $symbol, 'name' => 'A new token']));
+        $this->assertDatabaseHas($this->table, ['name' => 'A new token']);
     }
 
 }

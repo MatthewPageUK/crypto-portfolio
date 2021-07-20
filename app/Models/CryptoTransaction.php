@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Support\TransactionCollection;
+
 class CryptoTransaction extends Model
 {
     use HasFactory;
@@ -29,6 +31,17 @@ class CryptoTransaction extends Model
     protected $casts = [
         'time' => 'datetime',
     ];
+
+    /**
+     * Use a custom Collection for transactions.
+     *
+     * @param  array  $models
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function newCollection(array $models = [])
+    {
+        return new TransactionCollection($models);
+    }
 
     /**
      * The token this transaction applies to

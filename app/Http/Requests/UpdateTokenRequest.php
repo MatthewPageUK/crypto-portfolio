@@ -41,6 +41,8 @@ class UpdateTokenRequest extends FormRequest
                 Rule::unique('crypto_tokens')->where(function ($query) {
                     return $query->where('deleted_at', NULL);
                 })->ignore($token->id),
+                'regex:/^[a-zA-Z0-9\s]+$/',
+                'min:3',
                 'max:100',
             ],
         ];

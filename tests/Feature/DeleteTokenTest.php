@@ -82,7 +82,7 @@ class DeleteTokenTest extends TestCase
         $transaction = CryptoTransaction::factory()->for($this->token)->create();
 
         $this->actingAs($this->user)->get(route('token.delete', $this->token->id));
-        $this->assertSoftDeleted($this->table, ['id' => $transaction->id]);
+        $this->assertSoftDeleted($transaction->getTable(), ['id' => $transaction->id]);
     }
 
     /**

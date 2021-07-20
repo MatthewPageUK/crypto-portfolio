@@ -121,6 +121,8 @@ class EditTransactionTest extends TestCase
     public function test_transaction_can_be_updated_with_valid_data()
     {
         $this->actingAs($this->user)->post(route('transaction.update', $this->good['edited']));
+        unset($this->good['edited']['transaction']);
+        
         $this->assertDatabaseHas($this->table, $this->good['edited']);
     }
 
@@ -136,135 +138,57 @@ class EditTransactionTest extends TestCase
         $this->assertDatabaseHas($this->table, $this->good['original']);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * Test the transaction can not be updated with negative balance
      */
     public function test_transaction_can_not_be_updated_with_negative_balance()
     {
-        $user = User::factory()->create();
-        $token = CryptoToken::factory()->create();
-        $transaction = CryptoTransaction::factory()->for($token)->create(['quantity' => 5, 'type' => 'buy']);
-        $transaction2 = CryptoTransaction::factory()->for($token)->create(['quantity' => 3, 'type' => 'sell']);
+        $transaction = CryptoTransaction::factory()->for($this->token)->create(['quantity' => 1, 'type' => 'sell']);
 
-        $response = $this->actingAs($user)->post(route('transaction.update', [
-            'transaction' => $transaction2->id,
-            'crypto_token_id' => $transaction2->crypto_token_id, 
-            'time' => $transaction2->time->format('Y-m-d\TH:i:s'), 
-            'quantity' => 10,
-            'price' => $transaction2->price,
-            'type' => $transaction2->type,
-        ]));
-        $this->assertDatabaseHas($this->table, ['quantity' => 3]);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Test the transaction can not be updated with a negative price
-     */
-    public function test_transaction_can_not_be_updated_with_negative_price()
-    {
-        $user = User::factory()->create();
-        $transaction = CryptoTransaction::factory()->for(CryptoToken::factory()->create())->create(['price' => 5, 'type' => 'buy']);
-
-        $response = $this->actingAs($user)->post(route('transaction.update', [
+        $this->actingAs($this->user)->post(route('transaction.update', [
             'transaction' => $transaction->id,
-            'crypto_token_id' => $transaction->crypto_token_id , 
+            'crypto_token_id' => $transaction->crypto_token_id, 
             'time' => $transaction->time->format('Y-m-d\TH:i:s'), 
-            'quantity' => $transaction->quantity,
-            'price' => -5,
-            'type' => $transaction->type,
-        ]));
-        $this->assertDatabaseHas($this->table, ['price' => 5]);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Test the transaction can not be updated with 0 or negative quantity
-     */
-    public function test_transaction_can_not_be_updated_with_zero_or_negative_quantity()
-    {
-        $user = User::factory()->create();
-        $transaction = CryptoTransaction::factory()->for(CryptoToken::factory()->create())->create(['quantity' => 5, 'type' => 'buy']);
-
-        $response = $this->actingAs($user)->post(route('transaction.update', [
-            'transaction' => $transaction->id,
-            'crypto_token_id' => $transaction->crypto_token_id , 
-            'time' => $transaction->time->format('Y-m-d\TH:i:s'), 
-            'quantity' => 0,
+            'quantity' => 101,
             'price' => $transaction->price,
             'type' => $transaction->type,
         ]));
-        $response = $this->actingAs($user)->post(route('transaction.update', [
-            'transaction' => $transaction->id,
-            'crypto_token_id' => $transaction->crypto_token_id , 
-            'time' => $transaction->time->format('Y-m-d\TH:i:s'), 
-            'quantity' => -5,
-            'price' => $transaction->price,
-            'type' => $transaction->type,
-        ]));
-        $this->assertDatabaseHas($this->table, ['quantity' => 5]);
+        $this->assertDatabaseHas($this->table, ['quantity' => 1]);
     }
 
+    /**
+     * Test the transaction can not be updated with a invalid price
+     */
+    public function test_transaction_can_not_be_updated_with_invlaid_price()
+    {
+        foreach($this->bad['price'] as $key => $value)
+        {
+            $this->actingAs($this->user)->post(route('transaction.update', array_merge($this->good['original'], [
+                'transaction' => $this->transaction->id,
+                'price' => $value,
+            ])));
+        }
+        $this->assertDatabaseHas($this->table, ['price' => $this->good['original']['price']]);
+    }
 
-
-
-
+    /**
+     * Test the transaction can not be updated with a invalid quantity
+     */
+    public function test_transaction_can_not_be_updated_with_invlaid_quantity()
+    {
+        foreach($this->bad['quantity'] as $key => $value)
+        {
+            $this->actingAs($this->user)->post(route('transaction.update', array_merge($this->good['original'], [
+                'transaction' => $this->transaction->id,
+                'quantity' => $value,
+            ])));
+        }
+        $this->assertDatabaseHas($this->table, ['quantity' => $this->good['original']['quantity']]);
+    }
 
 
      /**
-      * To do
+      * Todo
       * Change token - not neg balance
       * Change type - not neg balance
       */

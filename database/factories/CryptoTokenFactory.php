@@ -23,7 +23,7 @@ class CryptoTokenFactory extends Factory
     {
         return [
             'name' => $this->faker->text(100),
-            'symbol' => str_replace(' ', '', strtoupper($this->faker->text(10))),
+            'symbol' => str_replace(' ', '', strtoupper($this->faker->lexify('??????'))),
         ];
     }
 }

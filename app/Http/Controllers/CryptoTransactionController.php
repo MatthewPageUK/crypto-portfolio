@@ -99,6 +99,9 @@ class CryptoTransactionController extends Controller
      */
     public function destroy(CryptoTransaction $cryptoTransaction)
     {
+        /**
+         * Todo - formrequest and validate negative balance
+         */
         $token_id = $cryptoTransaction->crypto_token_id;
         $cryptoTransaction->delete();
 

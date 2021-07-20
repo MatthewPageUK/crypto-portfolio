@@ -13,6 +13,33 @@ class CryptoTokenTest extends TestCase
     use RefreshDatabase;
 
     /**
+     * Create some test transactions when needed and return the correct results
+     * 
+     * Avg price = 1.125
+     * Avg hodl = 1.1
+     * Avg sell = 1.55
+     * Total sell = 100
+     * Total buy = 200
+     * Balance = 100
+     */
+    private function createTestTransactions(CryptoToken $token): array
+    {
+        CryptoTransaction::factory()->for($token)->create(['type' => 'buy', 'quantity' => '100', 'price' => 1.15, 'time' => now()->subDays(10)->format('Y-m-d\TH:i:s')]);   
+        CryptoTransaction::factory()->for($token)->create(['type' => 'buy', 'quantity' => '100', 'price' => 1.10, 'time' => now()->subDays(9)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($token)->create(['type' => 'sell', 'quantity' => '50', 'price' => 1.6, 'time' => now()->subDays(8)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($token)->create(['type' => 'sell', 'quantity' => '50', 'price' => 1.5, 'time' => now()->subDays(7)->format('Y-m-d\TH:i:s')]);  
+
+        return [
+            'avgprice' => 1.125,
+            'avghodl' => 1.1,
+            'avgsell' => 1.55,
+            'totalsell' => 100,
+            'totalbuy' => 200,
+            'balance' => 100,
+        ];
+    }
+
+    /**
      * Test we can save the data to the database table.
      *
      * @return void
@@ -51,16 +78,11 @@ class CryptoTokenTest extends TestCase
     public function test_token_calculates_correct_balance()
     {
         $token = CryptoToken::factory()->create();
-        CryptoTransaction::factory()->for($token)->create(['type' => 'buy', 'quantity' => '5']);
-        CryptoTransaction::factory()->for($token)->create(['type' => 'buy', 'quantity' => '5']);
-        CryptoTransaction::factory()->for($token)->create(['type' => 'sell', 'quantity' => '6']);
+        $result = $this->createTestTransactions($token);
         $token->updateBalance();
-
-        $this->assertTrue($token->balance == 4);
+        
+        $this->assertTrue( $token->getBalance() == $result['balance'] );
     }
-
-
-
 
     /**
      * Test the token calculates the correct average buy price
@@ -68,12 +90,26 @@ class CryptoTokenTest extends TestCase
     public function test_token_calculates_correct_avg_buy_price()
     {
         $token = CryptoToken::factory()->create();
-        CryptoTransaction::factory()->for($token)->create(['type' => 'buy', 'quantity' => '5', 'price' => 1.5]);    // 7.5
-        CryptoTransaction::factory()->for($token)->create(['type' => 'buy', 'quantity' => '5', 'price' => 1.25]);   // 6.25
-        CryptoTransaction::factory()->for($token)->create(['type' => 'sell', 'quantity' => '6', 'price' => 1.9]);   // 0
-        CryptoTransaction::factory()->for($token)->create(['type' => 'buy', 'quantity' => '5', 'price' => 1.15]);   // 5.75 = 1.3
+        $result = $this->createTestTransactions($token);
 
-        $this->assertTrue($token->averageBuyPrice() == 1.3);
+        $this->assertTrue( $token->averageBuyPrice() == $result['avgprice'] );
+    }
+
+    /**
+     * Test the token calculates the correct average sell price
+     * Todo
+     */
+
+    /**
+     * Test the token calculates the correct average hodl buy price
+     * Todo
+     */
+    public function test_token_calculates_correct_avg_hodl_buy_price()
+    {
+        $token = CryptoToken::factory()->create();
+        $result = $this->createTestTransactions($token);
+
+        $this->assertTrue( $token->averageHodlBuyPrice() == $result['avghodl'] );
     }
 
 }
