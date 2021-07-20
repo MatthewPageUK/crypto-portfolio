@@ -15,9 +15,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                     </a>
-                </h2>
-
-   
+                </h2>   
             </div>
 
             <div class="flex flex-shrink">
@@ -38,18 +36,20 @@
             </div>
     </x-slot>
 
-    <div class="flex items-centered">
-        <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-            <p class="text-2xl text-center">{{ $token->getBalance() }} <span class="text-sm">{{ $token->symbol }}</span></p>
-        </div>
-        <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-            <p class="text-2xl text-center"><span class="text-sm">{{ __('Avg. price') }}</span> <x-money>{{ $token->transactions()->get()->averageBuyPrice() }}</x-money></p>
-        </div>
-        <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-            <p class="text-2xl text-center"><span class="text-sm">{{ __('Avg. Hodl price') }}</span> <x-money>{{ $token->transactions()->get()->averageHodlBuyPrice() }}</x-money></p>
-        </div>
-        <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-            <p class="text-2xl text-center"><span class="text-sm">{{ __('Avg. Sell price') }}</span> <x-money>{{ $token->transactions()->get()->averageSellPrice() }}</x-money></p>
+    <div class="min-w-screen flex items-center justify-center">
+        <div class="flex items-center w-full lg:w-5/6">
+            <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
+                <p class="text-2xl text-center"><span class="text-sm block">{{ $token->symbol }} {{ __('Balance') }}</span> {{ $token->getBalance() }}</p>
+            </div>
+            <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Buy price') }}</span> <x-money>{{ $token->transactions()->get()->averageBuyPrice() }}</x-money></p>
+            </div>
+            <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Hodl price') }}</span> <x-money>{{ $token->transactions()->get()->averageHodlBuyPrice() }}</x-money></p>
+            </div>
+            <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Sell price') }}</span> <x-money>{{ $token->transactions()->get()->averageSellPrice() }}</x-money></p>
+            </div>
         </div>
     </div>
 
