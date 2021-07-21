@@ -6,9 +6,6 @@ use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use App\Models\CryptoToken;
 use App\Models\CryptoTransaction;
-use Carbon\Carbon;
-use Database\Seeders\CryptoTokenSeeder;
-use Illuminate\Http\Request;
 
 class CryptoTransactionController extends Controller
 {
@@ -93,18 +90,29 @@ class CryptoTransactionController extends Controller
 
     /**
      * Remove the transaction resource from storage.
+     * 
+     * Validates the transactions to ensure there are no negative balances
      *
      * @param  \App\Models\CryptoTransaction  $cryptoTransaction
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CryptoTransaction $cryptoTransaction)
+    public function destroy(CryptoTransaction $transaction)
     {
-        /**
-         * Todo - formrequest and validate negative balance
-         */
-        $token_id = $cryptoTransaction->crypto_token_id;
-        $cryptoTransaction->delete();
+        $token = CryptoToken::find($transaction->crypto_token_id);
 
-        return redirect()->route('token.show', ['token' => $token_id])->with('success', 'Transaction deleted');
+        $filtered = $token->transactions->filter(function ($value, $key) use ($transaction) {
+            return $value->id !== $transaction->id;
+        });
+
+        if( $filtered->validateTransactions() )
+        {
+            $transaction->delete();
+            return redirect()->route('token.show', ['token' => $token->id])->with('success', 'Transaction deleted');
+        }
+        else
+        {
+            return redirect()->route('token.show', ['token' => $token->id])->with('success', 'Transaction could not be deleted, negative balance error.');
+        }
+
     }
 }

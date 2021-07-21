@@ -101,7 +101,7 @@
                                                 </a>
                                             </div>
                                             <div class="w-4 mr-2 transform hover:scale-110">
-                                                <a href="{{ route('transaction.delete', ['cryptoTransaction' => $transaction->id]) }}" 
+                                                <a href="{{ route('transaction.delete', ['transaction' => $transaction->id]) }}" 
                                                     class="text-gray-500 hover:text-red-500" 
                                                     onclick="return confirm('Delete this transaction?')"
                                                     title="Delete this transaction"

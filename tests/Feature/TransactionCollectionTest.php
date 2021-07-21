@@ -85,4 +85,54 @@ class TransactionCollectionTest extends TestCase
         $this->assertTrue( $this->token->transactions->averageHodlBuyPrice() == $this->result['avghodl'] );
     }
 
+    /**
+     * Test the transaction collection fails a negative balance
+     */
+    public function test_transaction_collection_fails_negative_balance()
+    {
+        $token2 = CryptoToken::factory()->create();
+        CryptoTransaction::factory()->for($token2)->create(['type' => 'buy', 'quantity' => '50', 'price' => 1.10, 'time' => now()->subDays(9)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($token2)->create(['type' => 'sell', 'quantity' => '50', 'price' => 1.6, 'time' => now()->subDays(8)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($token2)->create(['type' => 'sell', 'quantity' => '50', 'price' => 1.5, 'time' => now()->subDays(7)->format('Y-m-d\TH:i:s')]);  
+
+        $this->assertTrue( ! $token2->transactions->validateTransactions() );
+    }
+
+    /**
+     * Test the transaction collection validates a positive balance
+     */
+    public function test_transaction_collection_validates_positive_balance()
+    {
+        $token2 = CryptoToken::factory()->create();
+        CryptoTransaction::factory()->for($token2)->create(['type' => 'buy', 'quantity' => '50', 'price' => 1.15, 'time' => now()->subDays(10)->format('Y-m-d\TH:i:s')]);   
+        CryptoTransaction::factory()->for($token2)->create(['type' => 'buy', 'quantity' => '50', 'price' => 1.10, 'time' => now()->subDays(9)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($token2)->create(['type' => 'sell', 'quantity' => '50', 'price' => 1.5, 'time' => now()->subDays(7)->format('Y-m-d\TH:i:s')]);  
+
+        $this->assertTrue( $token2->transactions->validateTransactions() );
+    }
+
+    /**
+     * Test the transaction collection validates a zero balance
+     */
+    public function test_transaction_collection_validates_zero_balance()
+    {
+        $token2 = CryptoToken::factory()->create();
+        CryptoTransaction::factory()->for($token2)->create(['type' => 'buy', 'quantity' => '50', 'price' => 1.15, 'time' => now()->subDays(10)->format('Y-m-d\TH:i:s')]);   
+        CryptoTransaction::factory()->for($token2)->create(['type' => 'buy', 'quantity' => '50', 'price' => 1.10, 'time' => now()->subDays(9)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($token2)->create(['type' => 'sell', 'quantity' => '50', 'price' => 1.6, 'time' => now()->subDays(8)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($token2)->create(['type' => 'sell', 'quantity' => '50', 'price' => 1.5, 'time' => now()->subDays(7)->format('Y-m-d\TH:i:s')]);  
+
+        $this->assertTrue( $token2->transactions->validateTransactions() );
+    }
+
+    /**
+     * Test the transaction collection validates with zero transactions
+     */
+    public function test_transaction_collection_validates_zero_transactions()
+    {
+        $token2 = CryptoToken::factory()->create();
+
+        $this->assertTrue( $token2->transactions->validateTransactions() );
+    }
+
 }

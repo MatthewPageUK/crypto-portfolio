@@ -90,7 +90,7 @@ class DeleteTransactionTest extends TestCase
      */
     public function test_delete_transaction_not_result_negeative_balance()
     {
-        CryptoTransaction::factory()->create(['type' => 'sell', 'quantity' => 1]);
+        CryptoTransaction::factory()->for($this->token)->create(['type' => 'sell', 'quantity' => 1]);
         $this->actingAs($this->user)->get(route('transaction.delete', $this->transaction->id));
         $this->assertDatabaseHas($this->table, ['id' => $this->transaction->id, 'deleted_at' => NULL]);
     }
