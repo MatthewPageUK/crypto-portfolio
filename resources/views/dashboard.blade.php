@@ -30,7 +30,7 @@
                     </p>
     
                     <p class="p-2 rounded-lg font-black {{ ($token->getBalance() > 0) ? 'bg-green-600 text-white' : 'bg-gray-200 text-white' }}">
-                        {{ $token->getBalance(); }}
+                        <x-token-balance balance="{{ $token->getBalance(); }}" />
                     </p>
     
                     <div class="mt-3 flex">

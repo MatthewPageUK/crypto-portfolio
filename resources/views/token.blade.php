@@ -39,7 +39,7 @@
     <div class="min-w-screen flex items-center justify-center">
         <div class="flex items-center w-full lg:w-5/6">
             <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ $token->symbol }} {{ __('Balance') }}</span> {{ $token->getBalance() }}</p>
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Balance') }}</span> <x-token-balance balance="{{ $token->getBalance(); }}" /></p>
             </div>
             <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
                 <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Buy price') }}</span> <x-money>{{ $token->transactions()->get()->averageBuyPrice() }}</x-money></p>
