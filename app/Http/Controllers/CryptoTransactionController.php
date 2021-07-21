@@ -49,7 +49,7 @@ class CryptoTransactionController extends Controller
         $validatedData = $request->validated();
         CryptoTransaction::create($request->all());
 
-        return redirect()->route('token.show', ['token' => $request['crypto_token_id']])->with('success', 'Transaction added');
+        return redirect()->route('token.show', ['token' => $request['crypto_token_id']])->with('success', 'Transaction created');
     }
 
     /**
@@ -111,7 +111,7 @@ class CryptoTransactionController extends Controller
         }
         else
         {
-            return redirect()->route('token.show', ['token' => $token->id])->with('success', 'Transaction could not be deleted, negative balance error.');
+            return redirect()->route('token.show', ['token' => $token->id])->with('failure', 'Transaction could not be deleted, negative balance error.');
         }
 
     }

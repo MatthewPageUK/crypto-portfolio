@@ -21,9 +21,21 @@
             </header>
 
             @if(session()->has('success'))
-                <div class="bg-green-500">
+                <div class="popupmessage bg-green-500 p-2 text-center text-white font-bold">
                     {{ session()->get('success') }}
                 </div>
+                <script>
+                    setTimeout( function() { document.querySelector('.popupmessage').style.display = 'none' } , 3000);
+                </script>
+            @endif
+
+            @if(session()->has('failure'))
+                <div class="popupmessage bg-red-500 p-2 text-center text-white font-bold">
+                    {{ session()->get('failure') }}
+                </div>
+                <script>
+                    setTimeout( function() { document.querySelector('.popupmessage').style.display = 'none' } , 3000);
+                </script>
             @endif
 
             <!-- Page Content -->

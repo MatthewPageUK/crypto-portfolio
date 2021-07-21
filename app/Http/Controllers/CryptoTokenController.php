@@ -31,7 +31,7 @@ class CryptoTokenController extends Controller
 
         CryptoToken::create($request->all());
 
-        return redirect()->route('dashboard')->with('success', 'Token created');
+        return redirect()->route('dashboard')->with('success', 'New token created');
     }
 
     /**
