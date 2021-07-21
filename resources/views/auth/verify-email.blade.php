@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-guest-layout title=" - {{ __('Verify your email') }}">
     <x-auth-card>
         <x-slot name="logo">
             <a href="/" title="{{ __('Homepage') }}">

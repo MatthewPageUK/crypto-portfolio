@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-guest-layout title=" - {{ __('Welcome') }}">
     <x-auth-card>
         <x-slot name="logo">
             <x-application-logo class="w-20 h-20" alt="{{ config('app.title') }}"/>

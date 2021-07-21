@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout title=" - {{ __('Dashboard') }}">
     <x-slot name="header">
         <div class="flex items-center">
             <h2 class="flex-grow font-semibold text-xl text-gray-800 leading-tight">

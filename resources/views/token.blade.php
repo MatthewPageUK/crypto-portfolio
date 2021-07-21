@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout title=" - {{ __($token->symbol . ' - ' . $token->name) }}">
     <x-slot name="header">
         <div class="flex items-center">
             <div class="flex flex-grow">

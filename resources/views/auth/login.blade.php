@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-guest-layout title=" - {{ __('Log in') }}">
     <x-auth-card>
         <x-slot name="logo">
             <a href="/" title="{{ __('Homepage') }}">
