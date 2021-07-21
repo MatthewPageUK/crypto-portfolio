@@ -1,6 +1,20 @@
+@props(['amount'])
+
 @php
-    $price = floatval($slot->__toString());
-    $decimal = ($price > 100) ? 2 : 4;
+    $text = $amount;
+    $pre = "";
+
+    if($amount <= 0.0001) 
+    {
+        $pre = "< ";
+        $text = "0.0001";
+    }
+
+    if($amount < 0.1 && $amount > 0.0001) $text = number_format($amount, 6);
+    if($amount >= 0.1 && $amount < 1) $text = number_format($amount, 5);
+    if($amount >= 1 && $amount < 10) $text = number_format($amount, 4);
+    if($amount >= 10 && $amount < 1000) $text = number_format($amount, 2);
+    if($amount >= 1000) $text = number_format($amount, 0);
 @endphp
 
-<span>&pound;{{ number_format($price, $decimal) }}
+<a title="{{ $amount }}">{{ $pre }}&pound;{{ $text }}</a>
