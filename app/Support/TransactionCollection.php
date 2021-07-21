@@ -85,6 +85,8 @@ class TransactionCollection extends Collection
      * Todo - all works with good data, but $unsold[0] can be null in certain conditions..
      * Todo - error checking for negative balance
      * 
+     * SIMPLIER - the most recent buy orders will be the unsold up to balance, work from newest !!!!!!!!!
+     * 
      * @return float    The average price tokens being held
      */
     public function averageHodlBuyPrice(): float

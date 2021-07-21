@@ -17,8 +17,8 @@ class CreateCryptoTransactionsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('crypto_token_id');
             $table->foreign('crypto_token_id')->references('id')->on('crypto_tokens')->onDelete('cascade');
-            $table->float('quantity', 20, 10);
-            $table->float('price', 20, 10);
+            $table->unsignedDecimal('quantity', 36, 18);
+            $table->unsignedDecimal('price', 36, 18);
             $table->enum('type', ['buy', 'sell']);
             $table->dateTime('time')->useCurrent();
             $table->timestamps($precision = 0);
