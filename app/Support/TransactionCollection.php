@@ -77,72 +77,62 @@ class TransactionCollection extends Collection
     }
 
     /**
+     * Validate transactions the by processing them one at 
+     * a time in Time ASC order.
+     * 
+     * Return False if the balance is ever negative.
+     * 
+     * @return bool    
+     */
+    public function validateTransactions(): bool
+    {
+        $balance = 0;
+        $sorted = $this->sortBy('time');
+
+        foreach( $sorted as $transaction )
+        {
+            $balance += ( $transaction->type === 'buy' ) ? $transaction->quantity : -$transaction->quantity;
+            if( $balance < 0 ) return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Average hodl buy price
      * 
-     * The average buy price of tokens that are still being held. Sell orders will 
-     * remove tokens from the calculation - rule 'sell oldest tokens first'
-     * 
-     * Todo - all works with good data, but $unsold[0] can be null in certain conditions..
-     * Todo - error checking for negative balance
-     * 
-     * SIMPLIER - the most recent buy orders will be the unsold up to balance, work from newest !!!!!!!!!
+     * The average buy price of tokens that are still being held - rule 'sell oldest tokens first'
      * 
      * @return float    The average price tokens being held
      */
     public function averageHodlBuyPrice(): float
     {
         $unsold = [];
-        $sorted = $this->sortBy('time');
+        // $sorted = $this->sortDesc('time');
+        $balance = $this->calcBalance();
 
-        foreach($sorted as $transaction)
+        if($balance == 0 ) return 0.00;
+
+        foreach($this->items as $transaction)
         {
             if($transaction->type === 'buy')
             {
-                $unsold[] = $transaction;
-            }
-            else
-            {
-                /* Remove the sold tokens from the unsold array */
-
-                $quantityToSell = $transaction->quantity;
-
-                /* While there are still unallocated sell tokens */
-                while($quantityToSell > 0)
+                if($balance >= $transaction->quantity)
                 {
-                    /* While the oldest buy transaction is less than unallocated */
-                    while($quantityToSell > $unsold[0]->quantity)
-                    {
-                        /* Deduct the transaction amount and remove from unsold array, we've sold it */
-                        $quantityToSell -= $unsold[0]->quantity;
-                        $unsold = array_slice($unsold, 1);
-                    }
-                    /* Deduct final amount from first unsold transaction */
-                    if($quantityToSell > 0)
-                    {
-                        $unsold[0]->quantity -= $quantityToSell;
-                        $quantityToSell = 0;
-                    }
+                    $unsold[] = $transaction;
+                    $balance -= $transaction->quantity;
+                }
+                else
+                {
+                    $transaction->quantity -= $balance;
+                    $unsold[] = $transaction;
+                    $balance = 0;
                 }
             }
+            if($balance == 0) break;
         }
 
         return $this->calcAveragePrice('buy', $unsold);
     }
 
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Replay transaction list
-     * Todo
-     * Replays all the transactions in order and fails if it results in 
-     * a negative balance or other error.
-     */
 }
