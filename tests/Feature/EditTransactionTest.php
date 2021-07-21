@@ -49,6 +49,8 @@ class EditTransactionTest extends TestCase
             'time' => [
                 'empty' => '',
                 'future' => now()->addDays(1)->format('Y-m-d\TH:i:s'), 
+                'future2' => now()->addHours(2)->format('Y-m-d\TH:i:s'), 
+                'future3' => now()->addMinutes(2)->format('Y-m-d\TH:i:s'),
                 'nottime' => 'half past one',
             ],
             'quantity' => [
