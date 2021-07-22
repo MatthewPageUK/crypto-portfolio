@@ -55,7 +55,22 @@ https://github.com/MatthewPageUK/crypto-portfolio/wiki
 
 :heavy_check_mark: Database seeder for default tokens and demo user 'php artisan db:seed'
 
-:heavy_check_mark: Feature Tests 'php artisan test' - Welcome page (3), Dashboard (5), Add Token (8), Edit Token (9), Delete Token (7), Add Transaction (10)
+:heavy_check_mark: Feature Tests 'php artisan test' - AddTokenTest (8), 
+AddTransactionTest (12), 
+AuthenticationTest (3), 
+CryptoTokenTest (3), 
+CryptoTransactionTest (3), 
+DashboardTest (5), 
+DeleteTokenTest (7), 
+DeleteTransactionTest (6), 
+EditTokenTest (9), 
+EditTransactionTest (9), 
+EmailVerificationTest (3), 
+PasswordConfirmationTest (3), 
+PasswordResetTest (4), 
+RegistrationTest (2), 
+TransactionCollectionTest (8), 
+WelcomeTest (4).
 
 
 ### :warning: Known issues
