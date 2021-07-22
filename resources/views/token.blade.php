@@ -77,7 +77,7 @@
                                         <span class="whitespace-nowrap text-xs">{{ $transaction->time->format('h:i:s A') }}</span>
                                     </td>
                                     <td class="py-3 px-6 text-left">
-                                        {{ $transaction->quantity }} <span class="text-xs">{{ $token->symbol }}</span>
+                                        <x-token-balance balance="{{ $transaction->quantity }}" />
                                     </td>
                                     <td class="py-3 px-6 text-right">
                                         <x-money amount="{{ $transaction->price }}" />

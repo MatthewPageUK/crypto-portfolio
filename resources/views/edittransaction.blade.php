@@ -44,7 +44,7 @@
             <div class="mt-4">
                 <x-label for="quantity" :value="__('Quantity')" />
 
-                <x-input id="quantity" class="block mt-1 w-full" type="text" name="quantity" :value="old('quantity', $transaction->quantity)" required autofocus />
+                <x-input id="quantity" class="block mt-1 w-full" type="text" name="quantity" :value="old('quantity', $transaction->quantity+0)" required autofocus />
             </div>
 
             <!-- Price paid -->
