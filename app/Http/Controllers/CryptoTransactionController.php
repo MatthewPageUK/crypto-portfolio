@@ -84,6 +84,25 @@ class CryptoTransactionController extends Controller
      */
     public function update(UpdateTransactionRequest $request, CryptoTransaction $transaction)
     {
+
+        // replace old trans with new one in collection then validate
+
+        // $filtered = $token->transactions->filter(function ($value, $key) use ($transaction) {
+        //     return $value->id !== $transaction->id;
+        // });
+
+        // if( $filtered->validateTransactions() )
+        // {
+        //     $transaction->delete();
+        //     return redirect()->route('token.show', ['token' => $token->id])->with('success', 'Transaction deleted');
+        // }
+        // else
+        // {
+        //     return redirect()->route('token.show', ['token' => $token->id])->with('failure', 'Transaction could not be deleted, negative balance error.');
+        // }
+
+
+
         $transaction->update($request->validated());
         return redirect()->route('token.show', $transaction->crypto_token_id)->with('success', 'Transaction updated');
     }

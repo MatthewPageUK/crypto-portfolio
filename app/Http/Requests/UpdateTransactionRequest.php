@@ -47,7 +47,7 @@ class UpdateTransactionRequest extends FormRequest
             'quantity' => $quantityRule,
             'price' => ['required', 'gte:0'],
             'type' => ['required', Rule::in('buy', 'sell')],
-            'time' => ['required', 'date'],
+            'time' => ['required', 'date', 'before:'.now()->format('Y-m-d\TH:i:s')],
         ];
     }
 }
