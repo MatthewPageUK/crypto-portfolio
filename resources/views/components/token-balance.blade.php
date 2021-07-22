@@ -5,7 +5,7 @@
     $text = $balance;
     $pre = "";
 
-    if($balance <= 0.0001) 
+    if($balance <= 0.0001 && $balance !== 0) 
     {
         $pre = "< ";
         $text = "0.0001";

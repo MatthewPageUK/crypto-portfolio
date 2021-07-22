@@ -10,7 +10,7 @@
         
         <p class="flex items-center mt-8 text-center">
 
-            @if (Route::has('register'))
+            @if (Route::has('register') && App\Models\User::count() < 1)
                 <x-button-link href="{{ route('register') }}" title="{{ __('Register to start tracking your crypto') }}">
                     {{ __('Register') }}
                 </x-button-link>
