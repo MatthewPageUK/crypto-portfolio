@@ -20,7 +20,7 @@ Explore the trading wiki for ideas and definitions of the terms used.
 
 https://github.com/MatthewPageUK/crypto-portfolio/wiki
 
-### :pencil: Things to do
+### :pencil: Things to do / Done
 
 :heavy_check_mark: Install Laravel 8, Tailwind and Breeze as a starter
 
@@ -38,18 +38,13 @@ https://github.com/MatthewPageUK/crypto-portfolio/wiki
 
 :heavy_check_mark: Buy / Sell - add transaction
 
-:heavy_multiplication_x: Edit transaction
+:heavy_check_mark: Edit transaction
 
-:heavy_multiplication_x: Delete transactions
+:heavy_check_mark: Delete transactions
 
 :heavy_check_mark: Avg buy price / Avg buy price of held tokens
 
 :heavy_multiplication_x: Coinmarketcap API interface
-
-:heavy_multiplication_x: More...
-
-
-
 
 :heavy_check_mark: Database migrations for User, Tokens and Transactions 'php artisan migrate'
 
@@ -72,6 +67,7 @@ RegistrationTest (2),
 TransactionCollectionTest (8), 
 WelcomeTest (4).
 
+:heavy_multiplication_x: More coming....
 
 ### :warning: Known issues
 
