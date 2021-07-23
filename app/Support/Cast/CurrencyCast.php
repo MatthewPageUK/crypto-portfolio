@@ -35,6 +35,6 @@ class CurrencyCast implements CastsAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
-        return ( $value instanceOf Currency ) ? $value->get() : $value;
+        return [ $key => ( $value instanceOf Currency ) ? $value->get() : $value ];
     }
 }

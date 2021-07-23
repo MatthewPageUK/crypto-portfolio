@@ -35,6 +35,6 @@ class QuantityCast implements CastsAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
-        return ( $value instanceOf Quantity ) ? $value->get() : $value;
+        return [ $key => ( $value instanceOf Quantity ) ? $value->get() : $value ];
     }
 }

@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
+use App\Support\Currency;
+
 class CryptoToken extends Model
 {
     use HasFactory;
@@ -43,7 +45,7 @@ class CryptoToken extends Model
     /**
      * Average price this token was purchased at
      */
-    public function averageBuyPrice(): float
+    public function averageBuyPrice(): Currency
     {
         return $this->transactions->averageBuyPrice();
     }
@@ -51,7 +53,7 @@ class CryptoToken extends Model
     /**
      * Average price of this token being held / unsold
      */
-    public function averageHodlBuyPrice(): float
+    public function averageHodlBuyPrice(): Currency
     {
         return $this->transactions->averageHodlBuyPrice();
     }
@@ -59,7 +61,7 @@ class CryptoToken extends Model
     /**
      * Average price this token was sold at
      */
-    public function averageSellPrice(): float
+    public function averageSellPrice(): Currency
     {
         return $this->transactions->averageSellPrice();
     }

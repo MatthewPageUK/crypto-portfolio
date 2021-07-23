@@ -42,13 +42,13 @@
                 <p class="text-2xl text-center"><span class="text-sm block">{{ __('Balance') }}</span> <x-token-balance balance="{{ $token->balance(); }}" /></p>
             </div>
             <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Buy price') }}</span> <x-money amount="{{ $token->averageBuyPrice() }}" /></p>
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Buy price') }}</span> <x-money amount="{{ $token->averageBuyPrice()->get(); }}">{{ $token->averageBuyPrice()->human(); }}</x-money></p>
             </div>
             <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Hodl price') }}</span> <x-money amount="{{ $token->averageHodlBuyPrice() }}" /></p>
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Hodl price') }}</span> <x-money amount="{{ $token->averageHodlBuyPrice()->get(); }}">{{ $token->averageHodlBuyPrice()->human(); }}</x-money></p>
             </div>
             <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Sell price') }}</span> <x-money amount="{{ $token->averageSellPrice() }}" /></p>
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Sell price') }}</span> <x-money amount="{{ $token->averageSellPrice()->get() }}">{{ $token->averageSellPrice()->human(); }}</x-money></p>
             </div>
         </div>
     </div>
@@ -80,11 +80,10 @@
                                         <x-token-balance balance="{{ $transaction->quantity->get() }}" />
                                     </td>
                                     <td class="py-3 px-6 text-right">
-                                        [ {{ $transaction->price->human() }} ]
-                                        <x-money amount="{{ $transaction->price->get() }}" />
+                                        <x-money amount="{{ $transaction->price->get() }}">{{ $transaction->price->human() }}</x-money>
                                     </td>
                                     <td class="py-3 px-6 text-right hidden md:table-cell">
-                                        <x-money amount="{{ $transaction->total() }}" />
+                                        <x-money amount="{{ $transaction->total()->get() }}">{{ $transaction->total()->human() }}</x-money>
                                     </td>
                                     <td class="py-3 px-6 text-center hidden md:table-cell">
                                         {{ ucwords($transaction->type) }}

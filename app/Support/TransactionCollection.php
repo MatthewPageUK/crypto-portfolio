@@ -5,6 +5,7 @@ namespace App\Support;
 use App\Models\CryptoTransaction;
 use Illuminate\Support\Collection;
 use App\Support\Quantity;
+use App\Support\Currency;
 
 /**
  * A collection of transactions and logic to calculate 
@@ -37,9 +38,9 @@ class TransactionCollection extends Collection
      * 
      * @return float    The average price of all the buy transactions
      */
-    public function averageBuyPrice(): float
+    public function averageBuyPrice(): Currency
     {
-        return $this->calcAveragePrice( CryptoTransaction::BUY );
+        return new Currency( $this->calcAveragePrice( CryptoTransaction::BUY ) );
     }
 
     /**
@@ -47,9 +48,9 @@ class TransactionCollection extends Collection
      * 
      * @return float  
      */
-    public function averageSellPrice(): float
+    public function averageSellPrice(): Currency
     {
-        return $this->calcAveragePrice( CryptoTransaction::SELL );
+        return new Currency( $this->calcAveragePrice( CryptoTransaction::SELL ) );
     }
 
     /**
@@ -57,7 +58,7 @@ class TransactionCollection extends Collection
      * 
      * @return float    
      */
-    public function averageHodlBuyPrice(): float
+    public function averageHodlBuyPrice(): Currency
     {
         return $this->unsoldTransactions()->averageBuyPrice();
     }
@@ -99,7 +100,7 @@ class TransactionCollection extends Collection
         {
             if($transaction->type === $type)
             {
-                $total += $transaction->total();
+                $total += $transaction->total()->get();
                 $quantity += $transaction->quantity->get();
             }
         }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Support\TransactionCollection;
+use App\Support\Currency;
 use App\Support\Cast\CurrencyCast;
 use App\Support\Cast\QuantityCast;
 
@@ -61,11 +62,11 @@ class CryptoTransaction extends Model
     /**
      * The total value of this transaction
      * 
-     * @return float  
+     * @return Currency  
      */
-    public function total(): float
+    public function total(): Currency
     {
-        return $this->quantity->get() * $this->price->get();
+        return new Currency( $this->quantity->get() * $this->price->get() );
     }
 
     /**
