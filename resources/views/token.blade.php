@@ -25,7 +25,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </a>
-                @if( $token->getBalance() > 0 )
+                @if( $token->balance() > 0 )
                     <a href="{{ route('token.sell', $token->id) }}" title="Sell some {{ $token->symbol }}" class="flex flex-shrink items-center text-red-700 hover:text-red-500">
                         <span class="flex-grow mr-1">Sell</span> 
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -39,16 +39,16 @@
     <div class="min-w-screen flex items-center justify-center">
         <div class="flex items-center w-full lg:w-5/6">
             <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Balance') }}</span> <x-token-balance balance="{{ $token->getBalance(); }}" /></p>
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Balance') }}</span> <x-token-balance balance="{{ $token->balance(); }}" /></p>
             </div>
             <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Buy price') }}</span> <x-money amount="{{ $token->transactions()->get()->averageBuyPrice() }}" /></p>
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Buy price') }}</span> <x-money amount="{{ $token->averageBuyPrice() }}" /></p>
             </div>
             <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Hodl price') }}</span> <x-money amount="{{ $token->transactions()->get()->averageHodlBuyPrice() }}" /></p>
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Hodl price') }}</span> <x-money amount="{{ $token->averageHodlBuyPrice() }}" /></p>
             </div>
             <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Sell price') }}</span> <x-money amount="{{ $token->transactions()->get()->averageSellPrice() }}" /></p>
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Sell price') }}</span> <x-money amount="{{ $token->averageSellPrice() }}" /></p>
             </div>
         </div>
     </div>
@@ -71,16 +71,17 @@
                         </thead>
                         <tbody class="text-gray-800 text-sm font-light">
                             @foreach ($token->transactions as $transaction)
-                                <tr class="border-b border-gray-200 hover:bg-{{ ($transaction->type==="sell")?'red':'green' }}-100">
-                                    <td class="py-3 px-6 text-left border-l-8 border-{{ ($transaction->type==="sell")?'red':'green' }}-500">
+                                <tr class="border-b border-gray-200 hover:bg-{{ ($transaction->isSell())?'red':'green' }}-100">
+                                    <td class="py-3 px-6 text-left border-l-8 border-{{ ($transaction->isSell())?'red':'green' }}-500">
                                         <span class="whitespace-nowrap">{{ $transaction->time->format('j F \'y') }}</span>
                                         <span class="whitespace-nowrap text-xs">{{ $transaction->time->format('h:i:s A') }}</span>
                                     </td>
                                     <td class="py-3 px-6 text-left">
-                                        <x-token-balance balance="{{ $transaction->quantity }}" />
+                                        <x-token-balance balance="{{ $transaction->quantity->get() }}" />
                                     </td>
                                     <td class="py-3 px-6 text-right">
-                                        <x-money amount="{{ $transaction->price }}" />
+                                        [ {{ $transaction->price->human() }} ]
+                                        <x-money amount="{{ $transaction->price->get() }}" />
                                     </td>
                                     <td class="py-3 px-6 text-right hidden md:table-cell">
                                         <x-money amount="{{ $transaction->total() }}" />

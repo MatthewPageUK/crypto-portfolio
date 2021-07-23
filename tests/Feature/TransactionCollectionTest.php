@@ -38,10 +38,10 @@ class TransactionCollectionTest extends TestCase
      */
     private function createTestTransactions(): array
     {
-        CryptoTransaction::factory()->for($this->token)->create(['type' => 'buy', 'quantity' => '100', 'price' => 1.15, 'time' => now()->subDays(10)->format('Y-m-d\TH:i:s')]);   
-        CryptoTransaction::factory()->for($this->token)->create(['type' => 'buy', 'quantity' => '100', 'price' => 1.10, 'time' => now()->subDays(9)->format('Y-m-d\TH:i:s')]);  
-        CryptoTransaction::factory()->for($this->token)->create(['type' => 'sell', 'quantity' => '50', 'price' => 1.6, 'time' => now()->subDays(8)->format('Y-m-d\TH:i:s')]);  
-        CryptoTransaction::factory()->for($this->token)->create(['type' => 'sell', 'quantity' => '50', 'price' => 1.5, 'time' => now()->subDays(7)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($this->token)->create(['type' => CryptoTransaction::BUY, 'quantity' => '100', 'price' => 1.15, 'time' => now()->subDays(10)->format('Y-m-d\TH:i:s')]);   
+        CryptoTransaction::factory()->for($this->token)->create(['type' => CryptoTransaction::BUY, 'quantity' => '100', 'price' => 1.10, 'time' => now()->subDays(9)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($this->token)->create(['type' => CryptoTransaction::SELL, 'quantity' => '50', 'price' => 1.6, 'time' => now()->subDays(8)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($this->token)->create(['type' => CryptoTransaction::SELL, 'quantity' => '50', 'price' => 1.5, 'time' => now()->subDays(7)->format('Y-m-d\TH:i:s')]);  
 
         return [
             'avgprice' => 1.125,
@@ -91,9 +91,9 @@ class TransactionCollectionTest extends TestCase
     public function test_transaction_collection_fails_negative_balance()
     {
         $token2 = CryptoToken::factory()->create();
-        CryptoTransaction::factory()->for($token2)->create(['type' => 'buy', 'quantity' => '50', 'price' => 1.10, 'time' => now()->subDays(9)->format('Y-m-d\TH:i:s')]);  
-        CryptoTransaction::factory()->for($token2)->create(['type' => 'sell', 'quantity' => '50', 'price' => 1.6, 'time' => now()->subDays(8)->format('Y-m-d\TH:i:s')]);  
-        CryptoTransaction::factory()->for($token2)->create(['type' => 'sell', 'quantity' => '50', 'price' => 1.5, 'time' => now()->subDays(7)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($token2)->create(['type' => CryptoTransaction::BUY, 'quantity' => '50', 'price' => 1.10, 'time' => now()->subDays(9)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($token2)->create(['type' => CryptoTransaction::SELL, 'quantity' => '50', 'price' => 1.6, 'time' => now()->subDays(8)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($token2)->create(['type' => CryptoTransaction::SELL, 'quantity' => '50', 'price' => 1.5, 'time' => now()->subDays(7)->format('Y-m-d\TH:i:s')]);  
 
         $this->assertTrue( ! $token2->transactions->validateTransactions() );
     }
@@ -104,9 +104,9 @@ class TransactionCollectionTest extends TestCase
     public function test_transaction_collection_validates_positive_balance()
     {
         $token2 = CryptoToken::factory()->create();
-        CryptoTransaction::factory()->for($token2)->create(['type' => 'buy', 'quantity' => '50', 'price' => 1.15, 'time' => now()->subDays(10)->format('Y-m-d\TH:i:s')]);   
-        CryptoTransaction::factory()->for($token2)->create(['type' => 'buy', 'quantity' => '50', 'price' => 1.10, 'time' => now()->subDays(9)->format('Y-m-d\TH:i:s')]);  
-        CryptoTransaction::factory()->for($token2)->create(['type' => 'sell', 'quantity' => '50', 'price' => 1.5, 'time' => now()->subDays(7)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($token2)->create(['type' => CryptoTransaction::BUY, 'quantity' => '50', 'price' => 1.15, 'time' => now()->subDays(10)->format('Y-m-d\TH:i:s')]);   
+        CryptoTransaction::factory()->for($token2)->create(['type' => CryptoTransaction::BUY, 'quantity' => '50', 'price' => 1.10, 'time' => now()->subDays(9)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($token2)->create(['type' => CryptoTransaction::SELL, 'quantity' => '50', 'price' => 1.5, 'time' => now()->subDays(7)->format('Y-m-d\TH:i:s')]);  
 
         $this->assertTrue( $token2->transactions->validateTransactions() );
     }
@@ -117,10 +117,10 @@ class TransactionCollectionTest extends TestCase
     public function test_transaction_collection_validates_zero_balance()
     {
         $token2 = CryptoToken::factory()->create();
-        CryptoTransaction::factory()->for($token2)->create(['type' => 'buy', 'quantity' => '50', 'price' => 1.15, 'time' => now()->subDays(10)->format('Y-m-d\TH:i:s')]);   
-        CryptoTransaction::factory()->for($token2)->create(['type' => 'buy', 'quantity' => '50', 'price' => 1.10, 'time' => now()->subDays(9)->format('Y-m-d\TH:i:s')]);  
-        CryptoTransaction::factory()->for($token2)->create(['type' => 'sell', 'quantity' => '50', 'price' => 1.6, 'time' => now()->subDays(8)->format('Y-m-d\TH:i:s')]);  
-        CryptoTransaction::factory()->for($token2)->create(['type' => 'sell', 'quantity' => '50', 'price' => 1.5, 'time' => now()->subDays(7)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($token2)->create(['type' => CryptoTransaction::BUY, 'quantity' => '50', 'price' => 1.15, 'time' => now()->subDays(10)->format('Y-m-d\TH:i:s')]);   
+        CryptoTransaction::factory()->for($token2)->create(['type' => CryptoTransaction::BUY, 'quantity' => '50', 'price' => 1.10, 'time' => now()->subDays(9)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($token2)->create(['type' => CryptoTransaction::SELL, 'quantity' => '50', 'price' => 1.6, 'time' => now()->subDays(8)->format('Y-m-d\TH:i:s')]);  
+        CryptoTransaction::factory()->for($token2)->create(['type' => CryptoTransaction::SELL, 'quantity' => '50', 'price' => 1.5, 'time' => now()->subDays(7)->format('Y-m-d\TH:i:s')]);  
 
         $this->assertTrue( $token2->transactions->validateTransactions() );
     }

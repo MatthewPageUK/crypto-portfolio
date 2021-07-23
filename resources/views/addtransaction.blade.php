@@ -1,7 +1,7 @@
-<x-app-layout title=" - {{ __( (($transType==='buy')?'Buy':'Sell') . ' ' . $token->name) }}">
+<x-app-layout title=" - {{ __( (($transType===CryptoTransaction::BUY)?'Buy':'Sell') . ' ' . $token->name) }}">
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __( (($transType==='buy')?'Buy':'Sell') . ' ' . $token->name) }}
+            {{ __( (($transType===CryptoTransaction::BUY)?'Buy':'Sell') . ' ' . $token->name) }}
         </h2>
     </x-slot>
 
@@ -17,7 +17,7 @@
             <input type="hidden" name="crypto_token_id" value="{{ $token->id }}">
 
             <!-- Transaction type -->
-            <input type="hidden" name="type" value="{{ ($transType==='buy')?'buy':'sell' }}">
+            <input type="hidden" name="type" value="{{ ($transType===CryptoTransaction::BUY)?CryptoTransaction::BUY:CryptoTransaction::SELL }}">
 
             <!-- Date and time -->
             <div>
@@ -46,7 +46,7 @@
                 </a>
 
                 <x-button class="ml-4">
-                    {{ __( (($transType==='buy')?'Buy':'Sell') . ' ' . $token->symbol) }}
+                    {{ __( (($transType===CryptoTransaction::BUY)?'Buy':'Sell') . ' ' . $token->symbol) }}
                 </x-button>
             </div>
         </form>

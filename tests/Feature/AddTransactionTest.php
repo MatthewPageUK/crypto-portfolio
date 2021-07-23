@@ -33,7 +33,7 @@ class AddTransactionTest extends TestCase
             'time' => '2021-06-25T10:32:45',
             'quantity' => 100,
             'price' => 12,
-            'type' => 'buy',
+            'type' => CryptoTransaction::BUY,
         ];
         $this->bad = [
             'time' => [
@@ -147,7 +147,7 @@ class AddTransactionTest extends TestCase
 
         $this->actingAs($this->user)->post(route('transaction.store', array_merge($this->good, [
             'quantity' => $this->good['quantity']+1,
-            'type' => 'sell',
+            'type' => CryptoTransaction::SELL,
         ])));
         $this->assertDatabaseCount($this->table, 1);
     }

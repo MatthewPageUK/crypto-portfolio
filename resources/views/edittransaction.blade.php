@@ -28,8 +28,8 @@
             <div class="mt-4">
                 <x-label for="type" value="{{ __('Type') }}" />
                 <div class="mt-1">
-                    <span class="mr-3 text-sm"><input class="rounded-md shadow-sm border-gray-300 focus:border-yellow-300 focus:ring focus:ring-yellow-200 focus:ring-opacity-50" type="radio" name="type" value="buy" {{ ($transaction->type==='buy') ? 'checked' : '' }} /> Buy </span>
-                    <span class="text-sm"><input class="rounded-md shadow-sm border-gray-300 focus:border-yellow-300 focus:ring focus:ring-yellow-200 focus:ring-opacity-50" type="radio" name="type" value="sell" {{ ($transaction->type==='sell') ? 'checked' : '' }} /> Sell </span>
+                    <span class="mr-3 text-sm"><input class="rounded-md shadow-sm border-gray-300 focus:border-yellow-300 focus:ring focus:ring-yellow-200 focus:ring-opacity-50" type="radio" name="type" value="buy" {{ ($transaction->isBuy()) ? 'checked' : '' }} /> Buy </span>
+                    <span class="text-sm"><input class="rounded-md shadow-sm border-gray-300 focus:border-yellow-300 focus:ring focus:ring-yellow-200 focus:ring-opacity-50" type="radio" name="type" value="sell" {{ ($transaction->isSell()) ? 'checked' : '' }} /> Sell </span>
                 </div>
             </div>
 
@@ -44,14 +44,14 @@
             <div class="mt-4">
                 <x-label for="quantity" :value="__('Quantity')" />
 
-                <x-input id="quantity" class="block mt-1 w-full" type="text" name="quantity" :value="old('quantity', $transaction->quantity+0)" required autofocus />
+                <x-input id="quantity" class="block mt-1 w-full" type="text" name="quantity" :value="old('quantity', $transaction->quantity->get())" required autofocus />
             </div>
 
             <!-- Price paid -->
             <div class="mt-4">
                 <x-label for="price" :value="__('Price')" />
 
-                <x-input id="price" class="block mt-1 w-full" type="text" name="price" :value="old('price', $transaction->price)" required />
+                <x-input id="price" class="block mt-1 w-full" type="text" name="price" :value="old('price', $transaction->price->get())" required />
             </div>
 
             <div class="flex items-center justify-end mt-4">

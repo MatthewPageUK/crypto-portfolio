@@ -32,21 +32,21 @@ class UpdateTransactionRequest extends FormRequest
         if($transaction->crypto_token_id !== $token->id) 
         {
             // selected a different token, balance from token is ok
-            $balance = $token->getBalance();
+            $balance = $token->balance();
         }
         else
         {
             // selected same token, balance needs to be adjusted to remove existing transaction that is being edited
-            $balance = $token->getBalance() + ( ($transaction->type === 'buy') ? -$transaction->quantity : $transaction->quantity );
+            $balance = $token->balance() + ( ($transaction->isBuy()) ? -$transaction->quantity->get() : $transaction->quantity->get() );
         }
 
-        $quantityRule = ($token && $this->input('type')==='sell') ? ['required', 'gt:0', 'lte:'.$balance] : ['required', 'gt:0'];
+        $quantityRule = ($token && $this->input('type')===CryptoTransaction::SELL) ? ['required', 'gt:0', 'lte:'.$balance] : ['required', 'gt:0'];
 
         return [
             'crypto_token_id' => ['required', 'exists:crypto_tokens,id'],
             'quantity' => $quantityRule,
             'price' => ['required', 'gte:0'],
-            'type' => ['required', Rule::in('buy', 'sell')],
+            'type' => ['required', Rule::in(CryptoTransaction::BUY, CryptoTransaction::SELL)],
             'time' => ['required', 'date', 'before:'.now()->format('Y-m-d\TH:i:s')],
         ];
     }

@@ -26,7 +26,7 @@ class CryptoTransactionController extends Controller
      */
     public function buy(CryptoToken $token)
     {
-        return view('addtransaction', ['token' => $token, 'transType' => 'buy']);
+        return view('addtransaction', ['token' => $token, 'transType' => CryptoTransaction::BUY]);
     }
     /**
      * Show the form for creating a new sell transaction.
@@ -35,7 +35,7 @@ class CryptoTransactionController extends Controller
      */
     public function sell(CryptoToken $token)
     {
-        return view('addtransaction', ['token' => $token, 'transType' => 'sell']);
+        return view('addtransaction', ['token' => $token, 'transType' => CryptoTransaction::SELL]);
     }
 
     /**

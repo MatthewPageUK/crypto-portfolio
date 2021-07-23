@@ -26,7 +26,7 @@ class CryptoTransactionFactory extends Factory
             'crypto_token_id' => CryptoToken::factory(),
             'quantity' => rand(1, 90000) / 1000,
             'price' => rand(1, 24500000) / 1000,
-            'type' => (rand(0,1)==1)?'buy':'sell',
+            'type' => (rand(0,1)==1) ? CryptoTransaction::BUY : CryptoTransaction::SELL,
             'time' => $this->faker->dateTimeBetween(),
         ];
     }

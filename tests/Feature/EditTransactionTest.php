@@ -35,14 +35,14 @@ class EditTransactionTest extends TestCase
                 'time' => '2021-06-25T10:32:45',
                 'quantity' => 100,
                 'price' => 12,
-                'type' => 'buy',
+                'type' => CryptoTransaction::BUY,
             ],
             'edited' => [
                 'crypto_token_id' => $this->token->id, 
                 'time' => '2021-06-21T10:32:45',
                 'quantity' => 99,
                 'price' => 11,
-                'type' => 'buy',            
+                'type' => CryptoTransaction::BUY,            
             ],
         ];
         $this->bad = [
@@ -145,14 +145,14 @@ class EditTransactionTest extends TestCase
      */
     public function test_transaction_can_not_be_updated_with_negative_balance()
     {
-        $transaction = CryptoTransaction::factory()->for($this->token)->create(['quantity' => 1, 'type' => 'sell']);
+        $transaction = CryptoTransaction::factory()->for($this->token)->create(['quantity' => 1, 'type' => CryptoTransaction::SELL]);
 
         $this->actingAs($this->user)->post(route('transaction.update', [
             'transaction' => $transaction->id,
             'crypto_token_id' => $transaction->crypto_token_id, 
             'time' => $transaction->time->format('Y-m-d\TH:i:s'), 
             'quantity' => 101,
-            'price' => $transaction->price,
+            'price' => $transaction->price->get(),
             'type' => $transaction->type,
         ]));
         $this->assertDatabaseHas($this->table, ['quantity' => 1]);

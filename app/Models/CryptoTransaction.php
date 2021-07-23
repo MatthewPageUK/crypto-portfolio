@@ -8,12 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Support\TransactionCollection;
+use App\Support\Cast\CurrencyCast;
+use App\Support\Cast\QuantityCast;
 
 class CryptoTransaction extends Model
 {
     use HasFactory;
     use SoftDeletes;
     use HasTimestamps;
+
+    const BUY = 'buy';
+    const SELL = 'sell';
 
     /**
      * The attributes that are mass assignable.
@@ -30,6 +35,8 @@ class CryptoTransaction extends Model
 
     protected $casts = [
         'time' => 'datetime',
+        'price' => CurrencyCast::class,
+        'quantity' => QuantityCast::class,
     ];
 
     /**
@@ -53,9 +60,27 @@ class CryptoTransaction extends Model
 
     /**
      * The total value of this transaction
+     * 
+     * @return float  
      */
-    public function total()
+    public function total(): float
     {
-        return $this->quantity * $this->price;
+        return $this->quantity->get() * $this->price->get();
+    }
+
+    /**
+     * Is this a buy transaction ?
+     */
+    public function isBuy(): bool
+    {
+        return ( $this->type === CryptoTransaction::BUY ) ? true : false;
+    }
+
+    /**
+     * Is this a buy transaction ?
+     */
+    public function isSell(): bool
+    {
+        return ( $this->type === CryptoTransaction::SELL ) ? true : false;
     }
 }
