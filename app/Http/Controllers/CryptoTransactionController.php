@@ -64,9 +64,10 @@ class CryptoTransactionController extends Controller
      * @param  \App\Models\CryptoTransaction  $cryptoTransaction
      * @return \Illuminate\Http\Response
      */
-    public function show(CryptoTransaction $cryptoTransaction)
+    public function show(CryptoTransaction $transaction)
     {
-        //
+        return view('transaction')
+            ->with('transaction', $transaction);
     }
 
     /**

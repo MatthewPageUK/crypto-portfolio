@@ -33,6 +33,7 @@ Route::group(['prefix' => 'token', 'middleware' => 'auth', 'as'=> 'token.'], fun
 
 Route::group(['prefix' => 'transaction', 'middleware' => 'auth', 'as'=> 'transaction.'], function () {
     Route::post('/store', [CryptoTransactionController::class, 'store'])->name('store');
+    Route::get('/{transaction}', [CryptoTransactionController::class, 'show'])->name('show');
     Route::get('/{transaction}/delete', [CryptoTransactionController::class, 'destroy'])->name('delete');
     Route::get('/{transaction}/edit', [CryptoTransactionController::class, 'edit'])->name('edit');
     Route::post('/{transaction}/edit', [CryptoTransactionController::class, 'update'])->name('update');
