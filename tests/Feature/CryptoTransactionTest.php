@@ -37,6 +37,6 @@ class CryptoTransactionTest extends TestCase
     public function test_total_method_calculates_correct_value()
     {
         $transaction = CryptoTransaction::factory()->create(['quantity' => 100, 'price' => 1.5]);
-        $this->assertTrue($transaction->total()->get() === 100 * 1.5);
+        $this->assertTrue($transaction->total()->getValue() === 100 * 1.5);
     }
 }

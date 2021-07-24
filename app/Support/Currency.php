@@ -30,7 +30,7 @@ class Currency
      * 
      * @return float
      */
-    public function get(): float
+    public function getValue(): float
     {
         return $this->value;
     }
@@ -40,7 +40,7 @@ class Currency
      * 
      * @param float $value      The value / amount to set
      */
-    public function set( $value ): void
+    public function setValue( $value ): void
     {
         $this->value = $value;
     }

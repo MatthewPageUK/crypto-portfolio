@@ -44,14 +44,14 @@
             <div class="mt-4">
                 <x-label for="quantity" :value="__('Quantity')" />
 
-                <x-input id="quantity" class="block mt-1 w-full" type="text" name="quantity" :value="old('quantity', $transaction->quantity->get())" required autofocus />
+                <x-input id="quantity" class="block mt-1 w-full" type="text" name="quantity" :value="old('quantity', $transaction->quantity->getValue())" required autofocus />
             </div>
 
             <!-- Price paid -->
             <div class="mt-4">
                 <x-label for="price" :value="__('Price')" />
 
-                <x-input id="price" class="block mt-1 w-full" type="text" name="price" :value="old('price', $transaction->price->get())" required />
+                <x-input id="price" class="block mt-1 w-full" type="text" name="price" :value="old('price', $transaction->price->getValue())" required />
             </div>
 
             <div class="flex items-center justify-end mt-4">

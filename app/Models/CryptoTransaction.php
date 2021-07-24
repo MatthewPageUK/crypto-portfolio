@@ -66,7 +66,7 @@ class CryptoTransaction extends Model
      */
     public function total(): Currency
     {
-        return new Currency( $this->quantity->get() * $this->price->get() );
+        return new Currency( $this->quantity->getValue() * $this->price->getValue() );
     }
 
     /**

@@ -32,7 +32,7 @@ class CryptoTokenController extends Controller
 
         return redirect()
             ->route('dashboard')
-            ->with('success', 'New token created');
+            ->with('success', __('New token created'));
     }
 
     /**
@@ -72,7 +72,7 @@ class CryptoTokenController extends Controller
 
         return redirect()
             ->route('token.show', $token)
-            ->with('success', 'Token updated');
+            ->with('success', __('Token updated'));
     }
 
     /**
@@ -88,6 +88,6 @@ class CryptoTokenController extends Controller
 
         return redirect()
             ->route('dashboard')
-            ->with('success', 'Token deleted');
+            ->with('success', __('Token deleted'));
     }
 }

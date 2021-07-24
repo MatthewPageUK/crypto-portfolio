@@ -37,9 +37,9 @@ class StoreTokenRequest extends FormRequest
             'name' => [
                 'required',
                 Rule::unique($table)->where('deleted_at', NULL),
-                'regex:/^[a-zA-Z0-9\s]+$/',
-                'min:3',
                 'max:100',
+                'min:3',
+                'regex:/^[a-zA-Z0-9\s]+$/',
             ],
         ];
     }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Support\Currency;
+use App\Support\Quantity;
 
 class CryptoToken extends Model
 {
@@ -36,7 +37,7 @@ class CryptoToken extends Model
     /**
      * The balance for this token
      */
-    public function balance(): float
+    public function balance(): Quantity
     {
         return $this->transactions->balance();
     }

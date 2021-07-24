@@ -2,32 +2,46 @@
 
 namespace App\Support;
 
+use App\Support\Presenters\QuantityPresenter;
+
 /**
  * A class for storing crypto token quanties, from very small to very large
  * 
  */
 class Quantity 
 {
+    use QuantityPresenter;
 
     private float $value = 0;
 
+    /**
+     * Create a new Quantity instance
+     * 
+     * @param float $value      The value / quantity being passed
+     */
     public function __construct( $value = 0 )
     {
         $this->value = $value;
     }
 
-    public function get()
+    /**
+     * Get the raw value
+     * 
+     * @return float
+     */
+    public function getValue()
     {
         return $this->value;
     }
 
-    public function set( $value )
+    /**
+     * Set the raw value
+     * 
+     * @param float $value      The value / quantity to set
+     */
+    public function setValue( $value )
     {
         $this->value = $value;
     }
-
-    public function human()
-    {
-        return number_format($this->value);
-    }
+    
 }

@@ -1,3 +1,3 @@
 @props(['amount'])
 
-<a title="{{ $amount->get() }}">{{ $amount->humanReadable() }}</a>
+<a title="{{ $amount->getValue() }}">{{ $amount->humanReadable() }}</a>

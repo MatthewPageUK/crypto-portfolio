@@ -152,7 +152,7 @@ class EditTransactionTest extends TestCase
             'crypto_token_id' => $transaction->crypto_token_id, 
             'time' => $transaction->time->format('Y-m-d\TH:i:s'), 
             'quantity' => 101,
-            'price' => $transaction->price->get(),
+            'price' => $transaction->price->getValue(),
             'type' => $transaction->type,
         ]));
         $this->assertDatabaseHas($this->table, ['quantity' => 1]);

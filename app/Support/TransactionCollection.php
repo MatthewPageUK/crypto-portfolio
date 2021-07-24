@@ -18,7 +18,7 @@ class TransactionCollection extends Collection
     /**
      * Store the calculated balance for later use
      */
-    private float $balance = -1;
+    private ?Quantity $balance = null;
 
     /**
      * Return the balance from stored value or fresh calculation
@@ -26,9 +26,9 @@ class TransactionCollection extends Collection
      * @param bool $recalculate     Force the calculation to rerun
      * @return float                The balance
      */
-    public function balance( $recalculate = false ): float
+    public function balance( $recalculate = false ): Quantity
     {
-        if( $this->balance == -1 || $recalculate ) $this->balance = $this->calcBalance();
+        if( is_null($this->balance) || $recalculate ) $this->balance = new Quantity($this->calcBalance());
 
         return $this->balance;
     }
@@ -85,7 +85,7 @@ class TransactionCollection extends Collection
 
     //     foreach($this->reverse() as $transaction)
     //     {
-    //         $balance += ( $transaction['type'] === CryptoTransaction::BUY ) ? $transaction->quantity->get() : -$transaction->quantity->get();
+    //         $balance += ( $transaction['type'] === CryptoTransaction::BUY ) ? $transaction->quantity->getValue() : -$transaction->quantity->getValue();
 
     //         $item = [
     //             'time' => $transaction['time'];
@@ -109,7 +109,7 @@ class TransactionCollection extends Collection
     private function calcBalance( float $balance = 0 ): float
     {
         $balance += $this->sum( function( CryptoTransaction $transaction ) {
-            return ( $transaction['type'] === CryptoTransaction::BUY ) ? $transaction->quantity->get() : -$transaction->quantity->get();
+            return ( $transaction['type'] === CryptoTransaction::BUY ) ? $transaction->quantity->getValue() : -$transaction->quantity->getValue();
         });
 
         return $balance;
@@ -129,8 +129,8 @@ class TransactionCollection extends Collection
         {
             if($transaction->type === $type)
             {
-                $total += $transaction->total()->get();
-                $quantity += $transaction->quantity->get();
+                $total += $transaction->total()->getValue();
+                $quantity += $transaction->quantity->getValue();
             }
         }
 
@@ -152,7 +152,7 @@ class TransactionCollection extends Collection
 
         foreach( $sorted as $transaction )
         {
-            $balance += ( $transaction->isBuy() ) ? $transaction->quantity->get() : -$transaction->quantity->get();
+            $balance += ( $transaction->isBuy() ) ? $transaction->quantity->getValue() : -$transaction->quantity->getValue();
             if( $balance < 0 ) return false;
         }
 
@@ -176,12 +176,12 @@ class TransactionCollection extends Collection
 
         foreach( $this->where('type', CryptoTransaction::BUY) as $transaction )
         {
-            $transaction->quantity = new Quantity( ( $unsoldQuantity < $transaction->quantity->get() ) ? $unsoldQuantity : $transaction->quantity->get() );
-            $unsoldQuantity -= $transaction->quantity->get();
+            $transaction->quantity = new Quantity( ( $unsoldQuantity->getValue() < $transaction->quantity->getValue() ) ? $unsoldQuantity->getValue() : $transaction->quantity->getValue() );
+            $unsoldQuantity->setValue($unsoldQuantity->getValue() - $transaction->quantity->getValue());
 
-            if( $transaction->quantity->get() > 0 ) $unsoldTransactions->push( $transaction );
+            if( $transaction->quantity->getValue() > 0 ) $unsoldTransactions->push( $transaction );
 
-            if( $unsoldQuantity == 0 ) break;
+            if( $unsoldQuantity->getValue() == 0 ) break;
         }
         return $unsoldTransactions;
     }

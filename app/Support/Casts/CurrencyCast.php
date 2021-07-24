@@ -6,7 +6,7 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use App\Support\Currency;
 
 /**
- * Class for storing Fiat amounts
+ * Class for casting to and from Fiat amounts
  */
 class CurrencyCast implements CastsAttributes
 {
@@ -35,6 +35,6 @@ class CurrencyCast implements CastsAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
-        return [ $key => ( $value instanceOf Currency ) ? $value->get() : $value ];
+        return [ $key => ( $value instanceOf Currency ) ? $value->getValue() : $value ];
     }
 }

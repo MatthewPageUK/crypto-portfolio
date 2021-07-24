@@ -37,7 +37,7 @@ class UpdateTransactionRequest extends FormRequest
         else
         {
             // selected same token, balance needs to be adjusted to remove existing transaction that is being edited
-            $balance = $token->balance() + ( ($transaction->isBuy()) ? -$transaction->quantity->get() : $transaction->quantity->get() );
+            $balance = $token->balance() + ( ($transaction->isBuy()) ? -$transaction->quantity->getValue() : $transaction->quantity->getValue() );
         }
 
         $quantityRule = ($token && $this->input('type')===CryptoTransaction::SELL) ? ['required', 'gt:0', 'lte:'.$balance] : ['required', 'gt:0'];
