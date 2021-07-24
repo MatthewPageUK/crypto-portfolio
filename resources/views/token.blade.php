@@ -43,6 +43,7 @@
             </div>
             <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
                 <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Buy price') }}</span> <x-currency :amount="$token->averageBuyPrice()" /></p>
+                <x-minigraph :token=$token></x-minigraph>
 
             </div>
             <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">

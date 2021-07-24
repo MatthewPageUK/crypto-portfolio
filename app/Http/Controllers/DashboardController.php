@@ -14,6 +14,8 @@ class DashboardController extends Controller
     public function index()
     {
         $tokens = CryptoToken::all()->sortBy('symbol');
-        return view('dashboard', ['tokens' => $tokens]);
+        
+        return view('dashboard')
+            ->with('tokens', $tokens);
     }
 }

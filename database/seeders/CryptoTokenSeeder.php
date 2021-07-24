@@ -15,6 +15,8 @@ class CryptoTokenSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('crypto_tokens')->delete();
+
         $tokens = array(
             ['name' => 'Bitcoin', 'symbol' => 'BTC'],
             ['name' => 'Ethereum', 'symbol' => 'ETH'],

@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             CryptoTokenSeeder::class,
+            CryptoTransactionSeeder::class, 
             UserSeeder::class,
         ]);
     }

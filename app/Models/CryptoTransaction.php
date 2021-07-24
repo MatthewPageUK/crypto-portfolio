@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Support\TransactionCollection;
 use App\Support\Currency;
-use App\Support\Cast\CurrencyCast;
-use App\Support\Cast\QuantityCast;
+use App\Support\Casts\CurrencyCast;
+use App\Support\Casts\QuantityCast;
 
 class CryptoTransaction extends Model
 {

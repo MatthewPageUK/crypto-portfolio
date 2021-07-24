@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Support\Cast;
+namespace App\Support\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use App\Support\Currency;

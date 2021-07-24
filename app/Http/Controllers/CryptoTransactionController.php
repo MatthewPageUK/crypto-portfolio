@@ -26,7 +26,9 @@ class CryptoTransactionController extends Controller
      */
     public function buy(CryptoToken $token)
     {
-        return view('addtransaction', ['token' => $token, 'transType' => CryptoTransaction::BUY]);
+        return view('addtransaction')
+            ->with('token', $token)
+            ->with('transType', CryptoTransaction::BUY);
     }
     /**
      * Show the form for creating a new sell transaction.
@@ -35,7 +37,9 @@ class CryptoTransactionController extends Controller
      */
     public function sell(CryptoToken $token)
     {
-        return view('addtransaction', ['token' => $token, 'transType' => CryptoTransaction::SELL]);
+        return view('addtransaction')
+            ->with('token', $token)
+            ->with('transType', CryptoTransaction::SELL);
     }
 
     /**
@@ -49,7 +53,9 @@ class CryptoTransactionController extends Controller
         $validatedData = $request->validated();
         CryptoTransaction::create($request->all());
 
-        return redirect()->route('token.show', ['token' => $request['crypto_token_id']])->with('success', 'Transaction created');
+        return redirect()
+            ->route('token.show', ['token' => $request['crypto_token_id']])
+            ->with('success', 'Transaction created');
     }
 
     /**
@@ -72,7 +78,10 @@ class CryptoTransactionController extends Controller
     public function edit(CryptoTransaction $transaction)
     {
         $tokens = CryptoToken::all()->sortBy('symbol');
-        return view('edittransaction', ['transaction' => $transaction, 'tokens' => $tokens]);
+
+        return view('edittransaction')
+            ->with('transaction', $transaction)
+            ->with('tokens', $tokens);
     }
 
     /**
@@ -104,7 +113,10 @@ class CryptoTransactionController extends Controller
 
 
         $transaction->update($request->validated());
-        return redirect()->route('token.show', $transaction->crypto_token_id)->with('success', 'Transaction updated');
+
+        return redirect()
+            ->route('token.show', $transaction->crypto_token_id)
+            ->with('success', 'Transaction updated');
     }
 
     /**
@@ -126,11 +138,15 @@ class CryptoTransactionController extends Controller
         if( $filtered->validateTransactions() )
         {
             $transaction->delete();
-            return redirect()->route('token.show', ['token' => $token->id])->with('success', 'Transaction deleted');
+            return redirect()
+                ->route('token.show', ['token' => $token->id])
+                ->with('success', 'Transaction deleted');
         }
         else
         {
-            return redirect()->route('token.show', ['token' => $token->id])->with('failure', 'Transaction could not be deleted, negative balance error.');
+            return redirect()
+                ->route('token.show', ['token' => $token->id])
+                ->with('failure', 'Transaction could not be deleted, negative balance error.');
         }
 
     }

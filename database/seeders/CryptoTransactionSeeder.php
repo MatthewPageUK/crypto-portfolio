@@ -1,0 +1,102 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
+class CryptoTransactionSeeder extends Seeder
+{
+    /**
+     * Insert some default data.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        $this->demoData();
+    }
+
+    public function demoData()
+    {
+        DB::table('crypto_transactions')->delete();
+
+        $tokens = array(
+            ['name' => 'Fake ADA Coin', 'symbol' => 'FADA'],
+            ['name' => 'Fake BTC Coin', 'symbol' => 'FBTC'],
+            ['name' => 'Fake SHIBA Coin', 'symbol' => 'FSHIBA'],
+        );
+
+        foreach($tokens as $token)
+        {
+            DB::table('crypto_tokens')->insert([
+                'name' => $token['name'], 
+                'symbol' => $token['symbol'], 
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'), 
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            ]);
+        }        
+
+        $fbtc = DB::table('crypto_tokens')->where('symbol', 'FBTC')->first();
+        $fada = DB::table('crypto_tokens')->where('symbol', 'FADA')->first();
+        $fshiba = DB::table('crypto_tokens')->where('symbol', 'FSHIBA')->first();
+
+        // make 1000 transactions
+        $balance = 0;
+        $marketType = 'bull';
+        $priceFrom = 22000;
+        $priceTo = 24000;
+
+        for($x = 0; $x < 1000; $x++)
+        {
+            $type = (rand(1, 10)>3) ? 'buy':'sell';
+
+            if($type === 'buy')
+            {
+                // Buy random quantity
+                $quantity = rand(1, 100000) / 1000000;
+                $balance += $quantity;
+            }
+            else
+            {
+                // Sell 70% of balance
+                $quantity = ($balance / 100) * 70;
+                $balance -= $quantity;
+            }
+
+            // Random price in range
+            $price = rand($priceFrom, $priceTo);
+            
+            DB::table('crypto_transactions')->insert([
+                'crypto_token_id' => $fbtc->id, 
+                'quantity' => $quantity, 
+                'price' => $price,
+                'type' => $type,
+                'time' => Carbon::now()->subDays(1000-$x)->format('Y-m-d H:i:s'), 
+                'created_at' => Carbon::now()->subDays(1000-$x)->format('Y-m-d H:i:s'), 
+                'updated_at' => Carbon::now()->subDays(1000-$x)->format('Y-m-d H:i:s'),
+            ]);
+
+            if($marketType === 'bull') 
+            {
+                // Increase prices by 0.5%
+                $priceFrom = $priceFrom + ($priceFrom / 200);
+                $priceTo = $priceTo + ($priceTo / 200);
+            }
+            else
+            {
+                // Decrease prices by 0.5%
+                $priceFrom = $priceFrom - ($priceFrom / 200);
+                $priceTo = $priceTo - ($priceTo / 200);
+            }
+
+            // Change market type 5% chance
+            if( rand(1, 100) < 5 )
+            {
+                $marketType = ($marketType === 'bull') ? 'bear':'bull';
+            }
+        }
+    }
+
+}

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTokenRequest;
 use App\Http\Requests\UpdateTokenRequest;
 use App\Models\CryptoToken;
-use Illuminate\Http\Request;
 
 class CryptoTokenController extends Controller
 {
@@ -31,7 +30,9 @@ class CryptoTokenController extends Controller
 
         CryptoToken::create($request->all());
 
-        return redirect()->route('dashboard')->with('success', 'New token created');
+        return redirect()
+            ->route('dashboard')
+            ->with('success', 'New token created');
     }
 
     /**
@@ -42,7 +43,8 @@ class CryptoTokenController extends Controller
      */
     public function show(CryptoToken $token)
     {
-        return view('token', ['token' => $token]);
+        return view('token')
+            ->with('token', $token);
     }
 
     /**
@@ -53,7 +55,8 @@ class CryptoTokenController extends Controller
      */
     public function edit(CryptoToken $token)
     {
-        return view('edittoken', ['token' => $token]);
+        return view('edittoken')
+            ->with('token', $token);
     }
 
     /**
@@ -67,7 +70,9 @@ class CryptoTokenController extends Controller
     {
         $token->update($request->validated());
 
-        return redirect()->route('token.show', $token)->with('success', 'Token updated');
+        return redirect()
+            ->route('token.show', $token)
+            ->with('success', 'Token updated');
     }
 
     /**
@@ -81,6 +86,8 @@ class CryptoTokenController extends Controller
         $token->transactions()->delete();
         $token->delete();
 
-        return redirect()->route('dashboard')->with('success', 'Token deleted');
+        return redirect()
+            ->route('dashboard')
+            ->with('success', 'Token deleted');
     }
 }
