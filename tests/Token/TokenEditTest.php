@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Token;
 
 use App\Models\CryptoToken;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class EditTokenTest extends TestCase
+class TokenEditTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -36,7 +36,7 @@ class EditTokenTest extends TestCase
             ],
             'name' => [
                 'empty' => '',
-                'short' => 'a', 
+                'short' => 'b', 
                 'long' => str_repeat('a', 101), 
                 'symbols' => 'b$a£d',
             ],
@@ -53,9 +53,9 @@ class EditTokenTest extends TestCase
     }
 
     /**
-     * Test the token edit page is redirected for guests
+     * Test the token edit form is redirected for guests
      */
-    public function test_token_edit_page_is_redirected_for_guests()
+    public function test_token_edit_form_is_redirected_for_guests()
     {
         $this->get(route('token.edit', $this->token->id))
             ->assertStatus(302)
@@ -63,18 +63,18 @@ class EditTokenTest extends TestCase
     }
 
     /**
-     * Test the token edit page is rendered for users
+     * Test the token edit form is rendered for users
      */
-    public function test_token_edit_page_is_rendered_for_users()
+    public function test_token_edit_form_is_rendered_for_users()
     {
         $this->actingAs($this->user)->get(route('token.edit', $this->token->id))
             ->assertStatus(200);
     }
 
     /**
-     * Test the token edit page has correct fields
+     * Test the token edit form has correct fields
      */
-    public function test_token_edit_page_has_correct_fields()
+    public function test_token_edit_form_has_correct_fields()
     {
         $this->actingAs($this->user)->get(route('token.edit', $this->token->id))
             ->assertSee('name="symbol"', false)

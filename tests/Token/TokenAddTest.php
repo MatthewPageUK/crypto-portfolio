@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Token;
 
 use App\Models\CryptoToken;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class AddTokenTest extends TestCase
+class TokenAddTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -35,7 +35,7 @@ class AddTokenTest extends TestCase
             ],
             'name' => [
                 'empty' => '',
-                'short' => 'a', 
+                'short' => 'b', 
                 'long' => str_repeat('a', 101), 
                 'symbols' => 'b$a£d',
             ],
@@ -43,9 +43,9 @@ class AddTokenTest extends TestCase
     }
 
     /**
-     * Test the token create page is redirected for guests
+     * Test the token create form is redirected for guests
      */
-    public function test_token_create_page_is_redirected_to_login_for_guests()
+    public function test_token_create_form_is_redirected_to_login_for_guests()
     {
         $this->get(route('token.create'))
             ->assertStatus(302)
@@ -53,18 +53,18 @@ class AddTokenTest extends TestCase
     }
 
     /**
-     * Test the token create page is rendered for users
+     * Test the token create form is rendered for users
      */
-    public function test_token_create_page_is_rendered_for_users()
+    public function test_token_create_form_is_rendered_for_users()
     {
         $this->actingAs($this->user)->get(route('token.create'))
             ->assertStatus(200);
     }
 
     /**
-     * Test the token create page has correct fields
+     * Test the token create form has correct fields
      */
-    public function test_token_create_page_has_correct_fields()
+    public function test_token_create_form_has_correct_fields()
     {
         $this->actingAs($this->user)->get(route('token.create'))
             ->assertSee('name="symbol"', false)

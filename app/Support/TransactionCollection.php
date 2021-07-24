@@ -71,6 +71,35 @@ class TransactionCollection extends Collection
         return $this->validateTransactions();
     }
 
+
+    // /**
+    //  * Export report data
+    //  * 
+    //  * Time - Quantity - Price - Total - Type - Balance - Avg Buy - Avg Hodl - Avg Sell
+    //  */
+    // public function report(): Collection
+    // {
+    //     $items = [];
+
+    //     $balance = 0;
+
+    //     foreach($this->reverse() as $transaction)
+    //     {
+    //         $balance += ( $transaction['type'] === CryptoTransaction::BUY ) ? $transaction->quantity->get() : -$transaction->quantity->get();
+
+    //         $item = [
+    //             'time' => $transaction['time'];
+
+    //             'balance' => $balance,
+    //         ]
+    //     }
+
+
+
+    //     return new Collection($items);
+
+    // }
+
     /**
      * Calculate the final balance of all transactions.
      * 

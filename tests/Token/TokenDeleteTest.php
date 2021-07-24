@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Token;
 
 use App\Models\CryptoToken;
 use App\Models\CryptoTransaction;
@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class DeleteTokenTest extends TestCase
+class TokenDeleteTest extends TestCase
 {
     use RefreshDatabase;
 
