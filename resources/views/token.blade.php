@@ -75,7 +75,9 @@
                             </tr>
                         </thead>
                         <tbody class="text-gray-800 text-sm font-light">
+
                             @foreach ($token->transactions as $transaction)
+                            
                                 <tr class="border-b border-gray-200 hover:bg-{{ ($transaction->isSell())?'red':'green' }}-100">
                                     <td class="py-3 px-6 text-left border-l-8 border-{{ ($transaction->isSell())?'red':'green' }}-500">
                                         <span class="whitespace-nowrap">{{ $transaction->time->format('j F \'y') }}</span>
@@ -119,7 +121,9 @@
                                         </div>
                                     </td>
                                 </tr>
+
                             @endforeach
+
                         </tbody>
                     </table>
                 </div>

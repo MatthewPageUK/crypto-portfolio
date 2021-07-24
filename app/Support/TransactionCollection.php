@@ -28,7 +28,7 @@ class TransactionCollection extends Collection
      */
     public function balance( $recalculate = false ): Quantity
     {
-        if( is_null($this->balance) || $recalculate ) $this->balance = new Quantity($this->calcBalance());
+        if( is_null($this->balance) || $recalculate ) $this->balance = $this->calcBalance();
 
         return $this->balance;
     }
@@ -40,7 +40,7 @@ class TransactionCollection extends Collection
      */
     public function averageBuyPrice(): Currency
     {
-        return new Currency( $this->calcAveragePrice( CryptoTransaction::BUY ) );
+        return $this->calcAveragePrice( CryptoTransaction::BUY );
     }
 
     /**
@@ -50,7 +50,7 @@ class TransactionCollection extends Collection
      */
     public function averageSellPrice(): Currency
     {
-        return new Currency( $this->calcAveragePrice( CryptoTransaction::SELL ) );
+        return $this->calcAveragePrice( CryptoTransaction::SELL );
     }
 
     /**
@@ -71,46 +71,23 @@ class TransactionCollection extends Collection
         return $this->validateTransactions();
     }
 
-
-    // /**
-    //  * Export report data
-    //  * 
-    //  * Time - Quantity - Price - Total - Type - Balance - Avg Buy - Avg Hodl - Avg Sell
-    //  */
-    // public function report(): Collection
-    // {
-    //     $items = [];
-
-    //     $balance = 0;
-
-    //     foreach($this->reverse() as $transaction)
-    //     {
-    //         $balance += ( $transaction['type'] === CryptoTransaction::BUY ) ? $transaction->quantity->getValue() : -$transaction->quantity->getValue();
-
-    //         $item = [
-    //             'time' => $transaction['time'];
-
-    //             'balance' => $balance,
-    //         ]
-    //     }
-
-
-
-    //     return new Collection($items);
-
-    // }
-
     /**
      * Calculate the final balance of all transactions.
      * 
-     * @param float     $balance            Optional starting balance
-     * @return float                        The current balance of tokens
+     * @param Quantity     $balance            Optional starting balance
+     * @return Quantity                        The current balance of tokens
      */
-    private function calcBalance( float $balance = 0 ): float
+    private function calcBalance( Quantity $balance = null ): Quantity
     {
-        $balance += $this->sum( function( CryptoTransaction $transaction ) {
-            return ( $transaction['type'] === CryptoTransaction::BUY ) ? $transaction->quantity->getValue() : -$transaction->quantity->getValue();
-        });
+        if( is_null( $balance ) ) $balance = new Quantity();
+
+        foreach( $this as $transaction )
+        {
+            if( $transaction->isBuy() )
+                $balance->add( $transaction->quantity );
+            else
+                $balance->subtract( $transaction->quantity );
+        }
 
         return $balance;
     }
@@ -123,18 +100,22 @@ class TransactionCollection extends Collection
      * @param float $quantity                       Starting quantity
      * @return float                                The average price of all the buy transactions
      */
-    private function calcAveragePrice( $type = CryptoTransaction::BUY, $total = 0, $quantity = 0 ): float
+    private function calcAveragePrice( $type = CryptoTransaction::BUY, Currency $total = null, Quantity $quantity = null ): Currency
     {
-        foreach($this->items as $transaction)
+        if( is_null( $total ) ) $total = new Currency();
+        if( is_null( $quantity ) ) $quantity = new Quantity();
+
+        foreach( $this as $transaction )
         {
-            if($transaction->type === $type)
+            if( $transaction->type === $type )
             {
-                $total += $transaction->total()->getValue();
-                $quantity += $transaction->quantity->getValue();
+                $total->add($transaction->total());
+                $quantity->add($transaction->quantity);
             }
         }
 
-        return ($total > 0 && $quantity > 0) ? $total / $quantity : 0.0;
+        // todo lt eg gt divide
+        return new Currency(($total->getValue() > 0 && $quantity->getValue() > 0) ? $total->getValue() / $quantity->getValue() : 0.0);
     }
 
     /**
@@ -176,10 +157,12 @@ class TransactionCollection extends Collection
 
         foreach( $this->where('type', CryptoTransaction::BUY) as $transaction )
         {
-            $transaction->quantity = new Quantity( ( $unsoldQuantity->getValue() < $transaction->quantity->getValue() ) ? $unsoldQuantity->getValue() : $transaction->quantity->getValue() );
-            $unsoldQuantity->setValue($unsoldQuantity->getValue() - $transaction->quantity->getValue());
+            $newTrans = $transaction->replicate();
 
-            if( $transaction->quantity->getValue() > 0 ) $unsoldTransactions->push( $transaction );
+            $newTrans->quantity = new Quantity( ( $unsoldQuantity->getValue() < $transaction->quantity->getValue() ) ? $unsoldQuantity->getValue() : $transaction->quantity->getValue() );
+            $unsoldQuantity->setValue($unsoldQuantity->getValue() - $newTrans->quantity->getValue());
+
+            if( $newTrans->quantity->getValue() > 0 ) $unsoldTransactions->push( $newTrans );
 
             if( $unsoldQuantity->getValue() == 0 ) break;
         }
