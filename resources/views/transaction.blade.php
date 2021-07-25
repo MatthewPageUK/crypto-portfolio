@@ -35,96 +35,71 @@
                 <p class="text-2xl text-center"><span class="text-sm block">{{ __('Profit / Loss') }}</span> <x-currency :amount="$transaction->cryptoToken->averageHodlBuyPrice()" /></p>
             </div>
             <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Sell price') }}</span> <x-currency :amount="$transaction->cryptoToken->averageSellPrice()" /></p>
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Balance Before') }}</span> <x-quantity :quantity="$transaction->cryptoToken->balance( $transaction->time )" /></p>
+            </div>
+            <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Balance After') }}</span> <x-quantity :quantity="$transaction->cryptoToken->balance( $transaction->time->addSecond(1) )" /></p>
             </div>
         </div>
     </div>
 
     <x-transaction-card :transaction="$transaction" />
 
- 
-{{-- @dd($transaction->cryptoToken->transactions->unsoldTransactions($transaction->time))
-    @foreach ($transaction->cryptoToken->transactions->unsoldTransactions($transaction->time) as $trans)
-    
-    <p>
-        {{ $trans->time->format('j F \'y') }}
-        {{ $trans->time->format('h:i:s A') }}
-        {{ ucwords($trans->type); }}
-        {{ $trans->price->humanReadable() }}
-        {{ $trans->quantity->humanReadable() }}
-        {{ $trans->total()->humanReadable() }}
-    </p>
-    @endforeach --}}
-
-
-
-    <p>Balance before transaction / after transaction</p>
-
-    Sell
-
-    Balance before the sell - must be made up from buy orders before the sell
-
-    Each - remove total or part of balance .... make a collection of transactions.. ???
-
-
-
-
-
-
-
-
-
-
-    <!-- Transactions table (https://tailwindcomponents.com/components/tables) -->
-    <h1>Tokens sold to complete this transaction</h1>
+    <!-- Related Transactions -->
     <div class="overflow-x-auto">
         <div class="min-w-screen bg-gray-100 flex items-center justify-center bg-gray-100 font-sans overflow-hidden">
             <div class="w-full lg:w-5/6">
+
+                <h1 class="text-3xl">Related transactions</h1>
+
                 <div class="bg-white shadow-md rounded my-4">
                     <table class="min-w-max w-full table-fixed md:table-auto">
                         <thead>
                             <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                                 <th class="py-3 px-6 text-left border-l-8 border-gray-500">Date</th>
-                                <th class="py-3 px-6 text-left">Quantity</th>
+                                <th class="py-3 px-6 text-right">Quantity</th>
                                 <th class="py-3 px-6 text-right">Price</th>
-                                <th class="py-3 px-6 text-right hidden md:table-cell">Total</th>
-                                <th class="py-3 px-6 text-center hidden md:table-cell">Type</th>
-
-                                <th class="py-3 px-6 text-left">Quantity Sold</th>
-                                <th class="py-3 px-6 text-left">Profit / Loss</th>
-                                <th class="py-3 px-6 text-left">Hodl time</th>
-                                <th class="py-3 px-6 text-left">Quantity</th>
-                                <th class="py-3 px-6 text-left">Quantity</th>
-
-
-                                <th class="py-3 px-6 text-center"> </th>
+                                <th class="py-3 px-6 text-right">Total</th>
+                                <th class="py-3 px-6 text-center">Hodl Time</th>
+                                <th class="py-3 px-6 text-right">Profit</th>
+                                <th class="py-3 px-6"> </th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-800 text-sm font-light">
 
-                            {{-- @foreach ($token->transactions as $transaction) --}}
+                            @foreach ($transaction->related() as $related)
                             
-                                {{-- <tr class="border-b border-gray-200 hover:bg-{{ ($transaction->isSell())?'red':'green' }}-100">
-                                    <td class="py-3 px-6 text-left border-l-8 border-{{ ($transaction->isSell())?'red':'green' }}-500">
-                                        <span class="whitespace-nowrap">{{ $transaction->time->format('j F \'y') }}</span>
-                                        <span class="whitespace-nowrap text-xs">{{ $transaction->time->format('h:i:s A') }}</span>
-                                    </td>
-                                    <td class="py-3 px-6 text-left">
-                                        <x-quantity :quantity="$transaction->quantity" />
+                                <tr class="border-b border-gray-200 hover:bg-{{ $related->colour() }}-100">
+                                    <td class="py-3 px-6 text-left border-l-8 border-{{ $related->colour() }}-500">
+                                        <span class="whitespace-nowrap">{{ $related->time->format('j F \'y') }}</span>
+                                        <span class="whitespace-nowrap text-xs">{{ $related->time->format('h:i:s A') }}</span>
                                     </td>
                                     <td class="py-3 px-6 text-right">
-                                        <x-currency :amount="$transaction->price" />
+                                        <x-quantity :quantity="$related->quantity" />
                                     </td>
-                                    <td class="py-3 px-6 text-right hidden md:table-cell">
-                                        <x-currency :amount="$transaction->total()" />
+                                    <td class="py-3 px-6 text-right">
+                                        <x-currency :amount="$related->price" />
                                     </td>
-                                    <td class="py-3 px-6 text-center hidden md:table-cell">
-                                        {{ ucwords($transaction->type) }}
+                                    <td class="py-3 px-6 text-right">
+                                        <x-currency :amount="$related->total()" />
                                     </td>
+                                    <td class="py-3 px-6 text-center">
+                                        {{ $related->time->diffInDays($transaction->time) }}d 
+                                    </td>
+                                    <td class="py-3 px-6 text-right">
+                                        @php
+                                            if($transaction->isSell())
+                                                $amount = $transaction->price->multiply($related->quantity)->subtract($related->total());
+                                            else 
+                                                $amount = $related->total()->subtract($transaction->price->multiply($related->quantity));
+                                        @endphp
+                                        <x-currency :amount="$amount" />
+                                    </td>
+
                                     <td class="py-3 px-2 text-right">
                                         <div class="flex item-center justify-center">
                                             <div class="w-4 mr-2 transform hover:scale-110">
-                                                <a href="{{ route('transaction.edit', $transaction->id) }}" 
+                                                <a href="{{ route('transaction.edit', ['transaction' => $related->id]) }}" 
                                                     class="text-gray-500 hover:text-red-500" 
                                                     title="Edit this transaction"
                                                 >
@@ -134,18 +109,7 @@
                                                 </a>
                                             </div>
                                             <div class="w-4 mr-2 transform hover:scale-110">
-                                                <a href="{{ route('transaction.delete', ['transaction' => $transaction->id]) }}" 
-                                                    class="text-gray-500 hover:text-red-500" 
-                                                    onclick="return confirm('Delete this transaction?')"
-                                                    title="Delete this transaction"
-                                                >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 hover:text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                    </svg>
-                                                </a>
-                                            </div>
-                                            <div class="w-4 mr-2 transform hover:scale-110">
-                                                <a href="{{ route('transaction.show', ['transaction' => $transaction->id]) }}" 
+                                                <a href="{{ route('transaction.show', ['transaction' => $related->id]) }}" 
                                                     class="text-gray-500 hover:text-red-500" 
                                                     title="View this transaction"
                                                 >
@@ -157,9 +121,9 @@
                                             </div>                                            
                                         </div>
                                     </td>
-                                </tr> --}}
+                                </tr>
 
-                            {{-- @endforeach --}}
+                            @endforeach
 
                         </tbody>
                     </table>
@@ -167,15 +131,6 @@
             </div>
         </div>
     </div>
-
-
-
-
-
-
-
-
-
 
 </x-app-layout>
 

@@ -28,12 +28,18 @@ trait CurrencyPresenter
     {
         $amount = $this->value;
         $pre = "";
+        $neg = false;
 
+        if($amount < 0.0)
+        {
+            $neg = true;
+            $amount = abs($amount);
+        }
         if($amount === 0.0)
         {
             $text = "0";
         }
-        elseif($amount <= 0.0001 && $amount !== 0.0) 
+        elseif($amount <= 0.0001 && $amount > 0.0) 
         {
             $pre = "< ";
             $text = "0.0001";
@@ -46,6 +52,6 @@ trait CurrencyPresenter
         elseif($amount >= 1000000) $text = number_format($amount/1000000, 2, '.', '').'m';
         else $text = $amount;
 
-        return $pre.Currency::SYMBOL.$text;
+        return $pre.($neg ? '-':'').Currency::SYMBOL.$text;
     }
 }

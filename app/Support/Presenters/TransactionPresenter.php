@@ -4,6 +4,17 @@ namespace App\Support\Presenters;
 
 trait TransactionPresenter
 {
+
+    /**
+     * Return a colour associated with this transaction
+     * 
+     * @return string
+     */
+    public function colour()
+    {
+        return $this->isBuy() ? 'green' : 'red';
+    }
+    
     /**
      * Return a human readable representation of this amount
      * 

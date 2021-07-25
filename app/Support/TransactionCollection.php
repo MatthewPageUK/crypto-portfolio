@@ -24,12 +24,13 @@ class TransactionCollection extends Collection
     /**
      * Return the balance from stored value or fresh calculation
      * 
+     * @param Carbon $at            Return balance at this date
      * @param bool $recalculate     Force the calculation to rerun
      * @return float                The balance
      */
-    public function balance( $recalculate = false ): Quantity
+    public function balance(  $at = null, $recalculate = true ): Quantity
     {
-        if( is_null($this->balance) || $recalculate ) $this->balance = $this->calcBalance();
+        if( is_null($this->balance) || $recalculate ) $this->balance = $this->calcBalance( $at );
 
         return $this->balance;
     }
@@ -73,23 +74,32 @@ class TransactionCollection extends Collection
     }
 
     /**
-     * Calculate the final balance of all transactions.
+     * Calculate the final balance of all transactions as of an optional
+     * 'at' date or now()
      * 
+     * @param Carbon       $at                 Return balance at this date
      * @param Quantity     $balance            Optional starting balance
      * @return Quantity                        The current balance of tokens
      */
-    private function calcBalance( Quantity $balance = null ): Quantity
+    private function calcBalance( ?Carbon $at = null, ?Quantity $balance = null ): Quantity
     {
         if( is_null( $balance ) ) $balance = new Quantity();
+        if( is_null( $at ) ) $at = Carbon::now();
 
-        foreach( $this as $transaction )
+        foreach( $this->sortBy('time') as $transaction )
         {
-            if( $transaction->isBuy() )
-                $balance->add( $transaction->quantity );
+            if( $transaction->time < $at )
+            {
+                if( $transaction->isBuy() )
+                    $balance->add( $transaction->quantity );
+                else
+                    $balance->subtract( $transaction->quantity );
+            }
             else
-                $balance->subtract( $transaction->quantity );
+            {
+                return $balance;
+            }
         }
-
         return $balance;
     }
 
@@ -147,25 +157,31 @@ class TransactionCollection extends Collection
      * Returns collection of transactions that have not been sold or part sold
      * Rule - sell oldest tokens first
      * 
-     * Todo - should be sorted by time desc
-     * 
+     * @param Carbon $at                Return unsold transactions at date 
      * @return TransactionCollection    The unsold transactions
      */
-    private function unsoldTransactions(): TransactionCollection
+    public function unsoldTransactions( Carbon $at = null ): TransactionCollection
     {
+        $at = is_null($at) ? Carbon::now() : $at;
         $unsoldTransactions = new TransactionCollection();
-        $unsoldQuantity = $this->balance();
+        $unsoldQuantity = $this->balance( $at );
 
-        foreach( $this->where('type', CryptoTransaction::BUY) as $transaction )
+        foreach( $this->where('type', CryptoTransaction::BUY)->sortByDesc('time') as $transaction )
         {
-            $newTrans = $transaction->replicate();
+            if( $at > $transaction->time )
+            {
+                $newTrans = $transaction->replicate();
 
-            $newTrans->quantity = new Quantity( ( $unsoldQuantity->getValue() < $transaction->quantity->getValue() ) ? $unsoldQuantity->getValue() : $transaction->quantity->getValue() );
-            $unsoldQuantity->setValue($unsoldQuantity->getValue() - $newTrans->quantity->getValue());
 
-            if( $newTrans->quantity->getValue() > 0 ) $unsoldTransactions->push( $newTrans );
+                $newTrans->id = $transaction->id;
 
-            if( $unsoldQuantity->getValue() == 0 ) break;
+                $newTrans->quantity = new Quantity( ( $unsoldQuantity->getValue() < $transaction->quantity->getValue() ) ? $unsoldQuantity->getValue() : $transaction->quantity->getValue() );
+                $unsoldQuantity->setValue($unsoldQuantity->getValue() - $newTrans->quantity->getValue());
+
+                if( $newTrans->quantity->getValue() > 0 ) $unsoldTransactions->push( $newTrans );
+
+                if( $unsoldQuantity->getValue() == 0 ) break;
+            }
         }
         return $unsoldTransactions;
     }

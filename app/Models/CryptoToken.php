@@ -36,10 +36,13 @@ class CryptoToken extends Model
 
     /**
      * The balance for this token
+     * 
+     * @param Carbon $at        Return the balance at this date
+     * @return Quantity 
      */
-    public function balance(): Quantity
+    public function balance( $at = null ): Quantity
     {
-        return $this->transactions->balance();
+        return $this->transactions->balance( $at );
     }
 
     /**

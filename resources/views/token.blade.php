@@ -78,8 +78,8 @@
 
                             @foreach ($token->transactions as $transaction)
                             
-                                <tr class="border-b border-gray-200 hover:bg-{{ ($transaction->isSell())?'red':'green' }}-100">
-                                    <td class="py-3 px-6 text-left border-l-8 border-{{ ($transaction->isSell())?'red':'green' }}-500">
+                                <tr class="border-b border-gray-200 hover:bg-{{ $transaction->colour() }}-100">
+                                    <td class="py-3 px-6 text-left border-l-8 border-{{ $transaction->colour() }}-500">
                                         <span class="whitespace-nowrap">{{ $transaction->time->format('j F \'y') }}</span>
                                         <span class="whitespace-nowrap text-xs">{{ $transaction->time->format('h:i:s A') }}</span>
                                     </td>

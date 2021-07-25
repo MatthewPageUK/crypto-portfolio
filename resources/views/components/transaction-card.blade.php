@@ -1,8 +1,3 @@
-@php
-
-    $colour = $transaction->isBuy() ? 'green' : 'red';
-
-@endphp
 <!-- Transaction card  -->
 <div class="overflow-x-auto">
     <div class="min-w-screen bg-gray-100 flex items-center justify-center bg-gray-100 font-sans overflow-hidden">
@@ -11,11 +6,11 @@
                 <table class="min-w-max w-full table-fixed md:table-auto">
                     <tbody class="text-gray-800 text-sm font-light">
                         <tr>
-                            <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal    py-3 px-6 text-right border-l-8 border-{{ $colour }}-500">ID</th>
+                            <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal    py-3 px-6 text-right border-l-8 border-{{ $transaction->colour() }}-500">ID</th>
                             <td class="w-full py-3 px-6 text-left">{{ $transaction->id }}</td>
                         </tr>
                         <tr>
-                            <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal    py-3 px-6 text-right border-l-8 border-{{ $colour }}-500">Token</th>
+                            <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal    py-3 px-6 text-right border-l-8 border-{{ $transaction->colour() }}-500">Token</th>
                             <td class="py-3 px-6 text-left">
                                 <a href="{{ route('token.show', ['token' => $transaction->cryptoToken]) }}">
                                     {{ $transaction->cryptoToken->symbol }}
@@ -27,26 +22,26 @@
                             </td>
                         </tr>
                         <tr>
-                            <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal    py-3 px-6 text-right border-l-8 border-{{ $colour }}-500">Date</th>
+                            <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal    py-3 px-6 text-right border-l-8 border-{{ $transaction->colour() }}-500">Date</th>
                             <td class="py-3 px-6 text-left">
                                 <span class="whitespace-nowrap">{{ $transaction->time->format('j F \'y') }}</span>
                                 <span class="whitespace-nowrap text-xs">{{ $transaction->time->format('h:i:s A') }}</span>
                             </td>
                         </tr>
                         <tr>
-                            <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal    py-3 px-6 text-right border-l-8 border-{{ $colour }}-500">Type</th>
+                            <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal    py-3 px-6 text-right border-l-8 border-{{ $transaction->colour() }}-500">Type</th>
                             <td class="py-3 px-6 text-left">{{ ucwords($transaction->type); }}</td>
                         </tr>
                         <tr>
-                            <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal    py-3 px-6 text-right border-l-8 border-{{ $colour }}-500">Price</th>
+                            <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal    py-3 px-6 text-right border-l-8 border-{{ $transaction->colour() }}-500">Price</th>
                             <td class="py-3 px-6 text-left">{{ $transaction->price->humanReadable() }}</td>
                         </tr>
                         <tr>
-                            <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal    py-3 px-6 text-right border-l-8 border-{{ $colour }}-500">Quantity</th>
+                            <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal    py-3 px-6 text-right border-l-8 border-{{ $transaction->colour() }}-500">Quantity</th>
                             <td class="py-3 px-6 text-left">{{ $transaction->quantity->humanReadable() }}</td>
                         </tr>
                         <tr>
-                            <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal    py-3 px-6 text-right border-l-8 border-{{ $colour }}-500">Total</th>
+                            <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal    py-3 px-6 text-right border-l-8 border-{{ $transaction->colour() }}-500">Total</th>
                             <td class="py-3 px-6 text-left">{{ $transaction->total()->humanReadable() }}</td>
                         </tr>
                     </tbody>
