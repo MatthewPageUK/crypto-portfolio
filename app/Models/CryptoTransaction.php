@@ -11,12 +11,14 @@ use App\Support\TransactionCollection;
 use App\Support\Currency;
 use App\Support\Casts\CurrencyCast;
 use App\Support\Casts\QuantityCast;
+use App\Support\Presenters\TransactionPresenter;
 
 class CryptoTransaction extends Model
 {
     use HasFactory;
     use SoftDeletes;
     use HasTimestamps;
+    use TransactionPresenter;
 
     const BUY = 'buy';
     const SELL = 'sell';
