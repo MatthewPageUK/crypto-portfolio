@@ -37,6 +37,8 @@ class UpdateTransactionRequest extends FormRequest
         else
         {
             // selected same token, balance needs to be adjusted to remove existing transaction that is being edited
+            // todo - numbers
+            // todo - transaction chain check
             $balance = $token->balance() + ( ($transaction->isBuy()) ? -$transaction->quantity->getValue() : $transaction->quantity->getValue() );
         }
 

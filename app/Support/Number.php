@@ -41,6 +41,55 @@ class Number
     }
 
     /**
+     * Greater Than
+     * 
+     * @param mixed int|float|Number $number        Number instance to compare to
+     * @return bool
+     */
+    public function gt($number): bool
+    {
+        if( ! $number instanceOf Number ) $number = new Number( $number );
+
+        return $this->getValue() > $number->getValue();
+    }    
+    /**
+     * Greater Than or Equal
+     * 
+     * @param mixed int|float|Number $number        Number instance to compare to
+     * @return bool
+     */
+    public function gte($number): bool
+    {
+        if( ! $number instanceOf Number ) $number = new Number( $number );
+
+        return $this->getValue() >= $number->getValue();
+    }  
+    /**
+     * Less Than
+     * 
+     * @param mixed int|float|Number $number        Number instance to compare to
+     * @return bool
+     */
+    public function lt($number): bool
+    {
+        if( ! $number instanceOf Number ) $number = new Number( $number );
+
+        return $this->getValue() < $number->getValue();
+    }
+    /**
+     * Less Than or Equal
+     * 
+     * @param mixed int|float|Number $number        Number instance to compare to
+     * @return bool
+     */
+    public function lte($number): bool
+    {
+        if( ! $number instanceOf Number ) $number = new Number( $number );
+
+        return $this->getValue() <= $number->getValue();
+    }
+
+    /**
      * Multiply this value with supplied value
      * Returns class type of the orinal class, not the multiplier
      * 
@@ -55,6 +104,20 @@ class Number
     }
 
     /**
+     * Divide this value by supplied value
+     * Returns class type of the orinal class, not the divider
+     * 
+     * @param Number $number        Number instance to divide by
+     * @return mixed
+     */
+    public function divide(Number $number)
+    {
+        $class = get_class($this);
+        $result = $this->getValue() / $number->getValue();
+        return new $class($result);
+    }
+
+    /**
      * Add this value with supplied value
      * Returns class type of the orinal class, not the multiplier
      * 
@@ -65,7 +128,6 @@ class Number
     {
         $class = get_class($this);
         $result = $this->getValue() + $number->getValue();
-        $this->value = $result;
         return new $class($result);
     }
 
@@ -80,7 +142,6 @@ class Number
     {
         $class = get_class($this);
         $result = $this->getValue() - $number->getValue();
-        $this->value = $result;
         return new $class($result);
     }
 }

@@ -15,11 +15,11 @@ class Quantity extends Number
     /**
      * Create a new Quantity instance
      * 
-     * @param float $value      The value / quantity being passed
+     * @param float|Number $value      The value / quantity being passed
      */
-    public function __construct( float $value = 0 )
+    public function __construct( $value = 0 )
     {
-        $this->value = $value;
+        $this->value = ( $value instanceof Number ) ? $value->getValue() : $value;
     }
 
 }

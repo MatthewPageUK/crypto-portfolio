@@ -3,7 +3,6 @@
         <div class="flex items-center">
             <div class="flex flex-grow">
                 <h2 class="flex-grow font-semibold text-xl text-gray-800 leading-tight">
-                    {{-- {{ __($transaction->cryptoToken->symbol . ' - Transaction ID ' . $transaction->id) }}  --}}
                     {{ $transaction->humanReadable() }}
                     <a href="{{ route('transaction.edit', $transaction->id) }}" title="Edit this transaction" class="w-4 inline-block ml-2 text-gray-500 transform hover:scale-110">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 hover:text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -19,58 +18,43 @@
             </div>
     </x-slot>
 
-
     <div class="min-w-screen flex items-center justify-center my-8">
-
         <div class="flex items-top w-full lg:w-5/6">
             <div class="flex-1">
                 <x-transaction-card :transaction="$transaction" />
             </div>
             <div class="flex-1">
-
-
-
-
-    <div class="min-w-screen flex items-center justify-center">
-        <div class="flex flex-wrap items-center w-full lg:w-5/6">
-
-@php
-    $rel = $transaction->related();   
-@endphp
-
-
-            <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Profit / Loss') }}</span> <x-currency :amount="$rel->sumCurrency('profitLoss')" /></p>
-            </div>
-            <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Balance Before') }}</span> <x-quantity :quantity="$transaction->cryptoToken->balance( $transaction->time )" /></p>
-            </div>
-            <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Balance After') }}</span> <x-quantity :quantity="$transaction->cryptoToken->balance( $transaction->time->addSecond(1) )" /></p>
-            </div>
-            <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg Hodl Days') }}</span> {{ ceil($rel->avg('hodlDays')) }} </p>
-            </div>    
-            <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Average Buy Price') }}</span> <x-currency :amount="$rel->averageBuyPrice()" /></p>
-            </div>
-            <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Average Sell Price') }}</span> <x-currency :amount="$rel->averageSellPrice()" /></p>
-            </div>
-
-            <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center">
-                    <span class="text-sm block">{{ __('Hodl Balance') }}</span> 
-                    <x-quantity :quantity="$transaction->cryptoToken->balance()" />
-                    <span class="text-xs">30%</span>
-                </p>
-            </div>
-
-        </div>
-    </div>
-
-
-
+                @php
+                    $rel = $transaction->related();   
+                @endphp
+                <div class="min-w-screen flex items-center justify-center">
+                    <div class="flex flex-wrap items-center w-full lg:w-5/6">
+                        <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg text-2xl text-center">
+                            <span class="text-sm block">{{ __('Profit / Loss') }}</span> <x-currency :amount="$rel->sumCurrency('profitLoss')" />
+                        </div>
+                        <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg text-2xl text-center">
+                            <span class="text-sm block">{{ __('Balance Before') }}</span> <x-quantity :quantity="$transaction->cryptoToken->balance( $transaction->time )" />
+                        </div>
+                        <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg text-2xl text-center">
+                            <span class="text-sm block">{{ __('Balance After') }}</span> <x-quantity :quantity="$transaction->cryptoToken->balance( $transaction->time->addSecond(1) )" />
+                        </div>
+                        <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg text-2xl text-center">
+                            <span class="text-sm block">{{ __('Avg Hodl Days') }}</span> {{ ceil($rel->avg('hodlDays')) }} 
+                        </div>    
+                        <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg text-2xl text-center">
+                            <span class="text-sm block">{{ __('Average Buy Price') }}</span> <x-currency :amount="$rel->averageBuyPrice()" />
+                        </div>
+                        <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg text-2xl text-center">
+                            <span class="text-sm block">{{ __('Average Sell Price') }}</span> <x-currency :amount="$rel->averageSellPrice()" />
+                        </div>
+                        <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg text-2xl text-center">
+                                <span class="text-sm block">{{ __('Hodl Balance') }}</span> 
+                               ? <x-quantity :quantity="$transaction->cryptoToken->balance()" /> ?
+                                <span class="text-xs">todo%</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -79,7 +63,6 @@
     <div class="overflow-x-auto">
         <div class="min-w-screen bg-gray-100 flex items-center justify-center bg-gray-100 font-sans overflow-hidden">
             <div class="w-full lg:w-5/6">
-
                 <h1 class="text-3xl">Related {{ $transaction->isBuy() ? 'sell':'buy' }} transactions</h1>
 
                 <div class="bg-white shadow-md rounded my-4">
@@ -149,7 +132,6 @@
 
                             @endforeach
 
-
                             <tr class="border-b bg-gray-200 font-bold">
                                 <td class="py-3 px-6 text-left border-l-8 border-green-500"> </td>
                                 <td class="py-3 px-6 text-right">
@@ -165,11 +147,7 @@
                                 </td>
 
                                 <td class="py-3 px-2 text-right"> </td>
-                            </tr>                            
-
-
-
-
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -178,11 +156,3 @@
     </div>
 
 </x-app-layout>
-
-
-
-
-
-
-
-

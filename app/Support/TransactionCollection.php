@@ -26,14 +26,14 @@ class TransactionCollection extends Collection
      */
     public function sumCurrency( string $key ): Currency
     {
-        return new Currency( $this->sumNumber( $key )->getValue() );
+        return new Currency( $this->sumNumber( $key ) );
     }
     /**
      * Add up the values of supplied key and return a Quantity
      */
     public function sumQuantity( string $key ): Quantity
     {
-        return new Quantity( $this->sumNumber( $key )->getValue() );
+        return new Quantity( $this->sumNumber( $key ) );
     }
 
     /**
@@ -103,7 +103,7 @@ class TransactionCollection extends Collection
 
     /**
      * Calculate the final balance of all transactions as of an optional
-     * 'at' date or now()
+     * 'at' date or now().
      * 
      * @param Carbon       $at                 Return balance at this date
      * @param Quantity     $balance            Optional starting balance
@@ -119,9 +119,9 @@ class TransactionCollection extends Collection
             if( $transaction->time < $at )
             {
                 if( $transaction->isBuy() )
-                    $balance->add( $transaction->quantity );
+                    $balance = $balance->add( $transaction->quantity );
                 else
-                    $balance->subtract( $transaction->quantity );
+                    $balance = $balance->subtract( $transaction->quantity );
             }
             else
             {
@@ -148,13 +148,12 @@ class TransactionCollection extends Collection
         {
             if( $transaction->type === $type )
             {
-                $total->add($transaction->total());
-                $quantity->add($transaction->quantity);
+                $total = $total->add($transaction->total());
+                $quantity = $quantity->add($transaction->quantity);
             }
         }
 
-        // todo lt eg gt divide
-        return new Currency(($total->getValue() > 0 && $quantity->getValue() > 0) ? $total->getValue() / $quantity->getValue() : 0.0);
+        return new Currency( ( $total->gt(0) && $quantity->gt(0) ) ? $total->divide($quantity) : 0.0);
     }
 
     /**
@@ -198,19 +197,18 @@ class TransactionCollection extends Collection
         {
             if( $at > $transaction->time )
             {
-                $newTrans = $transaction->replicate();
+                $newTrans = $transaction->replicateWithId();
 
+                if( $unsoldQuantity->lt( $transaction->quantity ) ) $newTrans->quantity = new Quantity( $unsoldQuantity->getValue() );
 
-                $newTrans->id = $transaction->id;
+                $unsoldQuantity = $unsoldQuantity->subtract( $newTrans->quantity );
 
-                $newTrans->quantity = new Quantity( ( $unsoldQuantity->getValue() < $transaction->quantity->getValue() ) ? $unsoldQuantity->getValue() : $transaction->quantity->getValue() );
-                $unsoldQuantity->setValue($unsoldQuantity->getValue() - $newTrans->quantity->getValue());
+                if( $newTrans->quantity->gt(0) ) $unsoldTransactions->push( $newTrans );
 
-                if( $newTrans->quantity->getValue() > 0 ) $unsoldTransactions->push( $newTrans );
-
-                if( $unsoldQuantity->getValue() == 0 ) break;
+                if( $unsoldQuantity->lte(0) ) break;
             }
         }
+
         return $unsoldTransactions;
     }
 }

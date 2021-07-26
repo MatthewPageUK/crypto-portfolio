@@ -16,11 +16,11 @@ class Currency extends Number
     /**
      * Create a new Currency instance
      * 
-     * @param float $value      The value / amount being passed
+     * @param float|Number $value      The value / amount being passed
      */
-    public function __construct( float $value = 0 )
+    public function __construct( $value = 0 )
     {
-        $this->value = $value;
+        $this->value = ( $value instanceof Number ) ? $value->getValue() : $value;
     }
 
 }

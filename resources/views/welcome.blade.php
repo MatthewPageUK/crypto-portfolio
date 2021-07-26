@@ -9,14 +9,21 @@
         <p class="text-center">{{ config('app.description') }}</p>
         
         <p class="flex items-center mt-8 text-center">
-
             @if (Route::has('register') && App\Models\User::count() < 1)
-                <x-button-link href="{{ route('register') }}" title="{{ __('Register to start tracking your crypto') }}">
+
+                <x-button-link 
+                    href="{{ route('register') }}" 
+                    title="{{ __('Register to start tracking your crypto') }}"
+                >
                     {{ __('Register') }}
                 </x-button-link>
+
             @endif      
 
-            <x-button-link href="{{ route('login') }}" title="{{ __('Log in to access your portfolio') }}">
+            <x-button-link 
+                href="{{ route('login') }}" 
+                title="{{ __('Log in to access your portfolio') }}"
+            >
                 {{ __('Log in') }}
             </x-button-link>
         </p>
