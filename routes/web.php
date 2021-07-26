@@ -4,6 +4,7 @@ use App\Http\Controllers\CryptoTokenController;
 use App\Http\Controllers\CryptoTransactionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\DiaryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [WelcomeController::class, 'index'])->middleware('guest')->name('welcome');
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
+Route::get('/diary', [DiaryController::class, 'index'])->middleware(['auth'])->name('diary');
 
 Route::group(['prefix' => 'token', 'middleware' => 'auth', 'as'=> 'token.'], function () {
     Route::get('/create', [CryptoTokenController::class, 'create'])->name('create');
@@ -38,6 +40,5 @@ Route::group(['prefix' => 'transaction', 'middleware' => 'auth', 'as'=> 'transac
     Route::get('/{transaction}/edit', [CryptoTransactionController::class, 'edit'])->name('edit');
     Route::post('/{transaction}/edit', [CryptoTransactionController::class, 'update'])->name('update');
 });
-
 
 require __DIR__.'/auth.php';

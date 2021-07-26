@@ -19,44 +19,74 @@
             </div>
     </x-slot>
 
+
+    <div class="min-w-screen flex items-center justify-center my-8">
+
+        <div class="flex items-top w-full lg:w-5/6">
+            <div class="flex-1">
+                <x-transaction-card :transaction="$transaction" />
+            </div>
+            <div class="flex-1">
+
+
+
+
     <div class="min-w-screen flex items-center justify-center">
-        <div class="flex items-center w-full lg:w-5/6">
-            <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
+        <div class="flex flex-wrap items-center w-full lg:w-5/6">
+
+@php
+    $rel = $transaction->related();   
+@endphp
+
+
+            <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg">
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Profit / Loss') }}</span> <x-currency :amount="$rel->sumCurrency('profitLoss')" /></p>
+            </div>
+            <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg">
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Balance Before') }}</span> <x-quantity :quantity="$transaction->cryptoToken->balance( $transaction->time )" /></p>
+            </div>
+            <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg">
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Balance After') }}</span> <x-quantity :quantity="$transaction->cryptoToken->balance( $transaction->time->addSecond(1) )" /></p>
+            </div>
+            <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg">
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg Hodl Days') }}</span> {{ ceil($rel->avg('hodlDays')) }} </p>
+            </div>    
+            <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg">
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Average Buy Price') }}</span> <x-currency :amount="$rel->averageBuyPrice()" /></p>
+            </div>
+            <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg">
+                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Average Sell Price') }}</span> <x-currency :amount="$rel->averageSellPrice()" /></p>
+            </div>
+
+            <div class="flex-grow p-6 mb-3 mr-3 bg-white shadow-lg rounded-lg">
                 <p class="text-2xl text-center">
-                    <span class="text-sm block">{{ __('Still Hodling') }}</span> 
+                    <span class="text-sm block">{{ __('Hodl Balance') }}</span> 
                     <x-quantity :quantity="$transaction->cryptoToken->balance()" />
                     <span class="text-xs">30%</span>
                 </p>
             </div>
-            <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Quantity Sold') }}</span> <x-currency :amount="$transaction->cryptoToken->averageBuyPrice()" /></p>
-            </div>
-            <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Profit / Loss') }}</span> <x-currency :amount="$transaction->cryptoToken->averageHodlBuyPrice()" /></p>
-            </div>
-            <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Balance Before') }}</span> <x-quantity :quantity="$transaction->cryptoToken->balance( $transaction->time )" /></p>
-            </div>
-            <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Balance After') }}</span> <x-quantity :quantity="$transaction->cryptoToken->balance( $transaction->time->addSecond(1) )" /></p>
-            </div>
+
         </div>
     </div>
 
-    <x-transaction-card :transaction="$transaction" />
+
+
+            </div>
+        </div>
+    </div>
 
     <!-- Related Transactions -->
     <div class="overflow-x-auto">
         <div class="min-w-screen bg-gray-100 flex items-center justify-center bg-gray-100 font-sans overflow-hidden">
             <div class="w-full lg:w-5/6">
 
-                <h1 class="text-3xl">Related transactions</h1>
+                <h1 class="text-3xl">Related {{ $transaction->isBuy() ? 'sell':'buy' }} transactions</h1>
 
                 <div class="bg-white shadow-md rounded my-4">
                     <table class="min-w-max w-full table-fixed md:table-auto">
                         <thead>
                             <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                                <th class="py-3 px-6 text-left border-l-8 border-gray-500">Date</th>
+                                <th class="py-3 px-6 text-left border-l-8 border-green-500">Date</th>
                                 <th class="py-3 px-6 text-right">Quantity</th>
                                 <th class="py-3 px-6 text-right">Price</th>
                                 <th class="py-3 px-6 text-right">Total</th>
@@ -67,7 +97,7 @@
                         </thead>
                         <tbody class="text-gray-800 text-sm font-light">
 
-                            @foreach ($transaction->related() as $related)
+                            @foreach ($rel as $related)
                             
                                 <tr class="border-b border-gray-200 hover:bg-{{ $related->colour() }}-100">
                                     <td class="py-3 px-6 text-left border-l-8 border-{{ $related->colour() }}-500">
@@ -84,16 +114,10 @@
                                         <x-currency :amount="$related->total()" />
                                     </td>
                                     <td class="py-3 px-6 text-center">
-                                        {{ $related->time->diffInDays($transaction->time) }}d 
+                                        {{ $related->hodlDays }}d
                                     </td>
                                     <td class="py-3 px-6 text-right">
-                                        @php
-                                            if($transaction->isSell())
-                                                $amount = $transaction->price->multiply($related->quantity)->subtract($related->total());
-                                            else 
-                                                $amount = $related->total()->subtract($transaction->price->multiply($related->quantity));
-                                        @endphp
-                                        <x-currency :amount="$amount" />
+                                        <x-currency :amount="$related->profitLoss" />
                                     </td>
 
                                     <td class="py-3 px-2 text-right">
@@ -124,6 +148,27 @@
                                 </tr>
 
                             @endforeach
+
+
+                            <tr class="border-b bg-gray-200 font-bold">
+                                <td class="py-3 px-6 text-left border-l-8 border-green-500"> </td>
+                                <td class="py-3 px-6 text-right">
+                                    <x-quantity :quantity="$rel->sumQuantity('quantity')" />
+                                </td>
+                                <td class="py-3 px-6 text-right">
+                                    <x-currency :amount="$rel->sumCurrency('price')" />
+                                </td>
+                                <td class="py-3 px-6 text-right"> </td>
+                                <td class="py-3 px-6 text-center"> </td>
+                                <td class="py-3 px-6 text-right">
+                                    <x-currency :amount="$rel->sumCurrency('profitLoss')" />
+                                </td>
+
+                                <td class="py-3 px-2 text-right"> </td>
+                            </tr>                            
+
+
+
 
                         </tbody>
                     </table>

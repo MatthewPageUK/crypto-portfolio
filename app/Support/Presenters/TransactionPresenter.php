@@ -14,6 +14,40 @@ trait TransactionPresenter
     {
         return $this->isBuy() ? 'green' : 'red';
     }
+
+    /**
+     * Return past tense of the transaction type
+     * 
+     * @param int $case     0 - lowercase , 1 - Upper Words , 2 - UPPER
+     * @return string 
+     */
+    public function pastTenseType( $case = 0 ): string
+    {
+        $buy = ['bought', 'purchased', 'picked up', 'aquired', 'obtained', 'snapped up', 'grabbed', 'took', 'procured', 'came by', 'invested in', 'secured', 'gained'];
+        $sell = ['sold', 'got rid of', 'dumped', 'ejected', 'traded', 'disposed of', 'threw out', 'binned', 'cashed in', 'exited'];
+        
+        if( $this->isBuy() )
+        {
+            $r = array_rand($buy);
+            $type = $buy[$r];
+        }
+        else
+        {
+            $r = array_rand($sell);
+            $type = $sell[$r];
+        }
+        switch( $case )
+        {
+            case 1 : 
+                $type = ucfirst($type);
+                break;
+
+            case 2 : 
+                $type = strtoupper($type);
+        }
+
+        return $type;
+    }
     
     /**
      * Return a human readable representation of this amount

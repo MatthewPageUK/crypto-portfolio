@@ -22,6 +22,34 @@ class TransactionCollection extends Collection
     private ?Quantity $balance = null;
 
     /**
+     * Add up the values of supplied key and return a Currency
+     */
+    public function sumCurrency( string $key ): Currency
+    {
+        return new Currency( $this->sumNumber( $key )->getValue() );
+    }
+    /**
+     * Add up the values of supplied key and return a Quantity
+     */
+    public function sumQuantity( string $key ): Quantity
+    {
+        return new Quantity( $this->sumNumber( $key )->getValue() );
+    }
+
+    /**
+     * Add up the values of supplied key and return a Number
+     */
+    private function sumNumber( string $key ): Number
+    {
+        $total = new Number();
+        foreach( $this as $transaction )
+        {
+            $total = $total->add( $transaction->$key );
+        }
+        return $total;
+    }
+
+    /**
      * Return the balance from stored value or fresh calculation
      * 
      * @param Carbon $at            Return balance at this date

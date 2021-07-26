@@ -11,6 +11,16 @@ class Number
     public float $value = 0;
 
     /**
+     * Constructor
+     * 
+     * @param float $value      Default value to start with
+     */
+    public function __construct( float $value = 0 )
+    {
+        $this->value = $value;
+    }
+
+    /**
      * Get the raw value
      * 
      * @return float

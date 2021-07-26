@@ -11,6 +11,7 @@ module.exports = {
         extend: {
             fontFamily: {
                 sans: ['Nunito', ...defaultTheme.fontFamily.sans],
+                cursive: ['Caveat'],
             },
             fontSize: {
                 'xxs': '.6rem',

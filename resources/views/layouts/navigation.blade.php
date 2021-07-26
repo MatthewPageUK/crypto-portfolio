@@ -15,6 +15,9 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('diary')" :active="request()->routeIs('diary')">
+                        {{ __('Diary') }}
+                    </x-nav-link>                    
                     <x-nav-link href="https://www.coinmarketcap.com" target="_blank">
                         {{ __('Coin Market Cap') }}
                     </x-nav-link>

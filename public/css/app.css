@@ -22528,6 +22528,10 @@ select {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
+.font-cursive {
+  font-family: Caveat;
+}
+
 .text-xs {
   font-size: .75rem;
 }
@@ -53817,6 +53821,10 @@ select {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   }
 
+  .sm\:font-cursive {
+    font-family: Caveat;
+  }
+
   .sm\:text-xs {
     font-size: .75rem;
   }
@@ -85032,6 +85040,10 @@ select {
 
   .md\:font-mono {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  }
+
+  .md\:font-cursive {
+    font-family: Caveat;
   }
 
   .md\:text-xs {
@@ -116251,6 +116263,10 @@ select {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   }
 
+  .lg\:font-cursive {
+    font-family: Caveat;
+  }
+
   .lg\:text-xs {
     font-size: .75rem;
   }
@@ -147468,6 +147484,10 @@ select {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   }
 
+  .xl\:font-cursive {
+    font-family: Caveat;
+  }
+
   .xl\:text-xs {
     font-size: .75rem;
   }
@@ -178683,6 +178703,10 @@ select {
 
   .\32xl\:font-mono {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  }
+
+  .\32xl\:font-cursive {
+    font-family: Caveat;
   }
 
   .\32xl\:text-xs {

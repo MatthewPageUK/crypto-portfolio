@@ -25,7 +25,8 @@ class CryptoTransaction extends Model
     const BUY = 'buy';
     const SELL = 'sell';
 
-    public ?Quantity $hodl = null;
+    public int $hodlDays = 0;
+    public Currency $profitLoss;
 
     /**
      * The attributes that are mass assignable.
@@ -113,11 +114,15 @@ class CryptoTransaction extends Model
             foreach($unsold->sortBy('time') as $transaction)
             {
                 $newTrans = $transaction->replicate();    
-                $newTrans->id = $transaction->id;            
+                $newTrans->id = $transaction->id;      
+                $newTrans->hodlDays = $this->time->diffInDays($transaction->time);      
 
                 // Transaction less or equal to the amount needed - keep it whole transction
                 if( $transaction->quantity->getValue() <= $toBuy->getValue() )
                 {
+                    $newTrans->profitLoss = $this->price->multiply($newTrans->quantity)->subtract($newTrans->total());
+               
+
                     $related->push( $newTrans );
 
                     $toBuy = $toBuy->subtract($transaction->quantity);
@@ -129,6 +134,9 @@ class CryptoTransaction extends Model
                 elseif( $toBuy->getValue() > 0 )
                 {
                     $newTrans->quantity = $toBuy;
+
+                    $newTrans->profitLoss = $this->price->multiply($newTrans->quantity)->subtract($newTrans->total());
+
                     $related->push( $newTrans );
 
                     $toBuy = new Quantity(0.0);
@@ -169,10 +177,14 @@ class CryptoTransaction extends Model
                 {
                     // Part sold so we update and keep it
                     $sell->quantity = $sell->quantity->subtract($amountToIgnore);
+
+                    $sell->profitLoss = $sell->total()->subtract($this->price->multiply($sell->quantity));
+
                     $tmpSells->push($sell);
                 }
                 else
                 {
+                    $sell->profitLoss = $sell->total()->subtract($this->price->multiply($sell->quantity));
                     // just store it
                     $tmpSells->push($sell);
                 }
@@ -181,6 +193,8 @@ class CryptoTransaction extends Model
             // This collection is now all the sell orders that could have sold our buy order, oldest first....
             foreach( $tmpSells->sortBy('time') as $sell )
             {
+                $sell->hodlDays = $sell->time->diffInDays($this->time);
+
                 if($sell->quantity->getValue() <= $toSell->getValue() && $toSell->getValue() > 0 )
                 {
                     // just store it
