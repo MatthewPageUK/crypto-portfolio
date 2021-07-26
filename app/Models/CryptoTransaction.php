@@ -143,6 +143,7 @@ class CryptoTransaction extends Model
     {
         // Unsold transactions (or part) at time of this transaction
         // This Sell order will sell the oldest of them
+        // todo comments
         $unsold = $this->cryptoToken->transactions->unsoldTransactions( $this->time );
         $toBuy = $this->quantity;
 
@@ -181,63 +182,93 @@ class CryptoTransaction extends Model
      */
     private function relatedSellOrders( $related ): TransactionCollection
     {
-        // balance before
+        /**
+         * First deal with the existing balanceBefore
+         * These tokens need to be sold before our new ones can be
+         */
         $balanceBefore = $this->cryptoToken->balance( $this->time );
 
-        // total bought
-        $toSell = $this->quantity;
-
-        // every sell order after this order
+        /**
+         * Every sell order after this buy order
+         * If our tokens have been sold it's in here
+         */
         $sells = $this->cryptoToken->transactions
             ->where('type', CryptoTransaction::SELL)
             ->where('time', '>', $this->time)
-            ->sortByDesc('time');
+            ->sortBy('time');
 
-        // skip sells up to total quantity == balance before (they sell the preivous balance)
-        $amountToIgnore = $balanceBefore;
-        $tmpSells = new TransactionCollection();
+        $possibleSells = new TransactionCollection();
 
         foreach($sells as $sell)
         {
+            /**
+             * Store some info for later use
+             */
             $sell->profitLoss = $sell->total()->subtract($this->price->multiply($sell->quantity));
             $sell->hodlDays = $sell->time->diffInDays($this->time);
 
-            if($sell->quantity->lte( $amountToIgnore ) )
+            /**
+             * We have sold some of the balanceBefore, subtract quantity sold
+             * and ignore the transaction, we don't need it now
+             */
+            if($sell->quantity->lte( $balanceBefore ) )
             {
-                // ignore it / remove it
-                $amountToIgnore = $amountToIgnore->subtract($sell->quantity);
+                $balanceBefore = $balanceBefore->subtract( $sell->quantity );
             }
-            else if($amountToIgnore->gt(0) )
+            /**
+             * We trying sell more than balanceBefore and we still have a balanceBefore
+             * Adjust the transaction to only sell the remainder, this part order then 
+             * gets added to our possibleSells list and results in a zero balanceBefore
+             */
+            else if($balanceBefore->gt(0) )
             {
-                // Part sold so we update and keep it
-                $sell->quantity = $sell->quantity->subtract($amountToIgnore);
-                $tmpSells->push($sell);
+                $sell->quantity = $sell->quantity->subtract( $balanceBefore );
+                $balanceBefore = $balanceBefore->subtract( $sell->quantity );
+                $possibleSells->push( $sell );
             }
+            /**
+             * balanceBefore has been zeroed and all subsequent transactions are
+             * added to our possibleSells, these could have sold our new Buy order.
+             */
             else
             {
-                // just store it
-                $tmpSells->push($sell);
+                $possibleSells->push($sell);
             }
         }
 
-        // This collection is now all the sell orders that could have sold our buy order, oldest first....
-        foreach( $tmpSells->sortBy('time') as $sell )
+        /**
+         * possibleSells is now all the sell orders that could have sold our buy order.
+         */
+        $toSell = $this->quantity;
+
+        foreach( $possibleSells->sortBy('time') as $sell )
         {
+            /**
+             * This order sells less than our target toSell, keep it and 
+             * subtract its quantity from toSell
+             */
             if( $sell->quantity->lte( $toSell ) && $toSell->gt(0) )
             {
-                // just store it
                 $related->push($sell);
                 $toSell = $toSell->subtract($sell->quantity);
             }
+            /**
+             * This order wants to sell more than we have, adjust the quantity
+             * and keep it and break out.
+             */
             else if( $toSell->gt(0) )
             {
-                // Part sold so we update and keep it
                 $sell->quantity = $toSell;
                 $related->push($sell);
                 $toSell = new Quantity(0);
+
+                break;
             }     
         }
         
+        /**
+         * Final collection of orders that have sold our buy order :) 
+         */
         return $related;
     }
 }
