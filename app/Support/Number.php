@@ -113,7 +113,10 @@ class Number
     public function divide(Number $number)
     {
         $class = get_class($this);
-        $result = $this->getValue() / $number->getValue();
+        $result = ( $this->lt(0) && $number->lt(0) ) ?
+            $this->getValue() / $number->getValue() : 
+            0;
+            
         return new $class($result);
     }
 

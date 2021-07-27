@@ -20,17 +20,13 @@
 
             <div class="flex flex-shrink">
                 <a href="{{ route('token.buy', $token->id) }}" title="Buy more {{ $token->symbol }}" class="flex flex-shrink items-center text-green-700 hover:text-green-500">
-                    <span class="flex-grow mr-1">Buy</span> 
-                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-4 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    <span class="flex-grow mr-1">Buy</span>
+                    <x-icons.plus class="mr-4 w-5" />
                 </a>
                 @if( $token->balance()->getValue() > 0 )
                     <a href="{{ route('token.sell', $token->id) }}" title="Sell some {{ $token->symbol }}" class="flex flex-shrink items-center text-red-700 hover:text-red-500">
                         <span class="flex-grow mr-1">Sell</span> 
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                        <x-icons.minus class="w-5" />
                     </a>
                 @endif
             </div>

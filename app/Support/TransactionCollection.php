@@ -44,7 +44,10 @@ class TransactionCollection extends Collection
         $total = new Number();
         foreach( $this as $transaction )
         {
-            $total = $total->add( $transaction->$key );
+            if( $key === 'total' )
+                $total = $total->add( $transaction->total() );
+            else
+                $total = $total->add( $transaction->$key );
         }
         return $total;
     }

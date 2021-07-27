@@ -12,19 +12,19 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" title="View your Dashboard">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('diary')" :active="request()->routeIs('diary')">
+                    <x-nav-link :href="route('diary')" :active="request()->routeIs('diary')" title="Your trading diary">
                         {{ __('Diary') }}
                     </x-nav-link>                    
-                    <x-nav-link href="https://www.coinmarketcap.com" target="_blank">
+                    <x-nav-link href="https://www.coinmarketcap.com" target="_blank" title="Visit Coinmarketcap">
                         {{ __('Coin Market Cap') }}
                     </x-nav-link>
-                    <x-nav-link href="https://pro.coinbase.com/trade/" target="_blank">
+                    <x-nav-link href="https://pro.coinbase.com/trade/" target="_blank" title="Trade on Coinbase Pro">
                         {{ __('Coinbase Pro') }}
                     </x-nav-link>
-                    <x-nav-link href="https://binance.com/en/my/wallet/account/overview" target="_blank">
+                    <x-nav-link href="https://binance.com/en/my/wallet/account/overview" target="_blank" title="Trade on Binance">
                         {{ __('Binance') }}
                     </x-nav-link>
                 </div>

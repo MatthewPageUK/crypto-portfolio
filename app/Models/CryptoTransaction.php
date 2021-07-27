@@ -150,8 +150,6 @@ class CryptoTransaction extends Model
         foreach($unsold->sortBy('time') as $transaction)
         {
             $newTrans = $transaction->replicateWithId();    
-            $newTrans->hodlDays = $this->time->diffInDays($transaction->time);
-            $newTrans->profitLoss = $this->price->multiply($newTrans->quantity)->subtract($newTrans->total());
 
             // Transaction less or equal to the amount needed - keep whole transction
             if( $transaction->quantity->lte( $toBuy ) )
@@ -168,7 +166,16 @@ class CryptoTransaction extends Model
                 $related->push( $newTrans );
                 $toBuy = new Quantity(0.0);
             }
-        }        
+        }
+        /**
+         * Update the stat fields for the related transactions
+         */
+        foreach($related as $transaction)
+        {
+            $transaction->hodlDays = $this->time->diffInDays($transaction->time);
+            $transaction->profitLoss = $this->price->multiply($transaction->quantity)->subtract($transaction->total());
+        }
+        
         return $related;
     }
 

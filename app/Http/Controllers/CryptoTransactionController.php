@@ -6,6 +6,7 @@ use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use App\Models\CryptoToken;
 use App\Models\CryptoTransaction;
+use App\Support\Number;
 
 class CryptoTransactionController extends Controller
 {
