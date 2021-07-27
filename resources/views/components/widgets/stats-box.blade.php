@@ -7,8 +7,14 @@
 {{-- A stats box with title --}}
 
 <div {{ $attributes->merge(['class' => $classes]) }} >
-    <p class="text-2xl text-center">
-        <span class="text-sm block text-gray-500">{{ $title }}</span> 
+
+    @if ( strlen($title) < 1 )
         {{ $slot }}
-    </p>
+    @else
+        <p class="text-2xl text-center">
+            <span class="text-sm block text-gray-500">{{ $title }}</span> 
+            {{ $slot }}
+        </p>        
+    @endif
+
 </div>

@@ -26,7 +26,7 @@
 
     {{-- Info Boxes --}}
     <div class="min-w-screen flex items-center justify-center my-8">
-        <div class="flex items-top w-full lg:w-5/6">
+        <div class="flex items-top w-full mx-12">
             <div class="flex-1">
 
                 {{-- Transaction details --}}

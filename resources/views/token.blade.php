@@ -38,30 +38,33 @@
             </div>
     </x-slot>
 
-    <div class="min-w-screen flex items-center justify-center">
-        <div class="flex items-center w-full lg:w-5/6">
+    <div class="flex items-center justify-center mx-12">
 
-            {{-- Token balance --}}
-            <x-widgets.stats-box title="{{ __('Balance') }}">
-                <x-quantity :quantity="$token->balance()" />
-            </x-widgets.stats-box>
+        {{-- Token balance --}}
+        <x-widgets.stats-box title="{{ __('Balance') }}">
+            <x-quantity :quantity="$token->balance()" />
+        </x-widgets.stats-box>
 
-            {{-- Average buy price --}}
-            <x-widgets.stats-box title="{{ __('Avg. Buy price') }}">
-                <x-currency :amount="$token->averageBuyPrice()" />
-            </x-widgets.stats-box>
+        {{-- Average buy price --}}
+        <x-widgets.stats-box title="{{ __('Avg. Buy price') }}">
+            <x-currency :amount="$token->averageBuyPrice()" />
+        </x-widgets.stats-box>
 
-            {{-- Average hodl price --}}
-            <x-widgets.stats-box title="{{ __('Avg. Hodl price') }}">
-                <x-currency :amount="$token->averageHodlBuyPrice()" />
-            </x-widgets.stats-box>
+        {{-- Average hodl price --}}
+        <x-widgets.stats-box title="{{ __('Avg. Hodl price') }}">
+            <x-currency :amount="$token->averageHodlBuyPrice()" />
+        </x-widgets.stats-box>
 
-            {{-- Average sell price --}}
-            <x-widgets.stats-box title="{{ __('Avg. Sell price') }}">
-                <x-currency :amount="$token->averageSellPrice()" />
-            </x-widgets.stats-box>
+        {{-- Average sell price --}}
+        <x-widgets.stats-box title="{{ __('Avg. Sell price') }}">
+            <x-currency :amount="$token->averageSellPrice()" />
+        </x-widgets.stats-box>
 
-        </div>
+        {{-- TradingView Ticker --}}
+        <x-widgets.stats-box title="" class="pt-4 pb-4">
+            <x-tokens.tradingview-ticker :token="$token" />                
+        </x-widgets.stats-box>     
+            
     </div>
 
     {{-- Transactions table --}}

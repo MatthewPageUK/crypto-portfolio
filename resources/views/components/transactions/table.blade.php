@@ -10,7 +10,7 @@
 
     <div class="overflow-x-auto">
         <div class="min-w-screen bg-gray-100 flex items-center justify-center bg-gray-100 font-sans overflow-hidden">
-            <div class="w-full lg:w-5/6">
+            <div class="w-full mx-12">
                 <div class="bg-white shadow-md rounded my-4">
                     <table class="min-w-max w-full table-fixed md:table-auto">
                         <thead>
@@ -48,7 +48,7 @@
 
                             </tr>
                         </thead>
-                        <tbody class="text-gray-800 text-sm font-light">
+                        <tbody class="text-gray-800">
 
                             @foreach ($transactions as $transaction)
                             

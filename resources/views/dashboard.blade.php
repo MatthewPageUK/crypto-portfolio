@@ -18,15 +18,27 @@
         </div>
     </x-slot>
  
-    <div class="overflow-x-auto">
-        <div class="min-w-screen bg-gray-100 flex flex-wrap items-center justify-center overflow-hidden">
+    <div class="overflow-x-auto mt-2">
+        <div class="min-w-screen bg-gray-100 flex flex-wrap items-center justify-center overflow-hidden border-b-2 border-gray-300 mx-6">
 
-            <!-- Tokens -->
+            <!-- Tokens with a balance -->
             @foreach ($tokens as $token)
-                <x-tokens.infobox :token="$token" />
+                @if ( $token->balance()->gt(0) )
+                    <x-tokens.infobox :token="$token" class="flex-grow" />
+                @endif
             @endforeach
             
         </div>
+        <div class="min-w-screen bg-gray-100 flex flex-wrap items-center justify-center overflow-hidden mb-16 mx-6">
+
+            <!-- Tokens with zero balance -->
+            @foreach ($tokens as $token)
+                @if ( $token->balance()->lte(0) )
+                    <x-tokens.infobox :token="$token" class="flex-grow" />
+                @endif
+            @endforeach
+            
+        </div>        
     </div>
 
 </x-app-layout>
