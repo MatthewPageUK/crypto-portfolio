@@ -41,6 +41,18 @@ class Number
     }
 
     /**
+     * Equal
+     * 
+     * @param mixed int|float|Number $number        Number instance to compare to
+     * @return bool
+     */
+    public function eq($number): bool
+    {
+        if( ! $number instanceOf Number ) $number = new Number( $number );
+
+        return $this->getValue() == $number->getValue();
+    }    
+    /**
      * Greater Than
      * 
      * @param mixed int|float|Number $number        Number instance to compare to
@@ -113,7 +125,7 @@ class Number
     public function divide(Number $number)
     {
         $class = get_class($this);
-        $result = ( $this->lt(0) && $number->lt(0) ) ?
+        $result = ( ! $this->eq(0) && ! $number->eq(0) ) ?
             $this->getValue() / $number->getValue() : 
             0;
             
