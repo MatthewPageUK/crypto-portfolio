@@ -15,7 +15,7 @@ class CryptoTokenController extends Controller
      */
     public function create()
     {
-        return view('addtoken');
+        return view('token-add');
     }
 
     /**
@@ -55,7 +55,7 @@ class CryptoTokenController extends Controller
      */
     public function edit(CryptoToken $token)
     {
-        return view('edittoken')
+        return view('token-edit')
             ->with('token', $token);
     }
 

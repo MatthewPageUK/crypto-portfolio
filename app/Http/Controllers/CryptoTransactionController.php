@@ -27,7 +27,7 @@ class CryptoTransactionController extends Controller
      */
     public function buy(CryptoToken $token)
     {
-        return view('addtransaction')
+        return view('transaction-add')
             ->with('token', $token)
             ->with('transType', CryptoTransaction::BUY);
     }
@@ -38,7 +38,7 @@ class CryptoTransactionController extends Controller
      */
     public function sell(CryptoToken $token)
     {
-        return view('addtransaction')
+        return view('transaction-add')
             ->with('token', $token)
             ->with('transType', CryptoTransaction::SELL);
     }
@@ -81,7 +81,7 @@ class CryptoTransactionController extends Controller
     {
         $tokens = CryptoToken::all()->sortBy('symbol');
 
-        return view('edittransaction')
+        return view('transaction-edit')
             ->with('transaction', $transaction)
             ->with('tokens', $tokens);
     }

@@ -3,140 +3,69 @@
         <div class="flex items-center">
             <div class="flex flex-grow">
                 <h2 class="flex-grow font-semibold text-xl text-gray-800 leading-tight">
+
+                    {{-- Title --}}
                     {{ __($token->symbol . ' - ' . $token->name) }} 
 
-                    <a href="{{ route('token.edit', $token->id) }}" title="Edit this token" class="w-4 inline-block ml-2 text-gray-500 transform hover:scale-110">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 hover:text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                        </svg>
-                    </a>
-                    <a href="{{ route('token.delete', $token->id) }}" title="Delete this token" class="w-4 inline-block text-gray-500 transform hover:scale-110" onclick="return confirm('Delete this token and ALL transactions?')">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 hover:text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                    </a>
+                    {{-- Edit link --}}
+                    <x-tokens.link-edit :token="$token" class="w-4 inline-block ml-2 text-gray-500 transform hover:scale-110">
+                        <x-icons.pen class="h-4 w-4 hover:text-green-500" />
+                    </x-tokens.link-edit>
+
+                    {{-- Delete link --}}
+                    <x-tokens.link-delete :token="$token" class="w-4 inline-block text-gray-500 transform hover:scale-110">
+                        <x-icons.bin class="h-4 w-4 hover:text-red-500" />
+                    </x-tokens.link-delete>
+
                 </h2>   
             </div>
-
             <div class="flex flex-shrink">
-                <a href="{{ route('token.buy', $token->id) }}" title="Buy more {{ $token->symbol }}" class="flex flex-shrink items-center text-green-700 hover:text-green-500">
+
+                {{-- Buy link --}}
+                <x-tokens.link-buy :token="$token" class="flex flex-shrink items-center text-green-700 hover:text-green-500">
                     <span class="flex-grow mr-1">Buy</span>
                     <x-icons.plus class="mr-4 w-5" />
-                </a>
+                </x-tokens.link-buy>
+
+                {{-- Sell link --}}
                 @if( $token->balance()->getValue() > 0 )
-                    <a href="{{ route('token.sell', $token->id) }}" title="Sell some {{ $token->symbol }}" class="flex flex-shrink items-center text-red-700 hover:text-red-500">
-                        <span class="flex-grow mr-1">Sell</span> 
-                        <x-icons.minus class="w-5" />
-                    </a>
+                    <x-tokens.link-sell :token="$token" class="flex flex-shrink items-center text-red-700 hover:text-red-500">
+                        <span class="flex-grow mr-1">Sell</span>
+                        <x-icons.minus class="mr-4 w-5" />
+                    </x-tokens.link-buy>
                 @endif
+
             </div>
     </x-slot>
 
     <div class="min-w-screen flex items-center justify-center">
         <div class="flex items-center w-full lg:w-5/6">
-            <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center">
-                    <span class="text-sm block">{{ __('Balance') }}</span> 
-                    <x-quantity :quantity="$token->balance()" />
-                </p>
-            </div>
-            <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Buy price') }}</span> <x-currency :amount="$token->averageBuyPrice()" /></p>
-                {{-- <x-minigraph :token=$token></x-minigraph> --}}
 
-            </div>
-            <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Hodl price') }}</span> <x-currency :amount="$token->averageHodlBuyPrice()" /></p>
-            </div>
-            <div class="flex-grow p-6 m-5 bg-white shadow-lg rounded-lg">
-                <p class="text-2xl text-center"><span class="text-sm block">{{ __('Avg. Sell price') }}</span> <x-currency :amount="$token->averageSellPrice()" /></p>
-            </div>
+            {{-- Token balance --}}
+            <x-widgets.stats-box title="{{ __('Balance') }}">
+                <x-quantity :quantity="$token->balance()" />
+            </x-widgets.stats-box>
+
+            {{-- Average buy price --}}
+            <x-widgets.stats-box title="{{ __('Avg. Buy price') }}">
+                <x-currency :amount="$token->averageBuyPrice()" />
+            </x-widgets.stats-box>
+
+            {{-- Average hodl price --}}
+            <x-widgets.stats-box title="{{ __('Avg. Hodl price') }}">
+                <x-currency :amount="$token->averageHodlBuyPrice()" />
+            </x-widgets.stats-box>
+
+            {{-- Average sell price --}}
+            <x-widgets.stats-box title="{{ __('Avg. Sell price') }}">
+                <x-currency :amount="$token->averageSellPrice()" />
+            </x-widgets.stats-box>
+
         </div>
     </div>
 
-    <!-- Transactions table (https://tailwindcomponents.com/components/tables) -->
-    <div class="overflow-x-auto">
-        <div class="min-w-screen bg-gray-100 flex items-center justify-center bg-gray-100 font-sans overflow-hidden">
-            <div class="w-full lg:w-5/6">
-                <div class="bg-white shadow-md rounded my-4">
-                    <table class="min-w-max w-full table-fixed md:table-auto">
-                        <thead>
-                            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                                <th class="py-3 px-6 text-left border-l-8 border-gray-500">Date</th>
-                                <th class="py-3 px-6 text-left">Quantity</th>
-                                <th class="py-3 px-6 text-right">Price</th>
-                                <th class="py-3 px-6 text-right hidden md:table-cell">Total</th>
-                                <th class="py-3 px-6 text-center hidden md:table-cell">Type</th>
-                                <th class="py-3 px-6 text-center"> </th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-gray-800 text-sm font-light">
-
-                            @foreach ($token->transactions as $transaction)
-                            
-                                <tr class="border-b border-gray-200 hover:bg-{{ $transaction->colour() }}-100">
-                                    <td class="py-3 px-6 text-left border-l-8 border-{{ $transaction->colour() }}-500">
-                                        <span class="whitespace-nowrap">{{ $transaction->time->format('j F \'y') }}</span>
-                                        <span class="whitespace-nowrap text-xs">{{ $transaction->time->format('h:i:s A') }}</span>
-                                    </td>
-                                    <td class="py-3 px-6 text-left">
-                                        <x-quantity :quantity="$transaction->quantity" />
-                                    </td>
-                                    <td class="py-3 px-6 text-right">
-                                        <x-currency :amount="$transaction->price" />
-                                    </td>
-                                    <td class="py-3 px-6 text-right hidden md:table-cell">
-                                        <x-currency :amount="$transaction->total()" />
-                                    </td>
-                                    <td class="py-3 px-6 text-center hidden md:table-cell">
-                                        {{ ucwords($transaction->type) }}
-                                    </td>
-                                    <td class="py-3 px-2 text-right">
-                                        <div class="flex item-center justify-center">
-                                            <div class="w-4 mr-2 transform hover:scale-110">
-                                                <a href="{{ route('transaction.edit', $transaction->id) }}" 
-                                                    class="text-gray-500 hover:text-red-500" 
-                                                    title="Edit this transaction"
-                                                >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 hover:text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                                    </svg>
-                                                </a>
-                                            </div>
-                                            <div class="w-4 mr-2 transform hover:scale-110">
-                                                <a href="{{ route('transaction.delete', ['transaction' => $transaction->id]) }}" 
-                                                    class="text-gray-500 hover:text-red-500" 
-                                                    onclick="return confirm('Delete this transaction?')"
-                                                    title="Delete this transaction"
-                                                >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 hover:text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                    </svg>
-                                                </a>
-                                            </div>
-                                            <div class="w-4 mr-2 transform hover:scale-110">
-                                                <a href="{{ route('transaction.show', ['transaction' => $transaction->id]) }}" 
-                                                    class="text-gray-500 hover:text-red-500" 
-                                                    title="View this transaction"
-                                                >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 hover:text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                    </svg>
-                                                </a>
-                                            </div>                                            
-                                        </div>
-                                    </td>
-                                </tr>
-
-                            @endforeach
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+    {{-- Transactions table --}}
+    <x-transactions.table :transactions="$token->transactions" :totals="false" :ignore="['hodlDays', 'profitLoss']"/>
 
 </x-app-layout>
 

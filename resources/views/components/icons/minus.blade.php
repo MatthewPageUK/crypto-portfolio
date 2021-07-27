@@ -1,7 +1,7 @@
 @props(['active'])
 
 @php
-    $classes = '';
+    $classes = 'h-4 w-4';
 @endphp
 
 <svg 

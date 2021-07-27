@@ -168,14 +168,18 @@ class TransactionCollection extends Collection
      * @param float     $balance    Starting balance
      * @return bool    
      */
-    private function validateTransactions( $balance = 0 ): bool
+    private function validateTransactions( ?Quantity $balance = null ): bool
     {
-        $sorted = $this->sortBy('time');
+        if( is_null( $balance ) ) $balance = new Quantity();
 
-        foreach( $sorted as $transaction )
+        foreach( $this->sortBy('time') as $transaction )
         {
-            $balance += ( $transaction->isBuy() ) ? $transaction->quantity->getValue() : -$transaction->quantity->getValue();
-            if( $balance < 0 ) return false;
+            if( $transaction->isBuy() )
+                $balance = $balance->add( $transaction->quantity );
+            else
+                $balance = $balance->subtract( $transaction->quantity );
+
+            if( $balance->lt(0) ) return false;
         }
 
         return true;
