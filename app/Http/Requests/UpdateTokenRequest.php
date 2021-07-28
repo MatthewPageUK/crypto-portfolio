@@ -18,7 +18,7 @@ class UpdateTokenRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Update token rules.
      *
      * @return array
      */
@@ -33,13 +33,12 @@ class UpdateTokenRequest extends FormRequest
                 'max:25',
                 'alpha_num',
             ],
-
             'name' => [
                 'required',
                 Rule::unique('crypto_tokens')->where('deleted_at', NULL)->ignore($token->id),
-                'regex:/^[a-zA-Z0-9\s]+$/',
+                'max:100',                
                 'min:3',
-                'max:100',
+                'regex:/^[a-zA-Z0-9\s]+$/',
             ],
         ];
     }

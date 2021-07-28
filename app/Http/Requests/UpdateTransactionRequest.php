@@ -6,6 +6,7 @@ use App\Models\CryptoToken;
 use App\Models\CryptoTransaction;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use App\Rules\ValidTransactionsRule;
 
 class UpdateTransactionRequest extends FormRequest
 {
@@ -19,37 +20,67 @@ class UpdateTransactionRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        $token = CryptoToken::find($this->input('crypto_token_id'));
+        $transaction = $this->route('transaction');
+
+        // If different token check both tokens maintain a valid balance..... !!!! todo
+        
+        /**
+         * Filter out the current transaction
+         */
+        $filtered = $token->transactions->where('id', '!=', $transaction->id);
+
+        /**
+         * Push updated transaction
+         */
+        $filtered->push(new CryptoTransaction([
+            'crypto_token_id' => $token->id, 
+            'quantity' => $this->input('quantity'),
+            'price' => $this->input('price'),
+            'type' => $this->input('type'),
+            'time' => $this->input('time'),
+        ])); 
+
+        /**
+         * Validate the transactions
+         */
+        $this->merge(['validtransactions' => $filtered->isValid()]);
+
+    }
+
+
     /**
-     * Get the validation rules that apply to the request.
+     * Update transaction rules.
      *
      * @return array
      */
     public function rules()
     {
-        $token = CryptoToken::find($this->input('crypto_token_id'));
-        $transaction = $this->route('transaction');
-
-        if($transaction->crypto_token_id !== $token->id) 
-        {
-            // selected a different token, balance from token is ok
-            $balance = $token->balance();
-        }
-        else
-        {
-            // selected same token, balance needs to be adjusted to remove existing transaction that is being edited
-            // todo - numbers
-            // todo - transaction chain check
-            $balance = $token->balance() + ( ($transaction->isBuy()) ? -$transaction->quantity->getValue() : $transaction->quantity->getValue() );
-        }
-
-        $quantityRule = ($token && $this->input('type')===CryptoTransaction::SELL) ? ['required', 'gt:0', 'lte:'.$balance] : ['required', 'gt:0'];
-
         return [
-            'crypto_token_id' => ['required', 'exists:crypto_tokens,id'],
-            'quantity' => $quantityRule,
-            'price' => ['required', 'gte:0'],
-            'type' => ['required', Rule::in(CryptoTransaction::BUY, CryptoTransaction::SELL)],
-            'time' => ['required', 'date', 'before:'.now()->format('Y-m-d\TH:i:s')],
+            'crypto_token_id' => [
+                'required', 
+                'exists:crypto_tokens,id',
+            ],
+            'quantity' => ['required', 'gt:0'],
+            'price' => [
+                'required', 
+                'gte:0',
+            ],
+            'type' => [
+                'required', 
+                Rule::in(CryptoTransaction::BUY, CryptoTransaction::SELL),
+            ],
+            'time' => [
+                'required', 
+                'date', 
+                'before:'.now()->format('Y-m-d\TH:i:s'),
+            ],
+            'validtransactions' => [
+                'required',
+                new ValidTransactionsRule,
+            ],
         ];
     }
 }

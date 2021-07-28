@@ -26,9 +26,7 @@ class CryptoTokenController extends Controller
      */
     public function store(StoreTokenRequest $request)
     {
-        $validatedData = $request->validated();
-
-        CryptoToken::create($request->all());
+        CryptoToken::create( $request->validated() );
 
         return redirect()
             ->route('dashboard')
@@ -68,7 +66,7 @@ class CryptoTokenController extends Controller
      */
     public function update(UpdateTokenRequest $request, CryptoToken $token)
     {
-        $token->update($request->validated());
+        $token->update( $request->validated() );
 
         return redirect()
             ->route('token.show', $token)

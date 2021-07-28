@@ -6,20 +6,9 @@ use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use App\Models\CryptoToken;
 use App\Models\CryptoTransaction;
-use App\Support\Number;
 
 class CryptoTransactionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
     /**
      * Show the form for creating a new buy transaction.
      *
@@ -51,8 +40,7 @@ class CryptoTransactionController extends Controller
      */
     public function store(StoreTransactionRequest $request)
     {
-        $validatedData = $request->validated();
-        CryptoTransaction::create($request->all());
+        CryptoTransaction::create( $request->validated() );
 
         return redirect()
             ->route('token.show', ['token' => $request['crypto_token_id']])
@@ -60,7 +48,7 @@ class CryptoTransactionController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified transaction.
      *
      * @param  \App\Models\CryptoTransaction  $cryptoTransaction
      * @return \Illuminate\Http\Response
@@ -72,7 +60,7 @@ class CryptoTransactionController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified transaction.
      *
      * @param  \App\Models\CryptoTransaction  $cryptoTransaction
      * @return \Illuminate\Http\Response
@@ -87,7 +75,7 @@ class CryptoTransactionController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified transaction in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\CryptoTransaction  $cryptoTransaction
@@ -95,26 +83,7 @@ class CryptoTransactionController extends Controller
      */
     public function update(UpdateTransactionRequest $request, CryptoTransaction $transaction)
     {
-
-        // replace old trans with new one in collection then validate
-
-        // $filtered = $token->transactions->filter(function ($value, $key) use ($transaction) {
-        //     return $value->id !== $transaction->id;
-        // });
-
-        // if( $filtered->validateTransactions() )
-        // {
-        //     $transaction->delete();
-        //     return redirect()->route('token.show', ['token' => $token->id])->with('success', 'Transaction deleted');
-        // }
-        // else
-        // {
-        //     return redirect()->route('token.show', ['token' => $token->id])->with('failure', 'Transaction could not be deleted, negative balance error.');
-        // }
-
-
-
-        $transaction->update($request->validated());
+        $transaction->update( $request->validated() );
 
         return redirect()
             ->route('token.show', $transaction->crypto_token_id)
@@ -122,9 +91,8 @@ class CryptoTransactionController extends Controller
     }
 
     /**
-     * Remove the transaction resource from storage.
-     * 
-     * Validates the transactions to ensure there are no negative balances
+     * Validates the transactions to ensure there are no negative 
+     * balance errors and removes the transaction from storage.
      *
      * @param  \App\Models\CryptoTransaction  $cryptoTransaction
      * @return \Illuminate\Http\Response
@@ -132,22 +100,41 @@ class CryptoTransactionController extends Controller
     public function destroy(CryptoTransaction $transaction)
     {
         $token = CryptoToken::find($transaction->crypto_token_id);
+        /**
+         * Remove this transaction from the list
+         */
+        $filtered = $token->transactions->where('id', '!=', $transaction->id);
 
-        $filtered = $token->transactions->filter(function ($value, $key) use ($transaction) {
-            return $value->id !== $transaction->id;
-        });
-
-        if( $filtered->validateTransactions() )
+        /**
+         * Validate the transactions list
+         */
+        if( $filtered->isValid() )
         {
             $transaction->delete();
-            return redirect()
-                ->route('token.show', ['token' => $token->id])
-                ->with('success', 'Transaction deleted');
+
+            /**
+             * Check redirect back does not go to the transaction show page
+             */
+            if( redirect()->back()->getTargetUrl() === route('transaction.show', $transaction) )
+            {
+                return redirect()
+                    ->route('token.show', $token)
+                    ->with('success', 'Transaction deleted');
+            }
+            else
+            {
+                return redirect()
+                    ->back()
+                    ->with('success', 'Transaction deleted');
+            }
         }
         else
         {
+            /**
+             * Redirect to where we came from with an error message
+             */
             return redirect()
-                ->route('token.show', ['token' => $token->id])
+                ->back()
                 ->with('failure', 'Transaction could not be deleted, negative balance error.');
         }
 

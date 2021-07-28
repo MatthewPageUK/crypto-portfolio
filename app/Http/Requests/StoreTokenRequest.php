@@ -19,7 +19,7 @@ class StoreTokenRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Store token rules.
      *
      * @return array
      */
