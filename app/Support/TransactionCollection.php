@@ -2,7 +2,7 @@
 
 namespace App\Support;
 
-use App\Models\CryptoTransaction;
+use App\Models\Transaction;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
 use App\Support\Quantity;
@@ -73,7 +73,7 @@ class TransactionCollection extends Collection
      */
     public function averageBuyPrice(): Currency
     {
-        return $this->calcAveragePrice( CryptoTransaction::BUY );
+        return $this->calcAveragePrice( Transaction::BUY );
     }
 
     /**
@@ -83,7 +83,7 @@ class TransactionCollection extends Collection
      */
     public function averageSellPrice(): Currency
     {
-        return $this->calcAveragePrice( CryptoTransaction::SELL );
+        return $this->calcAveragePrice( Transaction::SELL );
     }
 
     /**
@@ -142,7 +142,7 @@ class TransactionCollection extends Collection
      * @param float $quantity                       Starting quantity
      * @return float                                The average price of all the buy transactions
      */
-    private function calcAveragePrice( $type = CryptoTransaction::BUY, Currency $total = null, Quantity $quantity = null ): Currency
+    private function calcAveragePrice( $type = Transaction::BUY, Currency $total = null, Quantity $quantity = null ): Currency
     {
         if( is_null( $total ) ) $total = new Currency();
         if( is_null( $quantity ) ) $quantity = new Quantity();
@@ -200,7 +200,7 @@ class TransactionCollection extends Collection
         $unsoldTransactions = new TransactionCollection();
         $unsoldQuantity = $this->balance( $at );
 
-        foreach( $this->where('type', CryptoTransaction::BUY)->sortByDesc('time') as $transaction )
+        foreach( $this->where('type', Transaction::BUY)->sortByDesc('time') as $transaction )
         {
             if( $at > $transaction->time )
             {

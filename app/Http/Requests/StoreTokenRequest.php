@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\CryptoToken;
+use App\Models\Token;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -25,7 +25,7 @@ class StoreTokenRequest extends FormRequest
      */
     public function rules()
     {
-        $table = (new CryptoToken())->getTable();
+        $table = (new Token())->getTable();
 
         return [
             'symbol' => [ 

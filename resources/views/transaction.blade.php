@@ -75,12 +75,12 @@
                         
                         {{-- Info box - Balance before --}}
                         <x-widgets.stats-box title="{{ __('Balance before') }}" class="mr-3 mb-3 mt-0 ml-0">
-                            <x-quantity :quantity="$transaction->cryptoToken->balance( $transaction->time )" />
+                            <x-quantity :quantity="$transaction->token->balance( $transaction->time )" />
                         </x-widgets.stats-box>
 
                         {{-- Info box - Balance after --}}
                         <x-widgets.stats-box title="{{ __('Balance after') }}" class="mr-3 mb-3 mt-0 ml-0">
-                            <x-quantity :quantity="$transaction->cryptoToken->balance( $transaction->time->addSecond(1) )" />
+                            <x-quantity :quantity="$transaction->token->balance( $transaction->time->addSecond(1) )" />
                         </x-widgets.stats-box>
 
                     </div>

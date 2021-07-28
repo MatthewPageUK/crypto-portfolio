@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Models\CryptoToken;
-use App\Models\CryptoTransaction;
+use App\Models\Token;
+use App\Models\Transaction;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use App\Rules\ValidTransactionsRule;
@@ -22,7 +22,7 @@ class UpdateTransactionRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        $token = CryptoToken::find($this->input('crypto_token_id'));
+        $token = Token::find($this->input('token_id'));
         $transaction = $this->route('transaction');
 
         // If different token check both tokens maintain a valid balance..... !!!! todo
@@ -35,8 +35,8 @@ class UpdateTransactionRequest extends FormRequest
         /**
          * Push updated transaction
          */
-        $filtered->push(new CryptoTransaction([
-            'crypto_token_id' => $token->id, 
+        $filtered->push(new Transaction([
+            'token_id' => $token->id, 
             'quantity' => $this->input('quantity'),
             'price' => $this->input('price'),
             'type' => $this->input('type'),
@@ -59,9 +59,9 @@ class UpdateTransactionRequest extends FormRequest
     public function rules()
     {
         return [
-            'crypto_token_id' => [
+            'token_id' => [
                 'required', 
-                'exists:crypto_tokens,id',
+                'exists:tokens,id',
             ],
             'quantity' => ['required', 'gt:0'],
             'price' => [
@@ -70,7 +70,7 @@ class UpdateTransactionRequest extends FormRequest
             ],
             'type' => [
                 'required', 
-                Rule::in(CryptoTransaction::BUY, CryptoTransaction::SELL),
+                Rule::in(Transaction::BUY, Transaction::SELL),
             ],
             'time' => [
                 'required', 

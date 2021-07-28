@@ -15,7 +15,7 @@ use App\Support\Casts\CurrencyCast;
 use App\Support\Casts\QuantityCast;
 use App\Support\Presenters\TransactionPresenter;
 
-class CryptoTransaction extends Model
+class Transaction extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -34,7 +34,7 @@ class CryptoTransaction extends Model
      * @var array
      */
     protected $fillable = [
-        'crypto_token_id',
+        'token_id',
         'quantity',
         'price',
         'type',
@@ -61,9 +61,9 @@ class CryptoTransaction extends Model
     /**
      * The token this transaction applies to
      */
-    public function cryptoToken()
+    public function token()
     {
-        return $this->belongsTo(CryptoToken::class);
+        return $this->belongsTo(Token::class);
     }
 
     /**
@@ -81,7 +81,7 @@ class CryptoTransaction extends Model
      */
     public function isBuy(): bool
     {
-        return ( $this->type === CryptoTransaction::BUY ) ? true : false;
+        return ( $this->type === Transaction::BUY ) ? true : false;
     }
 
     /**
@@ -89,16 +89,16 @@ class CryptoTransaction extends Model
      */
     public function isSell(): bool
     {
-        return ( $this->type === CryptoTransaction::SELL ) ? true : false;
+        return ( $this->type === Transaction::SELL ) ? true : false;
     }
 
     /**
      * Replicate this transaction with the original ID
      * ak Clone ?
      * 
-     * @return CryptoTransaction
+     * @return Transaction
      */
-    public function replicateWithId(): CryptoTransaction
+    public function replicateWithId(): Transaction
     {
         $transaction = $this->replicate();
         $transaction->id = $this->id;
@@ -144,7 +144,7 @@ class CryptoTransaction extends Model
         // Unsold transactions (or part) at time of this transaction
         // This Sell order will sell the oldest of them
         // todo comments
-        $unsold = $this->cryptoToken->transactions->unsoldTransactions( $this->time );
+        $unsold = $this->token->transactions->unsoldTransactions( $this->time );
         $toBuy = $this->quantity;
 
         foreach($unsold->sortBy('time') as $transaction)
@@ -193,14 +193,14 @@ class CryptoTransaction extends Model
          * First deal with the existing balanceBefore
          * These tokens need to be sold before our new ones can be
          */
-        $balanceBefore = $this->cryptoToken->balance( $this->time );
+        $balanceBefore = $this->token->balance( $this->time );
 
         /**
          * Every sell order after this buy order
          * If our tokens have been sold it's in here
          */
-        $sells = $this->cryptoToken->transactions
-            ->where('type', CryptoTransaction::SELL)
+        $sells = $this->token->transactions
+            ->where('type', Transaction::SELL)
             ->where('time', '>', $this->time)
             ->sortBy('time');
 

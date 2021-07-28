@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\CryptoTokenController;
-use App\Http\Controllers\CryptoTransactionController;
+use App\Http\Controllers\TokenController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\DiaryController;
@@ -23,22 +23,22 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['au
 Route::get('/diary', [DiaryController::class, 'index'])->middleware(['auth'])->name('diary');
 
 Route::group(['prefix' => 'token', 'middleware' => 'auth', 'as'=> 'token.'], function () {
-    Route::get('/create', [CryptoTokenController::class, 'create'])->name('create');
-    Route::post('/store', [CryptoTokenController::class, 'store'])->name('store');
-    Route::get('/{token}', [CryptoTokenController::class, 'show'])->name('show');
-    Route::get('/{token}/edit', [CryptoTokenController::class, 'edit'])->name('edit');
-    Route::post('/{token}/edit', [CryptoTokenController::class, 'update'])->name('update');
-    Route::get('/{token}/delete', [CryptoTokenController::class, 'destroy'])->name('delete');
-    Route::get('/{token}/buy', [CryptoTransactionController::class, 'buy'])->name('buy');
-    Route::get('/{token}/sell', [CryptoTransactionController::class, 'sell'])->name('sell');
+    Route::get('/create', [TokenController::class, 'create'])->name('create');
+    Route::post('/store', [TokenController::class, 'store'])->name('store');
+    Route::get('/{token}', [TokenController::class, 'show'])->name('show');
+    Route::get('/{token}/edit', [TokenController::class, 'edit'])->name('edit');
+    Route::post('/{token}/edit', [TokenController::class, 'update'])->name('update');
+    Route::get('/{token}/delete', [TokenController::class, 'destroy'])->name('delete');
+    Route::get('/{token}/buy', [TransactionController::class, 'buy'])->name('buy');
+    Route::get('/{token}/sell', [TransactionController::class, 'sell'])->name('sell');
 });
 
 Route::group(['prefix' => 'transaction', 'middleware' => 'auth', 'as'=> 'transaction.'], function () {
-    Route::post('/store', [CryptoTransactionController::class, 'store'])->name('store');
-    Route::get('/{transaction}', [CryptoTransactionController::class, 'show'])->name('show');
-    Route::get('/{transaction}/delete', [CryptoTransactionController::class, 'destroy'])->name('delete');
-    Route::get('/{transaction}/edit', [CryptoTransactionController::class, 'edit'])->name('edit');
-    Route::post('/{transaction}/edit', [CryptoTransactionController::class, 'update'])->name('update');
+    Route::post('/store', [TransactionController::class, 'store'])->name('store');
+    Route::get('/{transaction}', [TransactionController::class, 'show'])->name('show');
+    Route::get('/{transaction}/delete', [TransactionController::class, 'destroy'])->name('delete');
+    Route::get('/{transaction}/edit', [TransactionController::class, 'edit'])->name('edit');
+    Route::post('/{transaction}/edit', [TransactionController::class, 'update'])->name('update');
 });
 
 require __DIR__.'/auth.php';

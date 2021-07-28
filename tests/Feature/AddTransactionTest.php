@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\CryptoToken;
-use App\Models\CryptoTransaction;
+use App\Models\Token;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -13,7 +13,7 @@ class AddTransactionTest extends TestCase
     use RefreshDatabase;
 
     private String $table;
-    private CryptoToken $token;
+    private Token $token;
     private User $user;
     private Array $good;
     private Array $bad;
@@ -25,15 +25,15 @@ class AddTransactionTest extends TestCase
     {
         parent::setUp();
 
-        $this->table = (new CryptoTransaction())->getTable();
-        $this->token = CryptoToken::factory()->create();
+        $this->table = (new Transaction())->getTable();
+        $this->token = Token::factory()->create();
         $this->user = User::factory()->create();
         $this->good = [
-            'crypto_token_id' => $this->token->id, 
+            'token_id' => $this->token->id, 
             'time' => '2021-06-25T10:32:45',
             'quantity' => 100,
             'price' => 12,
-            'type' => CryptoTransaction::BUY,
+            'type' => Transaction::BUY,
         ];
         $this->bad = [
             'time' => [
@@ -66,7 +66,7 @@ class AddTransactionTest extends TestCase
      */
     public function test_transaction_buy_sell_link_rendered_on_dashboard()
     {
-        CryptoTransaction::factory()->for($this->token)->create($this->good);
+        Transaction::factory()->for($this->token)->create($this->good);
 
         $this->actingAs($this->user)->get(route('dashboard'))
             ->assertSee(route('token.buy', $this->token->id))
@@ -78,7 +78,7 @@ class AddTransactionTest extends TestCase
      */
     public function test_transaction_buy_sell_link_rendered_on_token_info()
     {
-        CryptoTransaction::factory()->for($this->token)->create($this->good);
+        Transaction::factory()->for($this->token)->create($this->good);
 
         $this->actingAs($this->user)->get(route('token.show', $this->token->id))
             ->assertSee(route('token.buy', $this->token->id))
@@ -109,7 +109,7 @@ class AddTransactionTest extends TestCase
     public function test_transaction_create_page_has_correct_fields()
     {
         $this->actingAs($this->user)->get(route('token.buy', $this->token->id))
-            ->assertSee('name="crypto_token_id"', false)
+            ->assertSee('name="token_id"', false)
             ->assertSee('name="time"', false)
             ->assertSee('name="quantity"', false)
             ->assertSee('name="price"', false)
@@ -133,7 +133,7 @@ class AddTransactionTest extends TestCase
     public function test_transaction_can_not_be_stored_with_invalid_token()
     {
         $this->actingAs($this->user)->post(route('transaction.store', array_merge([
-            'crypto_token_id' => $this->token->id+1, 
+            'token_id' => $this->token->id+1, 
         ])));
         $this->assertDatabaseCount($this->table, 0);
     }
@@ -143,11 +143,11 @@ class AddTransactionTest extends TestCase
      */
     public function test_transaction_can_not_be_stored_with_negative_balance()
     {
-        CryptoTransaction::factory()->create($this->good);
+        Transaction::factory()->create($this->good);
 
         $this->actingAs($this->user)->post(route('transaction.store', array_merge($this->good, [
             'quantity' => $this->good['quantity']+1,
-            'type' => CryptoTransaction::SELL,
+            'type' => Transaction::SELL,
         ])));
         $this->assertDatabaseCount($this->table, 1);
     }

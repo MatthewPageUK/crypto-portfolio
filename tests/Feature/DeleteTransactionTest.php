@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\CryptoToken;
-use App\Models\CryptoTransaction;
+use App\Models\Token;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -14,8 +14,8 @@ class DeleteTransactionTest extends TestCase
 
     private String $table;
     private User $user;
-    private CryptoToken $token;
-    private CryptoTransaction $transaction;
+    private Token $token;
+    private Transaction $transaction;
     private Array $good;
 
     /**
@@ -25,18 +25,18 @@ class DeleteTransactionTest extends TestCase
     {
         parent::setUp();
 
-        $this->table = (new CryptoTransaction())->getTable();
-        $this->token = CryptoToken::factory()->create();
+        $this->table = (new Transaction())->getTable();
+        $this->token = Token::factory()->create();
         $this->user = User::factory()->create();
         $this->good = [
-            'crypto_token_id' => $this->token->id, 
+            'token_id' => $this->token->id, 
             'time' => '2021-06-25T10:32:45',
             'quantity' => 100,
             'price' => 12,
-            'type' => CryptoTransaction::BUY,
+            'type' => Transaction::BUY,
         ];
 
-        $this->transaction = CryptoTransaction::factory()->for($this->token)->create($this->good);
+        $this->transaction = Transaction::factory()->for($this->token)->create($this->good);
     }
 
     /**
@@ -90,7 +90,7 @@ class DeleteTransactionTest extends TestCase
      */
     public function test_delete_transaction_not_result_negeative_balance()
     {
-        CryptoTransaction::factory()->for($this->token)->create(['type' => CryptoTransaction::SELL, 'quantity' => 1]);
+        Transaction::factory()->for($this->token)->create(['type' => Transaction::SELL, 'quantity' => 1]);
         $this->actingAs($this->user)->get(route('transaction.delete', $this->transaction->id));
         $this->assertDatabaseHas($this->table, ['id' => $this->transaction->id, 'deleted_at' => NULL]);
     }

@@ -4,32 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
-use App\Models\CryptoToken;
-use App\Models\CryptoTransaction;
+use App\Models\Token;
+use App\Models\Transaction;
 
-class CryptoTransactionController extends Controller
+class TransactionController extends Controller
 {
     /**
      * Show the form for creating a new buy transaction.
      *
      * @return \Illuminate\Http\Response
      */
-    public function buy(CryptoToken $token)
+    public function buy(Token $token)
     {
         return view('transaction-add')
             ->with('token', $token)
-            ->with('transType', CryptoTransaction::BUY);
+            ->with('transType', Transaction::BUY);
     }
     /**
      * Show the form for creating a new sell transaction.
      *
      * @return \Illuminate\Http\Response
      */
-    public function sell(CryptoToken $token)
+    public function sell(Token $token)
     {
         return view('transaction-add')
             ->with('token', $token)
-            ->with('transType', CryptoTransaction::SELL);
+            ->with('transType', Transaction::SELL);
     }
 
     /**
@@ -40,20 +40,20 @@ class CryptoTransactionController extends Controller
      */
     public function store(StoreTransactionRequest $request)
     {
-        CryptoTransaction::create( $request->validated() );
+        Transaction::create( $request->validated() );
 
         return redirect()
-            ->route('token.show', ['token' => $request['crypto_token_id']])
+            ->route('token.show', ['token' => $request['token_id']])
             ->with('success', 'Transaction created');
     }
 
     /**
      * Display the specified transaction.
      *
-     * @param  \App\Models\CryptoTransaction  $cryptoTransaction
+     * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Http\Response
      */
-    public function show(CryptoTransaction $transaction)
+    public function show(Transaction $transaction)
     {
         return view('transaction')
             ->with('transaction', $transaction);
@@ -62,12 +62,12 @@ class CryptoTransactionController extends Controller
     /**
      * Show the form for editing the specified transaction.
      *
-     * @param  \App\Models\CryptoTransaction  $cryptoTransaction
+     * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Http\Response
      */
-    public function edit(CryptoTransaction $transaction)
+    public function edit(Transaction $transaction)
     {
-        $tokens = CryptoToken::all()->sortBy('symbol');
+        $tokens = Token::all()->sortBy('symbol');
 
         return view('transaction-edit')
             ->with('transaction', $transaction)
@@ -78,15 +78,15 @@ class CryptoTransactionController extends Controller
      * Update the specified transaction in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\CryptoTransaction  $cryptoTransaction
+     * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateTransactionRequest $request, CryptoTransaction $transaction)
+    public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
         $transaction->update( $request->validated() );
 
         return redirect()
-            ->route('token.show', $transaction->crypto_token_id)
+            ->route('token.show', $transaction->token_id)
             ->with('success', 'Transaction updated');
     }
 
@@ -94,12 +94,12 @@ class CryptoTransactionController extends Controller
      * Validates the transactions to ensure there are no negative 
      * balance errors and removes the transaction from storage.
      *
-     * @param  \App\Models\CryptoTransaction  $cryptoTransaction
+     * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CryptoTransaction $transaction)
+    public function destroy(Transaction $transaction)
     {
-        $token = CryptoToken::find($transaction->crypto_token_id);
+        $token = Token::find($transaction->token_id);
         /**
          * Remove this transaction from the list
          */

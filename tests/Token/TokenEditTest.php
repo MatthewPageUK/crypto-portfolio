@@ -2,7 +2,7 @@
 
 namespace Tests\Token;
 
-use App\Models\CryptoToken;
+use App\Models\Token;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -13,7 +13,7 @@ class TokenEditTest extends TestCase
 
     private String $table;
     private User $user;
-    private CryptoToken $token;
+    private Token $token;
     private Array $good;
     private Array $bad;
 
@@ -23,9 +23,9 @@ class TokenEditTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->table = (new CryptoToken())->getTable();
+        $this->table = (new Token())->getTable();
         $this->user = User::factory()->create();
-        $this->token = CryptoToken::factory()->create();
+        $this->token = Token::factory()->create();
         $this->good = ['symbol' => 'GOOD', 'name' => 'Good token'];
         $this->bad = [
             'symbol' => [
@@ -121,7 +121,7 @@ class TokenEditTest extends TestCase
      */
     public function test_duplicate_token_can_not_be_updated()
     {
-        $token2 = CryptoToken::factory()->create();
+        $token2 = Token::factory()->create();
 
         $this->actingAs($this->user)->post(route('token.update', ['token' => $token2->id, 'symbol' => $this->token->symbol, 'name' => 'Second token']));
         $this->assertDatabaseMissing($this->table, ['name' => 'Second token']);
@@ -134,7 +134,7 @@ class TokenEditTest extends TestCase
     {
         $symbol = $this->token->symbol;
         $this->token->delete();
-        $newToken = CryptoToken::factory()->create();
+        $newToken = Token::factory()->create();
 
         $this->actingAs($this->user)->post(route('token.update', ['token' => $newToken->id, 'symbol' => $symbol, 'name' => 'A new token']));
         $this->assertDatabaseHas($this->table, ['name' => 'A new token']);

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CryptoTransaction;
+use App\Models\Transaction;
 
 class DiaryController extends Controller
 {
@@ -13,7 +13,7 @@ class DiaryController extends Controller
      */
     public function index()
     {
-        $transactions = CryptoTransaction::all()->sortBy('time');
+        $transactions = Transaction::all()->sortBy('time');
         
         return view('diary')
             ->with('transactions', $transactions);

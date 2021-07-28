@@ -2,8 +2,8 @@
 
 namespace Tests\Token;
 
-use App\Models\CryptoToken;
-use App\Models\CryptoTransaction;
+use App\Models\Token;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -12,7 +12,7 @@ class TokenDeleteTest extends TestCase
 {
     use RefreshDatabase;
 
-    private CryptoToken $token;
+    private Token $token;
     private String $table;
     private User $user;
 
@@ -23,7 +23,7 @@ class TokenDeleteTest extends TestCase
     {
         parent::setUp();
 
-        $this->token = CryptoToken::factory()->create();
+        $this->token = Token::factory()->create();
         $this->table = $this->token->getTable();
         $this->user = User::factory()->create();
     }
@@ -79,7 +79,7 @@ class TokenDeleteTest extends TestCase
      */
     public function test_transactions_are_soft_deleted_on_token_delete()
     {
-        $transaction = CryptoTransaction::factory()->for($this->token)->create();
+        $transaction = Transaction::factory()->for($this->token)->create();
 
         $this->actingAs($this->user)->get(route('token.delete', $this->token->id));
         $this->assertSoftDeleted($transaction->getTable(), ['id' => $transaction->id]);
@@ -90,7 +90,7 @@ class TokenDeleteTest extends TestCase
      */
     public function test_transactions_are_not_hard_deleted_on_token_delete()
     {
-        CryptoTransaction::factory()->for($this->token)->create();
+        Transaction::factory()->for($this->token)->create();
 
         $this->actingAs($this->user)->get(route('token.delete', $this->token->id));
         $this->assertDatabaseCount($this->table, 1);

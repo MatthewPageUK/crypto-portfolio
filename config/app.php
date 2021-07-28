@@ -231,8 +231,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-        'CryptoToken' => App\Models\CryptoToken::class,
-        'CryptoTransaction' => App\Models\CryptoTransaction::class,
+        'Token' => App\Models\Token::class,
+        'Transaction' => App\Models\Transaction::class,
 
     ],
 

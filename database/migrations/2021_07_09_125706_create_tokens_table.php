@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCryptoTokensTable extends Migration
+class CreateTokensTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateCryptoTokensTable extends Migration
      */
     public function up()
     {
-        Schema::create('crypto_tokens', function (Blueprint $table) {
+        Schema::create('tokens', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
             $table->string('symbol', 25);
@@ -29,6 +29,6 @@ class CreateCryptoTokensTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('crypto_tokens');
+        Schema::dropIfExists('tokens');
     }
 }

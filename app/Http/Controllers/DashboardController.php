@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CryptoToken;
+use App\Models\Token;
 
 class DashboardController extends Controller
 {
@@ -13,7 +13,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $tokens = CryptoToken::all()->sortBy('symbol');
+        $tokens = Token::all()->sortBy('symbol');
         
         return view('dashboard')
             ->with('tokens', $tokens);

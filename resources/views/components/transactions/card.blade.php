@@ -12,8 +12,8 @@
             <tr class="border-b border-gray-200">
                 <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal py-3 px-6 text-right border-l-8 border-{{ $transaction->colour() }}-500">{{ __('Token') }}</th>
                 <td class="py-3 px-6 text-left font-bold">
-                    <x-tokens.link :token="$transaction->cryptoToken" class="flex items-center">
-                        {{ $transaction->cryptoToken->symbol }}
+                    <x-tokens.link :token="$transaction->token" class="flex items-center">
+                        {{ $transaction->token->symbol }}
                         <x-icons.eye class="hover:text-green-500 ml-1" />
                     </x-tokens.link>
                 </td>

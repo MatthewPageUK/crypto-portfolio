@@ -15,11 +15,11 @@
 
             <!-- Token -->
             <div>
-                <x-label for="crypto_token_id" value="{{ __('Token') }}" />
-                <select class="mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-yellow-300 focus:ring focus:ring-yellow-200 focus:ring-opacity-50" id="crypto_token_id" name="crypto_token_id">
+                <x-label for="token_id" value="{{ __('Token') }}" />
+                <select class="mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-yellow-300 focus:ring focus:ring-yellow-200 focus:ring-opacity-50" id="token_id" name="token_id">
                     <option value="">{{ __('Choose your token')}}</option>
                     @foreach($tokens as $token)
-                        <option value="{{ $token->id }}" {{ ($transaction->crypto_token_id === $token->id) ? 'selected' : '' }}>{{ $token->symbol }}</option>
+                        <option value="{{ $token->id }}" {{ ($transaction->token_id === $token->id) ? 'selected' : '' }}>{{ $token->symbol }}</option>
                     @endforeach
                 </select>
             </div>
@@ -55,7 +55,7 @@
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('token.show', $transaction->crypto_token_id) }}">
+                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('token.show', $transaction->token_id) }}">
                     {{ __('Cancel') }}
                 </a>
 

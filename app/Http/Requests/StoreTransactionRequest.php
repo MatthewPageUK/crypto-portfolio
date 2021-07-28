@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Models\CryptoToken;
-use App\Models\CryptoTransaction;
+use App\Models\Token;
+use App\Models\Transaction;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use App\Rules\ValidTransactionsRule;
@@ -29,12 +29,12 @@ class StoreTransactionRequest extends FormRequest
      */
     public function rules()
     {
-        $token = CryptoToken::find($this->input('crypto_token_id'));
+        $token = Token::find($this->input('token_id'));
 
-        $quantityRule = ($token && $this->input('type')===CryptoTransaction::SELL) ? ['required', 'gt:0', 'lte:'.$token->balance()->getValue()] : ['required', 'gt:0'];
+        $quantityRule = ($token && $this->input('type')===Transaction::SELL) ? ['required', 'gt:0', 'lte:'.$token->balance()->getValue()] : ['required', 'gt:0'];
 
-        $token->transactions->push(new CryptoTransaction([
-            'crypto_token_id' => $token->id, 
+        $token->transactions->push(new Transaction([
+            'token_id' => $token->id, 
             'quantity' => $this->input('quantity'),
             'price' => $this->input('price'),
             'type' => $this->input('type'),
@@ -44,9 +44,9 @@ class StoreTransactionRequest extends FormRequest
         $valid = ( $token->transactions->isValid() ) ? [ 'validtrans' => '' ] : [ 'validtrans' => new ValidTransactionsRule ];
         
         return [
-            'crypto_token_id' => [
+            'token_id' => [
                 'required', 
-                'exists:crypto_tokens,id',
+                'exists:tokens,id',
             ],
             'quantity' => ['required', 'gt:0'],
             'price' => [
@@ -55,7 +55,7 @@ class StoreTransactionRequest extends FormRequest
             ],
             'type' => [
                 'required', 
-                Rule::in(CryptoTransaction::BUY, CryptoTransaction::SELL),
+                Rule::in(Transaction::BUY, Transaction::SELL),
             ],
             'time' => [
                 'required', 

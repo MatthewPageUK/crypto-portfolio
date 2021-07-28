@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class CryptoTokenSeeder extends Seeder
+class TokenSeeder extends Seeder
 {
     /**
      * Insert some default data.
@@ -15,7 +15,7 @@ class CryptoTokenSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('crypto_tokens')->delete();
+        DB::table('tokens')->delete();
 
         $tokens = array(
             ['name' => 'Bitcoin', 'symbol' => 'BTC'],
@@ -34,7 +34,7 @@ class CryptoTokenSeeder extends Seeder
 
         foreach($tokens as $token)
         {
-            DB::table('crypto_tokens')->insert([
+            DB::table('tokens')->insert([
                 'name' => $token['name'], 
                 'symbol' => $token['symbol'], 
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'), 

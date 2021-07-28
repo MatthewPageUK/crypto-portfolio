@@ -63,7 +63,7 @@ trait TransactionPresenter
             ' ' . 
             $this->quantity->humanReadable() . 
             ' ' . 
-            $this->cryptoToken->symbol . 
+            $this->token->symbol . 
             ' at ' . 
             $this->price->humanReadable() . 
             ' on ' . 

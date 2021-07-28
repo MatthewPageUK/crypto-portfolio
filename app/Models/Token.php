@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Support\Currency;
 use App\Support\Quantity;
 
-class CryptoToken extends Model
+class Token extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -31,7 +31,7 @@ class CryptoToken extends Model
      */
     public function transactions()
     {
-        return $this->hasMany(CryptoTransaction::class)->orderByDesc('time');
+        return $this->hasMany(Transaction::class)->orderByDesc('time');
     }
 
     /**

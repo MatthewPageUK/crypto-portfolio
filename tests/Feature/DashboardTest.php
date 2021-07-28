@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\CryptoToken;
+use App\Models\Token;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -12,7 +12,7 @@ class DashboardTest extends TestCase
     use RefreshDatabase;
 
     private User $user;
-    private CryptoToken $token;
+    private Token $token;
 
     /**
      * Setup some defaults, bad data and a user
@@ -22,7 +22,7 @@ class DashboardTest extends TestCase
         parent::setUp();
 
         $this->user = User::factory()->create();
-        $this->token = CryptoToken::factory()->create();
+        $this->token = Token::factory()->create();
     }
 
     /**

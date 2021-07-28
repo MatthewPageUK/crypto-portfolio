@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class CryptoTransactionSeeder extends Seeder
+class TransactionSeeder extends Seeder
 {
     /**
      * Insert some default data.
@@ -20,7 +20,7 @@ class CryptoTransactionSeeder extends Seeder
 
     public function demoData()
     {
-        DB::table('crypto_transactions')->delete();
+        DB::table('transactions')->delete();
 
         $tokens = array(
             ['name' => 'Fake ADA Coin', 'symbol' => 'FADA'],
@@ -30,7 +30,7 @@ class CryptoTransactionSeeder extends Seeder
 
         foreach($tokens as $token)
         {
-            DB::table('crypto_tokens')->insert([
+            DB::table('tokens')->insert([
                 'name' => $token['name'], 
                 'symbol' => $token['symbol'], 
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'), 
@@ -38,9 +38,9 @@ class CryptoTransactionSeeder extends Seeder
             ]);
         }        
 
-        $fbtc = DB::table('crypto_tokens')->where('symbol', 'FBTC')->first();
-        $fada = DB::table('crypto_tokens')->where('symbol', 'FADA')->first();
-        $fshiba = DB::table('crypto_tokens')->where('symbol', 'FSHIBA')->first();
+        $fbtc = DB::table('tokens')->where('symbol', 'FBTC')->first();
+        $fada = DB::table('tokens')->where('symbol', 'FADA')->first();
+        $fshiba = DB::table('tokens')->where('symbol', 'FSHIBA')->first();
 
         // make transactions
         $toMake = 50;
@@ -69,8 +69,8 @@ class CryptoTransactionSeeder extends Seeder
             // Random price in range
             $price = rand($priceFrom, $priceTo);
             
-            DB::table('crypto_transactions')->insert([
-                'crypto_token_id' => $fbtc->id, 
+            DB::table('transactions')->insert([
+                'token_id' => $fbtc->id, 
                 'quantity' => $quantity, 
                 'price' => $price,
                 'type' => $type,
@@ -144,8 +144,8 @@ class CryptoTransactionSeeder extends Seeder
             // Random price in range
             $price = rand($priceFrom, $priceTo) / 100;
             
-            DB::table('crypto_transactions')->insert([
-                'crypto_token_id' => $fada->id, 
+            DB::table('transactions')->insert([
+                'token_id' => $fada->id, 
                 'quantity' => $quantity, 
                 'price' => $price,
                 'type' => $type,

@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Models\CryptoToken;
-use App\Models\CryptoTransaction;
+use App\Models\Token;
+use App\Models\Transaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class CryptoTransactionTest extends TestCase
+class TransactionTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -18,8 +18,8 @@ class CryptoTransactionTest extends TestCase
      */
     public function test_create_transaction_factory()
     {
-        CryptoTransaction::factory(5)->create();
-        $this->assertDatabaseCount((new CryptoTransaction())->getTable(), 5);
+        Transaction::factory(5)->create();
+        $this->assertDatabaseCount((new Transaction())->getTable(), 5);
     }
 
     /**
@@ -27,8 +27,8 @@ class CryptoTransactionTest extends TestCase
      */
     public function test_create_transaction_factory_creates_tokens()
     {
-        CryptoTransaction::factory(5)->create();
-        $this->assertDatabaseCount((new CryptoToken())->getTable(), 5);
+        Transaction::factory(5)->create();
+        $this->assertDatabaseCount((new Token())->getTable(), 5);
     }
 
     /**
@@ -36,7 +36,7 @@ class CryptoTransactionTest extends TestCase
      */
     public function test_total_method_calculates_correct_value()
     {
-        $transaction = CryptoTransaction::factory()->create(['quantity' => 100, 'price' => 1.5]);
+        $transaction = Transaction::factory()->create(['quantity' => 100, 'price' => 1.5]);
         $this->assertTrue($transaction->total()->getValue() === 100 * 1.5);
     }
 }

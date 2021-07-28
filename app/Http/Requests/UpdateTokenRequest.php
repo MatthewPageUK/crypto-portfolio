@@ -29,13 +29,13 @@ class UpdateTokenRequest extends FormRequest
         return [
             'symbol' => [ 
                 'required',
-                Rule::unique('crypto_tokens')->where('deleted_at', NULL)->ignore($token->id), 
+                Rule::unique('tokens')->where('deleted_at', NULL)->ignore($token->id), 
                 'max:25',
                 'alpha_num',
             ],
             'name' => [
                 'required',
-                Rule::unique('crypto_tokens')->where('deleted_at', NULL)->ignore($token->id),
+                Rule::unique('tokens')->where('deleted_at', NULL)->ignore($token->id),
                 'max:100',                
                 'min:3',
                 'regex:/^[a-zA-Z0-9\s]+$/',

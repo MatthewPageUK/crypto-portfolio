@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\CryptoToken;
-use App\Models\CryptoTransaction;
+use App\Models\Token;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -14,8 +14,8 @@ class EditTransactionTest extends TestCase
 
     private String $table;
     private User $user;
-    private CryptoToken $token;
-    private CryptoTransaction $transaction;
+    private Token $token;
+    private Transaction $transaction;
     private Array $good;
     private Array $bad;
 
@@ -26,23 +26,23 @@ class EditTransactionTest extends TestCase
     {
         parent::setUp();
 
-        $this->table = (new CryptoTransaction())->getTable();
-        $this->token = CryptoToken::factory()->create();
+        $this->table = (new Transaction())->getTable();
+        $this->token = Token::factory()->create();
         $this->user = User::factory()->create();
         $this->good = [
             'original' => [
-                'crypto_token_id' => $this->token->id, 
+                'token_id' => $this->token->id, 
                 'time' => '2021-06-25T10:32:45',
                 'quantity' => 100,
                 'price' => 12,
-                'type' => CryptoTransaction::BUY,
+                'type' => Transaction::BUY,
             ],
             'edited' => [
-                'crypto_token_id' => $this->token->id, 
+                'token_id' => $this->token->id, 
                 'time' => '2021-06-21T10:32:45',
                 'quantity' => 99,
                 'price' => 11,
-                'type' => CryptoTransaction::BUY,            
+                'type' => Transaction::BUY,            
             ],
         ];
         $this->bad = [
@@ -70,7 +70,7 @@ class EditTransactionTest extends TestCase
             ],
         ];
 
-        $this->transaction = CryptoTransaction::factory()->for($this->token)->create($this->good['original']);
+        $this->transaction = Transaction::factory()->for($this->token)->create($this->good['original']);
         $this->good['edited']['transaction'] = $this->transaction->id;
     }
 
@@ -108,7 +108,7 @@ class EditTransactionTest extends TestCase
     public function test_edit_transaction_page_has_correct_fields()
     {
         $this->actingAs($this->user)->get(route('transaction.edit', $this->transaction->id))
-            ->assertSee('name="crypto_token_id"', false)
+            ->assertSee('name="token_id"', false)
             ->assertSee('name="time"', false)
             ->assertSee('name="quantity"', false)
             ->assertSee('name="price"', false)
@@ -134,7 +134,7 @@ class EditTransactionTest extends TestCase
     public function test_transaction_can_not_be_updated_with_invalid_token()
     {
         $this->actingAs($this->user)->post(route('transaction.update', array_merge($this->good['edited'], [
-            'crypto_token_id' => $this->token->id + 1
+            'token_id' => $this->token->id + 1
         ])));
 
         $this->assertDatabaseHas($this->table, $this->good['original']);
@@ -145,11 +145,11 @@ class EditTransactionTest extends TestCase
      */
     public function test_transaction_can_not_be_updated_with_negative_balance()
     {
-        $transaction = CryptoTransaction::factory()->for($this->token)->create(['quantity' => 1, 'type' => CryptoTransaction::SELL]);
+        $transaction = Transaction::factory()->for($this->token)->create(['quantity' => 1, 'type' => Transaction::SELL]);
 
         $this->actingAs($this->user)->post(route('transaction.update', [
             'transaction' => $transaction->id,
-            'crypto_token_id' => $transaction->crypto_token_id, 
+            'token_id' => $transaction->token_id, 
             'time' => $transaction->time->format('Y-m-d\TH:i:s'), 
             'quantity' => 101,
             'price' => $transaction->price->getValue(),

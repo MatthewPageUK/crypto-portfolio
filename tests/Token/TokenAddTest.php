@@ -2,7 +2,7 @@
 
 namespace Tests\Token;
 
-use App\Models\CryptoToken;
+use App\Models\Token;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -23,7 +23,7 @@ class TokenAddTest extends TestCase
     {
         parent::setUp();
 
-        $this->table = (new CryptoToken())->getTable();
+        $this->table = (new Token())->getTable();
         $this->user = User::factory()->create();
         $this->good = ['symbol' => 'GOOD', 'name' => 'Good token'];
         $this->bad = [
@@ -122,7 +122,7 @@ class TokenAddTest extends TestCase
      */
     public function test_duplicate_but_deleted_token_can_be_stored()
     {
-        CryptoToken::factory()->create($this->good)->delete();
+        Token::factory()->create($this->good)->delete();
         $this->actingAs($this->user)->post(route('token.store', $this->good));
         $this->assertDatabaseCount($this->table, 2);
     }

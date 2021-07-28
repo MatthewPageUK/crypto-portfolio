@@ -40,7 +40,7 @@
                             ' ' . 
                             $transaction->quantity->humanReadable()+0 . 
                             ' ' . 
-                            $transaction->cryptoToken->symbol . 
+                            $transaction->token->symbol . 
                             ' at ' . 
                             $transaction->price->humanReadable()                    
                         }}

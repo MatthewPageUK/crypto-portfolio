@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\CryptoToken;
+use App\Models\Token;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class CryptoTokenFactory extends Factory
+class TokenFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = CryptoToken::class;
+    protected $model = Token::class;
 
     /**
      * Define the model's default state.

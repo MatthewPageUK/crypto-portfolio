@@ -3,9 +3,9 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\CryptoTransaction;
+use App\Models\Transaction;
 
-class CreateCryptoTransactionsTable extends Migration
+class CreateTransactionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,13 +14,13 @@ class CreateCryptoTransactionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('crypto_transactions', function (Blueprint $table) {
+        Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('crypto_token_id');
-            $table->foreign('crypto_token_id')->references('id')->on('crypto_tokens')->onDelete('cascade');
+            $table->unsignedBigInteger('token_id');
+            $table->foreign('token_id')->references('id')->on('tokens')->onDelete('cascade');
             $table->unsignedDecimal('quantity', 36, 18);
             $table->unsignedDecimal('price', 36, 18);
-            $table->enum('type', [CryptoTransaction::BUY, CryptoTransaction::SELL]);
+            $table->enum('type', [Transaction::BUY, Transaction::SELL]);
             $table->dateTime('time')->useCurrent();
             $table->timestamps($precision = 0);
             $table->softDeletes($column = 'deleted_at');
@@ -34,6 +34,6 @@ class CreateCryptoTransactionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('crypto_transactions');
+        Schema::dropIfExists('transactions');
     }
 }

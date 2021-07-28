@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTokenRequest;
 use App\Http\Requests\UpdateTokenRequest;
-use App\Models\CryptoToken;
+use App\Models\Token;
 
-class CryptoTokenController extends Controller
+class TokenController extends Controller
 {
     /**
      * Show the form for creating a new resource.
@@ -26,7 +26,7 @@ class CryptoTokenController extends Controller
      */
     public function store(StoreTokenRequest $request)
     {
-        CryptoToken::create( $request->validated() );
+        Token::create( $request->validated() );
 
         return redirect()
             ->route('dashboard')
@@ -36,10 +36,10 @@ class CryptoTokenController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\CryptoToken  $token
+     * @param  \App\Models\Token  $token
      * @return \Illuminate\Http\Response
      */
-    public function show(CryptoToken $token)
+    public function show(Token $token)
     {
         return view('token')
             ->with('token', $token);
@@ -48,10 +48,10 @@ class CryptoTokenController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\CryptoToken  $cryptoToken
+     * @param  \App\Models\Token  $token
      * @return \Illuminate\Http\Response
      */
-    public function edit(CryptoToken $token)
+    public function edit(Token $token)
     {
         return view('token-edit')
             ->with('token', $token);
@@ -61,10 +61,10 @@ class CryptoTokenController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\CryptoToken  $cryptoToken
+     * @param  \App\Models\Token  $token
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateTokenRequest $request, CryptoToken $token)
+    public function update(UpdateTokenRequest $request, Token $token)
     {
         $token->update( $request->validated() );
 
@@ -76,10 +76,10 @@ class CryptoTokenController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\CryptoToken  $cryptoToken
+     * @param  \App\Models\Token  $token
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CryptoToken $token)
+    public function destroy(Token $token)
     {
         $token->transactions()->delete();
         $token->delete();
