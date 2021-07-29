@@ -23,6 +23,58 @@ class TransactionCollection extends Collection implements TransactionCollectionI
     private ?Quantity $balance = null;
 
     /**
+     * Unsold transactions / buy orders
+     * 
+     * Returns collection of transactions that have not been sold or part sold
+     * Rule - sell oldest tokens first
+     * 
+     * @param Carbon $at                Return unsold transactions at date 
+     * @return TransactionCollection    The unsold transactions
+     */
+    public function unsoldTransactions( Carbon $at = null ): TransactionCollection
+    {
+        $at = is_null($at) ? Carbon::now() : $at;
+        $unsoldTransactions = new TransactionCollection();
+        $unsoldQuantity = $this->balance( $at );
+
+        foreach( $this->where('type', Transaction::BUY)->sortByDesc('time') as $transaction )
+        {
+            if( $at > $transaction->time )
+            {
+                /**
+                 * Create a copy of the transaction, we may change the quantity
+                 */
+                $newTrans = $transaction->replicateWithId();
+
+                /**
+                 * Transaction sells more than we have, change its quantity to what is needed (unsoldQuantity)
+                 */
+                if( $unsoldQuantity->lt( $transaction->quantity ) ) $newTrans->quantity = new Quantity( $unsoldQuantity->getValue() );
+
+                /**
+                 * Remove the transaction amount from unsoldQuantity
+                 */
+                $unsoldQuantity = $unsoldQuantity->subtract( $newTrans->quantity );
+
+                /**
+                 * If the new transaction has a quantity, keep it
+                 */
+                if( $newTrans->quantity->gt(0) ) $unsoldTransactions->push( $newTrans );
+
+                /**
+                 * If we have assigned all unsoldQuantity break out
+                 */
+                if( $unsoldQuantity->lte(0) ) break;
+            }
+        }
+
+        /**
+         * Return collection of unsold buy orders.
+         */
+        return $unsoldTransactions;
+    }
+
+    /**
      * Add up the values of supplied key and return a Currency
      * 
      * @param string $key       The key to sum up
@@ -41,25 +93,6 @@ class TransactionCollection extends Collection implements TransactionCollectionI
     public function sumQuantity( string $key ): Quantity
     {
         return new Quantity( $this->sumNumber( $key ) );
-    }
-
-    /**
-     * Add up the values of supplied key and return a Number
-     * 
-     * @param string $key       The key to sum up
-     * @return Number
-     */
-    private function sumNumber( string $key ): Number
-    {
-        $total = new Number();
-        foreach( $this as $transaction )
-        {
-            if( $key === 'total' )
-                $total = $total->add( $transaction->total() );
-            else
-                $total = $total->add( $transaction->$key );
-        }
-        return $total;
     }
 
     /**
@@ -117,6 +150,28 @@ class TransactionCollection extends Collection implements TransactionCollectionI
     }
 
     /**
+     * Add up the values of supplied key and return a Number
+     * 
+     * @param string $key       The key to sum up
+     * @return Number
+     */
+    private function sumNumber( string $key ): Number
+    {
+        $total = new Number();
+        foreach( $this as $transaction )
+        {
+            /**
+             * If key name is 'total' we need to call a method or just access the key
+             */
+            if( $key === 'total' )
+                $total = $total->add( $transaction->total() );
+            else
+                $total = $total->add( $transaction->$key );
+        }
+        return $total;
+    }
+
+    /**
      * Calculate the final balance of all transactions as of an optional
      * 'at' date or now().
      * 
@@ -133,10 +188,7 @@ class TransactionCollection extends Collection implements TransactionCollectionI
         {
             if( $transaction->time < $at )
             {
-                if( $transaction->isBuy() )
-                    $balance = $balance->add( $transaction->quantity );
-                else
-                    $balance = $balance->subtract( $transaction->quantity );
+                $balance = $this->modifyBalance( $balance, $transaction );
             }
             else
             {
@@ -147,7 +199,20 @@ class TransactionCollection extends Collection implements TransactionCollectionI
     }
 
     /**
-     * Calculate the average price of the speicifed type transactions.
+     * Modify the balance by adding or subtracting the supplied transaction
+     * quantity.
+     * 
+     * @param Quantity $balance                     The start balance
+     * @param Transaction $transaction              The transaction
+     * @return Quantity                             Balance after transaction
+     */
+    private function modifyBalance( Quantity $balance, Transaction $transaction )
+    {
+        return $transaction->isBuy() ? $balance->add( $transaction->quantity ) : $balance->subtract( $transaction->quantity );
+    }
+
+    /**
+     * Calculate the average price of the speicifed type of transactions.
      * 
      * @param string $type                          Transaction type / buy or sell
      * @param Currency $total                       Starting total
@@ -164,11 +229,11 @@ class TransactionCollection extends Collection implements TransactionCollectionI
             if( $transaction->type === $type )
             {
                 $total = $total->add($transaction->total());
-                $quantity = $quantity->add($transaction->quantity);
+                $quantity = $quantity->add( $transaction->quantity );
             }
         }
 
-        return new Currency( ( $total->gt(0) && $quantity->gt(0) ) ? $total->divide($quantity) : 0.0);
+        return new Currency( $total->divide( $quantity ) );
     }
 
     /**
@@ -186,48 +251,11 @@ class TransactionCollection extends Collection implements TransactionCollectionI
 
         foreach( $this->sortBy('time') as $transaction )
         {
-            if( $transaction->isBuy() )
-                $balance = $balance->add( $transaction->quantity );
-            else
-                $balance = $balance->subtract( $transaction->quantity );
-
+            $balance = $this->modifyBalance( $balance, $transaction );
             if( $balance->lt(0) ) return false;
         }
 
         return true;
     }
 
-    /**
-     * Unsold transactions
-     * 
-     * Returns collection of transactions that have not been sold or part sold
-     * Rule - sell oldest tokens first
-     * 
-     * @param Carbon $at                Return unsold transactions at date 
-     * @return TransactionCollection    The unsold transactions
-     */
-    public function unsoldTransactions( Carbon $at = null ): TransactionCollection
-    {
-        $at = is_null($at) ? Carbon::now() : $at;
-        $unsoldTransactions = new TransactionCollection();
-        $unsoldQuantity = $this->balance( $at );
-
-        foreach( $this->where('type', Transaction::BUY)->sortByDesc('time') as $transaction )
-        {
-            if( $at > $transaction->time )
-            {
-                $newTrans = $transaction->replicateWithId();
-
-                if( $unsoldQuantity->lt( $transaction->quantity ) ) $newTrans->quantity = new Quantity( $unsoldQuantity->getValue() );
-
-                $unsoldQuantity = $unsoldQuantity->subtract( $newTrans->quantity );
-
-                if( $newTrans->quantity->gt(0) ) $unsoldTransactions->push( $newTrans );
-
-                if( $unsoldQuantity->lte(0) ) break;
-            }
-        }
-
-        return $unsoldTransactions;
-    }
 }

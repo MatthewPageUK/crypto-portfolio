@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\Token;
 use App\Models\Transaction;
+use App\Support\Currency;
+use App\Support\Quantity;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -44,12 +46,12 @@ class TransactionCollectionTest extends TestCase
         Transaction::factory()->for($this->token)->create(['type' => Transaction::SELL, 'quantity' => '50', 'price' => 1.5, 'time' => now()->subDays(7)->format('Y-m-d\TH:i:s')]);  
 
         return [
-            'avgprice' => 1.125,
-            'avghodl' => 1.1,
-            'avgsell' => 1.55,
-            'totalsell' => 100,
-            'totalbuy' => 200,
-            'balance' => 100,
+            'avgprice' => new Currency(1.125),
+            'avghodl' => new Currency(1.1),
+            'avgsell' => new Currency(1.55),
+            'totalsell' => new Quantity(100),
+            'totalbuy' => new Quantity(200),
+            'balance' => new Quantity(100),
         ];
     }
 
@@ -58,7 +60,7 @@ class TransactionCollectionTest extends TestCase
      */
     public function test_transaction_collection_calculates_correct_balance()
     {
-        $this->assertTrue( $this->token->transactions->calcBalance() == $this->result['balance'] );
+        $this->assertTrue( $this->token->transactions->balance() == $this->result['balance'] );
     }
 
     /**
@@ -95,7 +97,7 @@ class TransactionCollectionTest extends TestCase
         Transaction::factory()->for($token2)->create(['type' => Transaction::SELL, 'quantity' => '50', 'price' => 1.6, 'time' => now()->subDays(8)->format('Y-m-d\TH:i:s')]);  
         Transaction::factory()->for($token2)->create(['type' => Transaction::SELL, 'quantity' => '50', 'price' => 1.5, 'time' => now()->subDays(7)->format('Y-m-d\TH:i:s')]);  
 
-        $this->assertTrue( ! $token2->transactions->validateTransactions() );
+        $this->assertTrue( ! $token2->transactions->isValid() );
     }
 
     /**
@@ -108,7 +110,7 @@ class TransactionCollectionTest extends TestCase
         Transaction::factory()->for($token2)->create(['type' => Transaction::BUY, 'quantity' => '50', 'price' => 1.10, 'time' => now()->subDays(9)->format('Y-m-d\TH:i:s')]);  
         Transaction::factory()->for($token2)->create(['type' => Transaction::SELL, 'quantity' => '50', 'price' => 1.5, 'time' => now()->subDays(7)->format('Y-m-d\TH:i:s')]);  
 
-        $this->assertTrue( $token2->transactions->validateTransactions() );
+        $this->assertTrue( $token2->transactions->isValid() );
     }
 
     /**
@@ -122,7 +124,7 @@ class TransactionCollectionTest extends TestCase
         Transaction::factory()->for($token2)->create(['type' => Transaction::SELL, 'quantity' => '50', 'price' => 1.6, 'time' => now()->subDays(8)->format('Y-m-d\TH:i:s')]);  
         Transaction::factory()->for($token2)->create(['type' => Transaction::SELL, 'quantity' => '50', 'price' => 1.5, 'time' => now()->subDays(7)->format('Y-m-d\TH:i:s')]);  
 
-        $this->assertTrue( $token2->transactions->validateTransactions() );
+        $this->assertTrue( $token2->transactions->isValid() );
     }
 
     /**
@@ -132,7 +134,7 @@ class TransactionCollectionTest extends TestCase
     {
         $token2 = Token::factory()->create();
 
-        $this->assertTrue( $token2->transactions->validateTransactions() );
+        $this->assertTrue( $token2->transactions->isValid() );
     }
 
 }

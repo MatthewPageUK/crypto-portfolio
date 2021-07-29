@@ -146,6 +146,7 @@ class AddTransactionTest extends TestCase
         Transaction::factory()->create($this->good);
 
         $this->actingAs($this->user)->post(route('transaction.store', array_merge($this->good, [
+            'time' => now()->format('Y-m-d\TH:i:s'),
             'quantity' => $this->good['quantity']+1,
             'type' => Transaction::SELL,
         ])));

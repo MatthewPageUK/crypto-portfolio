@@ -24,7 +24,6 @@
             </div>
     </x-slot>
 
-    {{-- Info Boxes --}}
     <div class="min-w-screen flex items-center justify-center my-8">
         <div class="flex items-top w-full mx-12">
             <div class="flex-1">
@@ -71,20 +70,33 @@
                             <x-widgets.stats-box title="{{ __('Still Hodling') }}" class="mr-3 mb-3 mt-0 ml-0">
                                 <x-quantity :quantity="$transaction->quantity->subtract( $related->sumQuantity('quantity') )" />
                             </x-widgets.stats-box>
-                        @endif
+                        @endif                 
+
+                    </div>
+                </div>
+
+
+                <div class="min-w-screen flex items-center justify-center">
+                    <div class="flex flex-wrap items-center w-full lg:w-5/6">
                         
                         {{-- Info box - Balance before --}}
-                        <x-widgets.stats-box title="{{ __('Balance before') }}" class="mr-3 mb-3 mt-0 ml-0">
+                        <x-widgets.stats-box title="{{ $transaction->token->symbol }} {{ __('Balance before') }}" class="mr-3 mb-3 mt-0 ml-0">
                             <x-quantity :quantity="$transaction->token->balance( $transaction->time )" />
                         </x-widgets.stats-box>
 
                         {{-- Info box - Balance after --}}
-                        <x-widgets.stats-box title="{{ __('Balance after') }}" class="mr-3 mb-3 mt-0 ml-0">
+                        <x-widgets.stats-box title="{{ $transaction->token->symbol }} {{ __('Balance after') }}" class="mr-3 mb-3 mt-0 ml-0">
                             <x-quantity :quantity="$transaction->token->balance( $transaction->time->addSecond(1) )" />
                         </x-widgets.stats-box>
 
+                        {{-- Info box - Balance now --}}
+                        <x-widgets.stats-box title="{{ $transaction->token->symbol }} {{ __('Balance now') }}" class="mr-3 mb-3 mt-0 ml-0">
+                            <x-quantity :quantity="$transaction->token->balance()" />
+                        </x-widgets.stats-box>                        
+
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
