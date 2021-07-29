@@ -7,13 +7,14 @@ use Illuminate\Support\Collection;
 use Carbon\Carbon;
 use App\Support\Quantity;
 use App\Support\Currency;
+use App\Interfaces\TransactionCollectionInterface;
 
 /**
  * A collection of transactions and logic to calculate 
  * averages and the overall balance. 
  * 
  */
-class TransactionCollection extends Collection
+class TransactionCollection extends Collection implements TransactionCollectionInterface
 {
 
     /**
@@ -23,6 +24,9 @@ class TransactionCollection extends Collection
 
     /**
      * Add up the values of supplied key and return a Currency
+     * 
+     * @param string $key       The key to sum up
+     * @return Currency
      */
     public function sumCurrency( string $key ): Currency
     {
@@ -30,6 +34,9 @@ class TransactionCollection extends Collection
     }
     /**
      * Add up the values of supplied key and return a Quantity
+     * 
+     * @param string $key       The key to sum up
+     * @return Quantity
      */
     public function sumQuantity( string $key ): Quantity
     {
@@ -38,6 +45,9 @@ class TransactionCollection extends Collection
 
     /**
      * Add up the values of supplied key and return a Number
+     * 
+     * @param string $key       The key to sum up
+     * @return Number
      */
     private function sumNumber( string $key ): Number
     {
@@ -57,7 +67,7 @@ class TransactionCollection extends Collection
      * 
      * @param Carbon $at            Return balance at this date
      * @param bool $recalculate     Force the calculation to rerun
-     * @return float                The balance
+     * @return Quantity                The balance
      */
     public function balance(  $at = null, $recalculate = true ): Quantity
     {
@@ -69,7 +79,7 @@ class TransactionCollection extends Collection
    /**
      * Average buy price for this token
      * 
-     * @return float    The average price of all the buy transactions
+     * @return Currency    The average price of all the buy transactions
      */
     public function averageBuyPrice(): Currency
     {
@@ -79,7 +89,7 @@ class TransactionCollection extends Collection
     /**
      * Average sell price for this token
      * 
-     * @return float  
+     * @return Currency  
      */
     public function averageSellPrice(): Currency
     {
@@ -89,7 +99,7 @@ class TransactionCollection extends Collection
     /**
      * The average buy price of tokens that are still being held
      * 
-     * @return float    
+     * @return Currency    
      */
     public function averageHodlBuyPrice(): Currency
     {
@@ -98,6 +108,8 @@ class TransactionCollection extends Collection
 
     /**
      * Is the chain of transactions valid ?
+     * 
+     * @return bool
      */
     public function isValid(): bool
     {
@@ -138,9 +150,9 @@ class TransactionCollection extends Collection
      * Calculate the average price of the speicifed type transactions.
      * 
      * @param string $type                          Transaction type / buy or sell
-     * @param float $total                          Starting total
-     * @param float $quantity                       Starting quantity
-     * @return float                                The average price of all the buy transactions
+     * @param Currency $total                       Starting total
+     * @param Quantity $quantity                    Starting quantity
+     * @return Currency                             The average price of all the buy transactions
      */
     private function calcAveragePrice( $type = Transaction::BUY, Currency $total = null, Quantity $quantity = null ): Currency
     {
@@ -165,7 +177,7 @@ class TransactionCollection extends Collection
      * 
      * Return False if the balance is ever negative.
      * 
-     * @param float     $balance    Starting balance
+     * @param Quantity     $balance    Starting balance
      * @return bool    
      */
     private function validateTransactions( ?Quantity $balance = null ): bool

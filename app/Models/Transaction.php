@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Interfaces\TransactionInterface;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,8 +15,9 @@ use App\Support\Quantity;
 use App\Support\Casts\CurrencyCast;
 use App\Support\Casts\QuantityCast;
 use App\Support\Presenters\TransactionPresenter;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Transaction extends Model
+class Transaction extends Model implements TransactionInterface
 {
     use HasFactory;
     use SoftDeletes;
@@ -53,7 +55,7 @@ class Transaction extends Model
      * @param  array  $models
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function newCollection(array $models = [])
+    public function newCollection(array $models = []): TransactionCollection
     {
         return new TransactionCollection($models);
     }
@@ -61,7 +63,7 @@ class Transaction extends Model
     /**
      * The token this transaction applies to
      */
-    public function token()
+    public function token(): BelongsTo
     {
         return $this->belongsTo(Token::class);
     }
