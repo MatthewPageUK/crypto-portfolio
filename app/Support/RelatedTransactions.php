@@ -125,7 +125,7 @@ class RelatedTransactions
              * We have sold some of the balanceBefore, subtract quantity sold
              * and ignore the transaction, we don't need it now
              */
-            if($sell->quantity->lte( $balanceBefore ) )
+            if( $sell->quantity->lte( $balanceBefore ) )
             {
                 $balanceBefore = $balanceBefore->subtract( $sell->quantity );
             }
@@ -134,7 +134,7 @@ class RelatedTransactions
              * Adjust the transaction to only sell the remainder, this part order then 
              * gets added to our possibleSells list and results in a zero balanceBefore
              */
-            else if($balanceBefore->gt(0) )
+            else if( $balanceBefore->gt(0) )
             {
                 $sell->quantity = $sell->quantity->subtract( $balanceBefore );
                 $balanceBefore = $balanceBefore->subtract( $sell->quantity );

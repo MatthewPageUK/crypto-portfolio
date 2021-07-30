@@ -2,6 +2,9 @@
 
 namespace App\Support;
 
+/**
+ * Ready for BCMath to be dropped in when needed...
+ */
 class Number
 {
 
