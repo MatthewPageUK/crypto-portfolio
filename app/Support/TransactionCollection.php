@@ -57,7 +57,7 @@ class TransactionCollection extends Collection implements TransactionCollectionI
                 $unsoldQuantity = $unsoldQuantity->subtract( $newTrans->quantity );
 
                 /**
-                 * If the new transaction has a quantity, keep it
+                 * If the transaction has a quantity, keep it
                  */
                 if( $newTrans->quantity->gt(0) ) $unsoldTransactions->push( $newTrans );
 
@@ -228,7 +228,7 @@ class TransactionCollection extends Collection implements TransactionCollectionI
         {
             if( $transaction->type === $type )
             {
-                $total = $total->add($transaction->total());
+                $total = $total->add( $transaction->total() );
                 $quantity = $quantity->add( $transaction->quantity );
             }
         }
@@ -248,13 +248,11 @@ class TransactionCollection extends Collection implements TransactionCollectionI
     private function validateTransactions( ?Quantity $balance = null ): bool
     {
         if( is_null( $balance ) ) $balance = new Quantity();
-
         foreach( $this->sortBy('time') as $transaction )
         {
             $balance = $this->modifyBalance( $balance, $transaction );
             if( $balance->lt(0) ) return false;
         }
-
         return true;
     }
 

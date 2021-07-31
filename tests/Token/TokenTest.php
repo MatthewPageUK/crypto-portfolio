@@ -42,7 +42,7 @@ class TokenTest extends TestCase
     {
         $token = Token::factory()->create();
 
-        $this->actingAs(User::factory()->create())->get(route('token.show', ['token' => $token->id]))
+        $this->actingAs( User::factory()->create() )->get(route('token.show', ['token' => $token->id]))
             ->assertSee($token->symbol)
             ->assertSee($token->name);
     }

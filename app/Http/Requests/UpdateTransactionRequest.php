@@ -22,10 +22,9 @@ class UpdateTransactionRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        $token = Token::find($this->input('token_id'));
+        $isValid = true;
         $transaction = $this->route('transaction');
-
-        // If different token check both tokens maintain a valid balance..... !!!! todo
+        $token = Token::find($transaction->token_id);
         
         /**
          * Filter out the current transaction
@@ -33,23 +32,44 @@ class UpdateTransactionRequest extends FormRequest
         $filtered = $token->transactions->where('id', '!=', $transaction->id);
 
         /**
-         * Push updated transaction
+         * Selected a different token so we need to push this transaction to that 
+         * list.
          */
-        $filtered->push(new Transaction([
-            'token_id' => $token->id, 
-            'quantity' => $this->input('quantity'),
-            'price' => $this->input('price'),
-            'type' => $this->input('type'),
-            'time' => $this->input('time'),
-        ])); 
+        if( $this->input('token_id') !== $token->id )
+        {
+            $newToken = Token::find( $this->input('token_id') );
+            $newToken->transactions->push(new Transaction([
+                'token_id' => $newToken->id, 
+                'quantity' => $this->input('quantity'),
+                'price' => $this->input('price'),
+                'type' => $this->input('type'),
+                'time' => $this->input('time'),
+            ])); 
+
+            $isValid = $newToken->transactions->isValid();
+        }
+        else
+        {
+            /**
+             * Push updated transaction
+             */
+            $filtered->push(new Transaction([
+                'token_id' => $token->id, 
+                'quantity' => $this->input('quantity'),
+                'price' => $this->input('price'),
+                'type' => $this->input('type'),
+                'time' => $this->input('time'),
+            ])); 
+        }
+
+        $isValid = ( ! $isValid ) ? false : $filtered->isValid();
 
         /**
          * Validate the transactions
          */
-        $this->merge(['validtransactions' => $filtered->isValid()]);
+        $this->merge(['validtransactions' => $isValid]);
 
     }
-
 
     /**
      * Update transaction rules.

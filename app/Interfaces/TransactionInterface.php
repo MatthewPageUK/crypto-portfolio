@@ -59,9 +59,6 @@ interface TransactionInterface
      * Buy order - find the transaction where these were sold
      * Sell order - find the transactions where these were puchased
      * 
-     * This is achieved by replaying the transaction list in order, it seems to work
-     * but not easy to explain :)
-     * 
      * @return TransactionCollection
      */
     public function related(): TransactionCollection;

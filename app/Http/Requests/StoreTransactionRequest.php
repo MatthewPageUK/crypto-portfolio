@@ -21,18 +21,12 @@ class StoreTransactionRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     * 
-     * Todo - future time validation before:xxxxx
-     *
-     * @return array
+     * Push the new transaction to the list and validate them
      */
-    public function rules()
+    protected function prepareForValidation()
     {
+        // todo make a copy of the transactions and test on that ... not the original
         $token = Token::find($this->input('token_id'));
-
-        $quantityRule = ($token && $this->input('type')===Transaction::SELL) ? ['required', 'gt:0', 'lte:'.$token->balance()->getValue()] : ['required', 'gt:0'];
-
         $token->transactions->push(new Transaction([
             'token_id' => $token->id, 
             'quantity' => $this->input('quantity'),
@@ -40,9 +34,20 @@ class StoreTransactionRequest extends FormRequest
             'type' => $this->input('type'),
             'time' => $this->input('time'),
         ]));
-        
-        $valid = ( $token->transactions->isValid() ) ? [ 'validtrans' => '' ] : [ 'validtrans' => new ValidTransactionsRule ];
-        
+
+        /**
+         * Validate the transactions
+         */
+        $this->merge(['validtransactions' => $token->transactions->isValid()]);
+    }    
+
+    /**
+     * Get the validation rules that apply to the request.
+     * 
+     * @return array
+     */
+    public function rules()
+    {       
         return [
             'token_id' => [
                 'required', 
@@ -62,7 +67,10 @@ class StoreTransactionRequest extends FormRequest
                 'date', 
                 'before:'.now()->format('Y-m-d\TH:i:s'),
             ],
-            $valid,
+            'validtransactions' => [
+                'required',
+                new ValidTransactionsRule,
+            ],
         ];
     }
 }

@@ -44,7 +44,7 @@ https://github.com/MatthewPageUK/crypto-portfolio/wiki
 
 :heavy_check_mark: Avg buy price / Avg buy price of held tokens
 
-:heavy_multiplication_x: Coinmarketcap API interface
+:heavy_check_mark: Accurate profit and loss on sell orders
 
 :heavy_check_mark: Database migrations for User, Tokens and Transactions 'php artisan migrate'
 
@@ -69,9 +69,22 @@ WelcomeTest (4).
 
 :heavy_multiplication_x: More coming....
 
+:bulb: Coinmarketcap API interface
+
+:bulb: Optional trading fees
+
+:bulb: Back and restore
+
+:bulb: Notes
+
+:bulb: TradingView integration
+
+
 ### :warning: Known issues
 
 Number formatting and possible bugs in the extremes of quanties or prices. Not suitable for financial reporting.
+
+Performance is not great, not intended for multi user. Look at caching soon.
 
 
 

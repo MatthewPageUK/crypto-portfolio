@@ -39,4 +39,6 @@ class TransactionTest extends TestCase
         $transaction = Transaction::factory()->create(['quantity' => 100, 'price' => 1.5]);
         $this->assertTrue($transaction->total()->getValue() === 100 * 1.5);
     }
+
+    // todo - avg buy / sell / hodl ... ????
 }

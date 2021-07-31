@@ -17,7 +17,7 @@ class TokenDeleteTest extends TestCase
     private User $user;
 
     /**
-     * Setup some defaults, bad data and a user
+     * Setup some defaults and a user
      */
     public function setUp(): void
     {
