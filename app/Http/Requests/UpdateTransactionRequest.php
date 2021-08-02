@@ -62,7 +62,7 @@ class UpdateTransactionRequest extends FormRequest
             ])); 
         }
 
-        $isValid = ( ! $isValid ) ? false : $filtered->isValid();
+        $isValid = ( $isValid ) ? $filtered->isValid() : false;
 
         /**
          * Validate the transactions

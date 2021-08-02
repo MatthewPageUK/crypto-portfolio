@@ -188,11 +188,30 @@ class EditTransactionTest extends TestCase
         $this->assertDatabaseHas($this->table, ['quantity' => $this->good['original']['quantity']]);
     }
 
+    /**
+     * Test the transaction token can not be changed causing a negative balance
+     */
+    public function test_transaction_token_change_can_not_be_stored_with_negative_balance()
+    {
+        // Add a sell transaction
+        Transaction::factory()->for($this->token)->create([
+            'token_id' => $this->token->id, 
+            'time' => '2021-06-25T11:32:45',
+            'quantity' => 50,
+            'price' => 12,
+            'type' => Transaction::SELL,            
+        ]);
 
-     /**
-      * Todo
-      * Change token - not neg balance
-      * Change type - not neg balance
-      */
+        // Change the original buy order to a different token
+        $token2 = Token::factory()->create();
 
+        $this->actingAs($this->user)->post(route('transaction.update', array_merge($this->good['original'], [
+            'transaction' => $this->transaction->id,
+            'token_id' => $token2->id,
+        ])));
+
+        $this->assertDatabaseHas($this->table, $this->good['original']);
+        
+    }
+    
 }
