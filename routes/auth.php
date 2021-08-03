@@ -62,3 +62,15 @@ Route::post('/confirm-password', [ConfirmablePasswordController::class, 'store']
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->middleware('auth')
                 ->name('logout');
+
+/**
+ * Edit Profile 
+**/                
+
+Route::get('/edit-profile', [RegisteredUserController::class, 'edit'])
+                ->middleware('auth')
+                ->name('profile.edit');        
+                
+Route::post('/edit-profile', [RegisteredUserController::class, 'update'])
+                ->middleware('auth')
+                ->name('profile.update');                 

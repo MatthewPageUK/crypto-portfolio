@@ -24,6 +24,43 @@ class RegisteredUserController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function edit()
+    {
+        return view('auth.edit-profile');
+    }    
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $user = User::findOrFail(Auth::user()->id);
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()
+            ->route('dashboard')
+            ->with('success', __('Profile updated'));
+    }    
+
+    /**
      * Handle an incoming registration request.
      *
      * @param  \Illuminate\Http\Request  $request
