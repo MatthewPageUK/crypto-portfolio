@@ -5,6 +5,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\DiaryController;
+use App\Http\Controllers\BackupController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,10 +18,15 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('/', [WelcomeController::class, 'index'])->middleware('guest')->name('welcome');
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 Route::get('/diary', [DiaryController::class, 'index'])->middleware(['auth'])->name('diary');
+
+Route::group(['prefix' => 'backup', 'middleware' => 'auth', 'as'=> 'backup.'], function () {
+    Route::get('/download', [BackupController::class, 'download'])->middleware(['auth'])->name('download');
+    Route::get('/upload', [BackupController::class, 'upload'])->middleware(['auth'])->name('upload');
+    Route::post('/restore', [BackupController::class, 'restore'])->middleware(['auth'])->name('restore');
+});
 
 Route::group(['prefix' => 'token', 'middleware' => 'auth', 'as'=> 'token.'], function () {
     Route::get('/create', [TokenController::class, 'create'])->name('create');
