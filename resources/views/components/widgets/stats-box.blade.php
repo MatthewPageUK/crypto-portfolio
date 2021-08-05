@@ -1,7 +1,7 @@
 @props(['title'])
 
 @php
-    $classes = 'flex-grow p-6 m-5 bg-white shadow-lg rounded-lg';
+    $classes = 'flex-grow p-6 m-5 bg-white shadow-lg rounded-lg opacity-80 hover:opacity-100';
 @endphp
 
 {{-- A stats box with title --}}

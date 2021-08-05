@@ -1,7 +1,7 @@
 @props(['token'])
 
 @php
-    $classes = 'w-full sm:w-64 p-6 m-5 bg-white shadow-lg rounded-lg text-center';
+    $classes = 'w-full sm:w-64 p-6 m-5 bg-white shadow-lg rounded-lg text-center opacity-75 hover:opacity-100';
 @endphp
 
 {{-- Token Info Box --}}

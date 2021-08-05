@@ -19,7 +19,7 @@
     </x-slot>
  
     <div class="overflow-x-auto mt-2">
-        <div class="min-w-screen bg-gray-100 flex flex-wrap items-center justify-center overflow-hidden border-b-2 border-gray-300 mx-6">
+        <div class="min-w-screen flex flex-wrap items-center justify-center overflow-hidden mx-6">
 
             <!-- Tokens with a balance -->
             @foreach ($tokens as $token)
@@ -29,7 +29,7 @@
             @endforeach
             
         </div>
-        <div class="min-w-screen bg-gray-100 flex flex-wrap items-center justify-center overflow-hidden mb-16 mx-6">
+        <div class="min-w-screen flex flex-wrap items-center justify-center overflow-hidden mb-16 mx-6">
 
             <!-- Tokens with zero balance -->
             @foreach ($tokens as $token)
