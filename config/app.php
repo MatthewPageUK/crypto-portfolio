@@ -16,7 +16,7 @@ return [
     'name' => env('APP_NAME', 'Crypto Portfolio Tracker'),
     'title' => 'Crypto Portfolio Tracker',
     'description' => 'A simple single user app for recording crypto token purchases and sales.',
-    'version' => '0.0.1-beta',
+    'version' => '0.0.1-alpha',
 
     /*
     |--------------------------------------------------------------------------
