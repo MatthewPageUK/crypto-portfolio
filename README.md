@@ -69,15 +69,15 @@ WelcomeTest (4).
 
 :heavy_multiplication_x: More coming....
 
-:bulb: Coinmarketcap API interface
+:bulb: Coinmarketcap API interface.
 
-:bulb: Optional trading fees
+:bulb: Optional trading fees.
 
-:bulb: Back and restore
+:bulb: Back and restore.
 
-:bulb: Notes
+:bulb: Notes.
 
-:bulb: TradingView integration
+:bulb: TradingView integration.
 
 
 ### :warning: Known issues
