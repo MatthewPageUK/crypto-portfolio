@@ -73,6 +73,8 @@ WelcomeTest (4).
 
 :bulb: Optional trading fees.
 
+:bulb: BCMath.
+
 :heavy_check_mark: Back and restore.
 
 :bulb: Notes.
