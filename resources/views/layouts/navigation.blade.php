@@ -17,7 +17,10 @@
                     </x-nav-link>
                     <x-nav-link :href="route('diary')" :active="request()->routeIs('diary')" title="Your trading diary">
                         {{ __('Diary') }}
-                    </x-nav-link>                    
+                    </x-nav-link>
+                    <x-nav-link :href="route('bot.index')" :active="request()->routeIs('bot.index')" title="Trading Bot">
+                        {{ __('Bot') }}
+                    </x-nav-link>
                     <x-nav-link href="https://www.coinmarketcap.com" target="_blank" title="Visit Coinmarketcap">
                         {{ __('Coin Market Cap') }}
                     </x-nav-link>
@@ -52,15 +55,15 @@
 
                             <x-dropdown-link :href="route('profile.edit')">
                                 {{ __('Edit Profile') }}
-                            </x-dropdown-link>        
+                            </x-dropdown-link>
 
                             <x-dropdown-link :href="route('backup.download')">
                                 {{ __('Backup Data') }}
-                            </x-dropdown-link>                             
+                            </x-dropdown-link>
 
                             <x-dropdown-link :href="route('backup.upload')">
                                 {{ __('Restore Data') }}
-                            </x-dropdown-link>                                 
+                            </x-dropdown-link>
 
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();

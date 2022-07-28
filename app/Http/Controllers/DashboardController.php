@@ -14,7 +14,7 @@ class DashboardController extends Controller
     public function index()
     {
         $tokens = Token::all()->sortBy('symbol');
-        
+
         return view('dashboard')
             ->with('tokens', $tokens);
     }

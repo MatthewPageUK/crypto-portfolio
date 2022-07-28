@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat&display=swap">
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
         <script src="{{ asset('js/app.js') }}" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.2/chart.min.js"></script>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-fixed bg-cover" style="background-image: url({{ asset('img/back.jpg') }})">
