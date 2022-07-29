@@ -112,4 +112,16 @@ class Bot extends Model
     {
         return $this->price - ( ( $this->price / 100 ) * $this->loss );
     }
+    public function getCurrentValue()
+    {
+        $lastPrice = $this->history->last()?->price;
+
+        return $lastPrice * $this->quantity;
+    }
+    public function getProfitLoss()
+    {
+        $lastPrice = $this->history->last()?->price;
+
+        return $this->getCurrentValue() - ( $this->price * $this->quantity );
+    }
 }
