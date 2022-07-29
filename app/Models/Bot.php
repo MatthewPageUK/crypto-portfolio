@@ -68,6 +68,14 @@ class Bot extends Model
     }
 
     /**
+     * The bot history
+     */
+    public function history(): hasMany
+    {
+        return $this->hasMany(BotHistory::class);
+    }
+
+    /**
      * Is this bot running now ?
      *
      */
@@ -95,4 +103,13 @@ class Bot extends Model
     // }
 
 
+
+    public function targetPrice()
+    {
+        return $this->price + ( ( $this->price / 100 ) * $this->profit );
+    }
+    public function stopPrice()
+    {
+        return $this->price - ( ( $this->price / 100 ) * $this->loss );
+    }
 }

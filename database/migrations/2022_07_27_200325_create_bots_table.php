@@ -40,6 +40,6 @@ class CreateBotsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('transactions');
+        Schema::dropIfExists('bots');
     }
 }

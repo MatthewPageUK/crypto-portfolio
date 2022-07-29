@@ -18,6 +18,8 @@ return [
     'description' => 'A simple single user app for recording crypto token purchases and sales.',
     'version' => '0.0.1-alpha',
 
+    'cmckey' => env('CMC_KEY'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

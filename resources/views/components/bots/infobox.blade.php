@@ -47,6 +47,22 @@
                     <th class="text-left py-1">Status</th>
                     <td class="text-left py-1">{{ $bot->status }}</td>
                 </tr>
+                <tr class="hover:bg-gray-100">
+                    <th class="text-left py-1">Running</th>
+                    <td class="text-left py-1">{{ $bot->isRunning() ? 'Yes' : 'No' }}</td>
+                </tr>
+                <tr class="hover:bg-gray-100">
+                    <th class="text-left py-1">Last</th>
+                    <td class="text-left py-1">{{ $bot->history->last()?->created_at->diffForHumans(); }}</td>
+                </tr>
+                <tr class="hover:bg-gray-100">
+                    <th class="text-left py-1">Target</th>
+                    <td class="text-left py-1">{{ $bot->profit; }}%</td>
+                </tr>
+                <tr class="hover:bg-gray-100">
+                    <th class="text-left py-1">Stop Loss</th>
+                    <td class="text-left py-1">{{ $bot->loss; }}%</td>
+                </tr>
             </table>
         </div>
 
@@ -67,13 +83,13 @@
             </table>
         </div>
 
-        <div class="mt-4 border rounded-lg bg-green-100 py-2 px-4 text-sm">
-            This bot has acheived guaranteed profit of £123.45 (6.5%)
-        </div>
+        {{-- <div class="mt-4 border rounded-lg bg-green-100 py-2 px-4 text-sm">
+            This bot has acheived guaranteed profit of £23.45 (12.5%)
+        </div> --}}
 
-        <div class="mt-4 border rounded-lg bg-green-100 py-2 px-4 text-sm">
+        {{-- <div class="mt-4 border rounded-lg bg-green-100 py-2 px-4 text-sm">
             You can sell now for profit of £143.45 (8.5%) [SELL]
-        </div>
+        </div> --}}
 
 
     </div>
@@ -85,19 +101,19 @@
         const myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange', 'Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange', 'Yellow', 'Green', 'Purple', 'Orange'],
+                labels: ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
                 datasets: [{
-                    label: 'Bitcoin Price',
-                    data: [12, 19, 3, 5, 2, 3, 8, 7, 8, 10, 15, 20, 25, 30, 31, 28, 26, 20, 20, 21],
+                    label: 'Price',
+                    data: [{{ $bot->history->implode('price', ', '); }}],
 
-                }, {
-                    label: 'Sell Price',
-                    data: [15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 7, 6],
+                } , {
+                    label: 'Target',
+                    data: [{{ $bot->history->implode('target_price', ', '); }}],
                     borderColor: 'rgb(0, 162, 0)'
 
                 }, {
                     label: 'Stop Loss',
-                    data: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 15, 15, 15, 20, 20, 20, 20, 20, 7, 6],
+                    data: [{{ $bot->history->implode('stop_loss', ', '); }}],
                     borderColor: 'rgb(162, 0, 0)'
 
                 },
