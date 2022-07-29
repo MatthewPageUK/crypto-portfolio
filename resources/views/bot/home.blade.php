@@ -20,7 +20,7 @@
 
     <div class="overflow-x-auto p-16">
 
-        <div class="grid grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 gap-6">
 
             @foreach ($bots as $bot)
 
