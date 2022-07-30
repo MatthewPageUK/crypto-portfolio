@@ -1,4 +1,33 @@
-@props(['bot'])
+<x-app-layout title=" - {{ __('Trading Bots') }}">
+    <x-slot name="header">
+        <div class="flex items-center">
+
+            {{-- Title --}}
+            <h2 class="flex-grow font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Trading Bots') }}
+            </h2>
+
+            {{-- Add Bot link --}}
+            <div class="flex-grow">
+                <a href="{{ route('bot.create') }}" title="{{ __('Create a new bot') }}" class="flex items-center text-right hover:text-green-500">
+                    <span class="flex-grow">{{ __('Create Bot') }}</span>
+                    <x-icons.plus class="ml-1 w-6" />
+                </a>
+            </div>
+
+        </div>
+    </x-slot>
+
+    <div class="overflow-x-auto p-16">
+
+
+
+
+
+
+
+
+
 
 {{-- Bot Info Box --}}
 <div class="opacity-90 hover:opacity-100">
@@ -79,71 +108,91 @@
         {{-- Graph --}}
         <div class="col-span-9 ml-8">
 
-            <div style="margin-right: 100px">
 
-                <canvas id="myChart{{ $bot->id }}" width="400" height="400"></canvas>
-                <script>
-                    @php
-                        $cnt = $bot->history()->orderBy('created_at', 'desc')->limit(50)->count();
-                        $buyPrices = array_fill(0, $cnt, $bot->price);
-
-                        $labels = [];
-                        foreach ($bot->history()->orderBy('created_at', 'desc')->limit(50)->get()->sortBy('created_at') as $bh) {
-                            $labels[] = "'".$bh->created_at->format('G:i')."'";
-                        }
-                    @endphp
-                    const ctx{{ $bot->id }} = document.getElementById('myChart{{ $bot->id }}').getContext('2d');
-                    const myChart{{ $bot->id }} = new Chart(ctx{{ $bot->id }}, {
-                        type: 'line',
-                        data: {
-                            labels: [{!! implode(', ', $labels); !!}],
-                            datasets: [{
-                                    label: 'Price',
-                                    data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(50)->get()->sortBy('created_at')->implode('price', ', '); }}],
-                                    borderColor: 'rgb(100, 100, 162)',
-                                    borderWidth: 2,
-
-                                } , {
-                                    label: 'Target',
-                                    data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(50)->get()->sortBy('created_at')->implode('target_price', ', '); }}],
-                                    borderColor: 'rgb(0, 162, 0)',
-                                    borderWidth: 2,
-                                    pointRadius: 2,
-                                    pointHoverRadius: 2,
-
-                                }, {
-                                    label: 'Stop Loss',
-                                    data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(50)->get()->sortBy('created_at')->implode('stop_loss', ', '); }}],
-                                    borderColor: 'rgb(162, 0, 0)',
-                                    borderWidth: 2,
-                                    pointRadius: 2,
-                                    pointHoverRadius: 2,
-
-                                }, {
-                                    label: 'Buy price',
-                                    data: [{{ implode(', ', $buyPrices) }}],
-                                    borderColor: 'rgb(162, 162, 162)',
-                                    borderWidth: 1,
-                                    pointRadius: 2,
-                                    pointHoverRadius: 2,
-
-                                },
-                            ]
-                        },
-                        options: {
-                            aspectRatio: 2,
-                            scales: {
-                                y: {
-                                    suggestedMin: {{ $bot->price - ( ( $bot->price / 100 ) * ( $bot->loss + 10 ) ) }},
-                                    suggestedMax: {{ $bot->price + ( ( $bot->price / 100 ) * ( $bot->profit + 10 ) ) }},
-                                }
-                            }
-                        },
-                    });
-                </script>
-            </div>
         </div>
     </div>
+
+
+
+
+
+
+
+
+
+
+
+    {{-- Graph --}}
+
+    <div class="bg-white p-6">
+
+        <canvas id="myChart{{ $bot->id }}" width="400" height="400"></canvas>
+        <script>
+            @php
+                $cnt = $bot->history()->orderBy('created_at', 'desc')->limit(5000)->count();
+                $buyPrices = array_fill(0, $cnt, $bot->price);
+
+                $labels = [];
+                foreach ($bot->history()->orderBy('created_at', 'desc')->limit(5000)->get()->sortBy('created_at') as $bh) {
+                    $labels[] = "'".$bh->created_at->format('G:i')."'";
+                }
+            @endphp
+            const ctx{{ $bot->id }} = document.getElementById('myChart{{ $bot->id }}').getContext('2d');
+            const myChart{{ $bot->id }} = new Chart(ctx{{ $bot->id }}, {
+                type: 'line',
+                data: {
+                    labels: [{!! implode(', ', $labels); !!}],
+                    datasets: [{
+                            label: 'Price',
+                            data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(5000)->get()->sortBy('created_at')->implode('price', ', '); }}],
+                            borderColor: 'rgb(100, 100, 162)',
+                            borderWidth: 2,
+
+                        } , {
+                            label: 'Target',
+                            data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(5000)->get()->sortBy('created_at')->implode('target_price', ', '); }}],
+                            borderColor: 'rgb(0, 162, 0)',
+                            borderWidth: 2,
+                            pointRadius: 2,
+                            pointHoverRadius: 2,
+
+                        }, {
+                            label: 'Stop Loss',
+                            data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(5000)->get()->sortBy('created_at')->implode('stop_loss', ', '); }}],
+                            borderColor: 'rgb(162, 0, 0)',
+                            borderWidth: 2,
+                            pointRadius: 2,
+                            pointHoverRadius: 2,
+
+                        }, {
+                            label: 'Buy price',
+                            data: [{{ implode(', ', $buyPrices) }}],
+                            borderColor: 'rgb(162, 162, 162)',
+                            borderWidth: 1,
+                            pointRadius: 2,
+                            pointHoverRadius: 2,
+
+                        },
+                    ]
+                },
+                options: {
+                    aspectRatio: 2,
+                    scales: {
+                        y: {
+                            suggestedMin: {{ $bot->price - ( ( $bot->price / 100 ) * ( $bot->loss + 10 ) ) }},
+                            suggestedMax: {{ $bot->price + ( ( $bot->price / 100 ) * ( $bot->profit + 10 ) ) }},
+                        }
+                    }
+                },
+            });
+        </script>
+    </div>
+
+
+
+
+
+
     {{-- Footer --}}
      <div class="grid grid-cols-12 items-center bg-gray-200 shadow-lg rounded-b-xl py-2 px-4 text-sm">
 
@@ -163,9 +212,44 @@
         <div class="col-span-4 text-right">
             <x-button>Pause</x-button>
             <x-button>Sell</x-button>
-            <x-button-link href="{{ route('bot.show', ['bot' => $bot]) }}">More Info</x-button-link>
         </div>
 
     </div>
 
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+</x-app-layout>

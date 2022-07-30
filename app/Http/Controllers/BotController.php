@@ -22,6 +22,17 @@ class BotController extends Controller
     }
 
     /**
+     * Display the individual bot
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Bot $bot)
+    {
+        return view('bot.show')
+            ->with('bot', $bot);
+    }
+
+    /**
      * Create a new bot.
      *
      * @return \Illuminate\Http\Response

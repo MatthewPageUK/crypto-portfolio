@@ -52,6 +52,7 @@ Route::group(['prefix' => 'bot', 'middleware' => 'auth', 'as'=> 'bot.'], functio
     Route::get('/', [BotController::class, 'index'])->name('index');
     Route::get('/create', [BotController::class, 'create'])->name('create');
     Route::post('/store', [BotController::class, 'store'])->name('store');
+    Route::get('/{bot}', [BotController::class, 'show'])->name('show');
 });
 
 require __DIR__.'/auth.php';
