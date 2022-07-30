@@ -59,7 +59,7 @@ class Bot extends Model
      */
     public function isRunning()
     {
-        return $this->started !== null;
+        return $this->started !== null && $this->stopped === null;
     }
 
     /**

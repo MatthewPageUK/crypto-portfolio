@@ -47,62 +47,8 @@
             Status : {{ Str::title($bot->status) }} / {{ $bot->isRunning() ? 'Running' : 'Stopped' }}
         </div>
     </div>
-    <div class="grid grid-cols-12 bg-white shadow-lg p-4 bg-no-repeat "
-        style="background-image: url('https://robohash.org/{{ $bot->name }}{{ $bot->id }}?size=200x200'); background-position: right -20px bottom"
-    >
-
-        {{-- Info table --}}
-        <div class="col-span-10">
-
-            <table class="w-full text-sm">
-
-                <tr class="hover:bg-gray-100">
-                    <th class="text-left py-1">Born</th>
-                    <td class="text-left py-1 text-xs" colspan="3">{{ $bot->created_at }}</td>
-                </tr>
-                <tr class="hover:bg-gray-100">
-                    <th class="text-left py-1">Age</th>
-                    <td class="text-left py-1 w-1/4">{{ $bot->created_at->diffForHumans(null, true) }}</td>
-                    <th class="text-left py-1">Quantity</th>
-                    <td class="text-left py-1 w-1/4 hover:bg-gray-100">{{ number_format($bot->quantity) }}</td>
-                </tr>
-                <tr class="hover:bg-gray-100">
-                    <th class="text-left py-1">Target</th>
-                    <td class="text-left py-1">{{ $bot->profit; }}%</td>
-                    <th class="text-left py-1">Exposure</th>
-                    <td class="text-left py-1 hover:bg-red-100">£{{ number_format($bot->getExposure(), 2) }}</td>
-                </tr>
-                <tr class="hover:bg-gray-100">
-                    <th class="text-left py-1">Stop Loss</th>
-                    <td class="text-left py-1">{{ $bot->loss; }}%</td>
-                    <th class="text-left py-1">Risk</th>
-                    <td class="text-left py-1 hover:bg-red-500 hover:text-white">£{{ number_format($bot->getRisk(), 2) }}</td>
-                </tr>
-                <tr class="hover:bg-gray-100">
-                    <th class="text-left py-1 pr-1">Entry price</th>
-                    <td class="text-left py-1 hover:bg-gray-100">£{{ number_format($bot->price, 4) }}</td>
-                    <th class="text-left py-1">Gain</th>
-                    <td class="text-left py-1 hover:bg-green-500 hover:text-white">£{{ number_format($bot->getGain(), 2) }}</td>
-                </tr>
-            </table>
-
-{{--
-            <div class="mt-4 border rounded-lg bg-green-100 py-2 px-4 text-sm">
-                This bot has acheived guaranteed profit of £23.45 (12.5%)
-            </div> --}}
-
-            {{-- <div class="mt-4 border rounded-lg bg-green-100 py-2 px-4 text-sm">
-                You can sell now for profit of £143.45 (8.5%) [SELL]
-            </div> --}}
-
-        </div>
-
-        {{-- Graph --}}
-        <div class="col-span-9 ml-8">
 
 
-        </div>
-    </div>
 
 
 
@@ -182,7 +128,92 @@
 
 
 
+    {{-- Panel --}}
+    <div class="grid grid-cols-12 bg-white shadow-lg p-4 bg-no-repeat border-b"
+        style="background-image: url('https://robohash.org/{{ $bot->name }}{{ $bot->id }}?size=200x200'); background-position: right -20px bottom"
+    >
 
+        {{-- Info table --}}
+        <div class="col-span-10">
+
+            <table class="w-full text-sm">
+
+                <tr class="hover:bg-gray-100">
+                    <th class="text-left py-1">Born</th>
+                    <td class="text-left py-1 text-xs" colspan="3">{{ $bot->created_at }}</td>
+                </tr>
+                <tr class="hover:bg-gray-100">
+                    <th class="text-left py-1">Age</th>
+                    <td class="text-left py-1 w-1/4">{{ $bot->created_at->diffForHumans(null, true) }}</td>
+                    <th class="text-left py-1">Quantity</th>
+                    <td class="text-left py-1 w-1/4 hover:bg-gray-100">{{ number_format($bot->quantity) }}</td>
+                </tr>
+                <tr class="hover:bg-gray-100">
+                    <th class="text-left py-1">Target</th>
+                    <td class="text-left py-1">{{ $bot->profit; }}%</td>
+                    <th class="text-left py-1">Exposure</th>
+                    <td class="text-left py-1 hover:bg-red-100">£{{ number_format($bot->getExposure(), 2) }}</td>
+                </tr>
+                <tr class="hover:bg-gray-100">
+                    <th class="text-left py-1">Stop Loss</th>
+                    <td class="text-left py-1">{{ $bot->loss; }}%</td>
+                    <th class="text-left py-1">Risk</th>
+                    <td class="text-left py-1 hover:bg-red-500 hover:text-white">£{{ number_format($bot->getRisk(), 2) }}</td>
+                </tr>
+                <tr class="hover:bg-gray-100">
+                    <th class="text-left py-1 pr-1">Entry price</th>
+                    <td class="text-left py-1 hover:bg-gray-100">£{{ number_format($bot->price, 4) }}</td>
+                    <th class="text-left py-1">Gain</th>
+                    <td class="text-left py-1 hover:bg-green-500 hover:text-white">£{{ number_format($bot->getGain(), 2) }}</td>
+                </tr>
+            </table>
+
+{{--
+            <div class="mt-4 border rounded-lg bg-green-100 py-2 px-4 text-sm">
+                This bot has acheived guaranteed profit of £23.45 (12.5%)
+            </div> --}}
+
+            {{-- <div class="mt-4 border rounded-lg bg-green-100 py-2 px-4 text-sm">
+                You can sell now for profit of £143.45 (8.5%) [SELL]
+            </div> --}}
+
+        </div>
+
+    </div>
+
+    {{-- Memories --}}
+    <div class="bg-white p-6 text-sm">
+        <table class="w-full">
+            <tr>
+                <th class="text-left">Date</th>
+                <th class="text-left">Target price</th>
+                <th class="text-left">Stop loss</th>
+                <th class="text-left">Price</th>
+                <th class="w-1/2 text-right">Note</th>
+            </tr>
+
+        @foreach($bot->history as $history)
+
+            @if($history->note !== 'NOP')
+
+                <tr>
+                    <td>{{ $history->created_at }}</td>
+                    <td>{{ number_format($history->target_price, 4) }}</td>
+                    <td>{{ number_format($history->stop_loss, 4) }}</td>
+                    <td>{{ number_format($history->price, 4) }}</td>
+                    <td class="text-right">{{ $history->note }}</td>
+                </tr>
+
+            @endif
+
+        @endforeach
+
+        </table>
+        <div class="mt-4">
+            <x-button-link href="{{ route('bot.memories', ['bot' => $bot]) }}">More memories</x-button-link>
+        </div>
+
+    </div>
 
 
     {{-- Footer --}}
@@ -202,13 +233,17 @@
         </div>
 
         <div class="col-span-4 text-right">
-            <x-button>Pause</x-button>
+            {{-- <x-button>Pause</x-button> --}}
             <x-button>Sell</x-button>
         </div>
 
     </div>
 
 </div>
+
+
+
+
 
 
 

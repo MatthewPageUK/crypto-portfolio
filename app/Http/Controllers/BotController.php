@@ -33,6 +33,17 @@ class BotController extends Controller
     }
 
     /**
+     * Display the individual bot memories - wrong controller :)
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function memories(Bot $bot)
+    {
+        return view('bot.memories')
+            ->with('bot', $bot);
+    }
+
+    /**
      * Create a new bot.
      *
      * @return \Illuminate\Http\Response

@@ -6,6 +6,7 @@ use App\Exceptions\PriceOracleFailureException;
 use App\Models\Bot;
 use App\Models\BotHistory;
 use App\Support\Coinmarketcap;
+use Carbon\Carbon;
 
 class UpdateBots
 {
@@ -15,7 +16,7 @@ class UpdateBots
      */
     public function __invoke()
     {
-        $note = '';
+        $note = 'NOP';
 
         try {
             $cmc = new Coinmarketcap();
@@ -30,6 +31,13 @@ class UpdateBots
             if ($bot->isRunning()) {
 
                 $bot->touch();
+
+                // Rule 1 : Sell on stop loss
+                if($price < $bot->stopPrice()) {
+                    $note = "Stop loss!";
+                    $bot->stopped = Carbon::now();
+                    $bot->save();
+                }
 
                 $bh = BotHistory::create([
                     'bot_id' => $bot->id,
