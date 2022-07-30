@@ -86,12 +86,17 @@
                     @php
                         $cnt = $bot->history()->orderBy('created_at', 'desc')->limit(50)->count();
                         $buyPrices = array_fill(0, $cnt, $bot->price);
+
+                        $labels = [];
+                        foreach ($bot->history()->orderBy('created_at', 'desc')->limit(50)->get()->sortBy('created_at') as $bh) {
+                            $labels[] = "'".$bh->created_at->format('G:i')."'";
+                        }
                     @endphp
                     const ctx{{ $bot->id }} = document.getElementById('myChart{{ $bot->id }}').getContext('2d');
                     const myChart{{ $bot->id }} = new Chart(ctx{{ $bot->id }}, {
                         type: 'line',
                         data: {
-                            labels: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(50)->get()->sortBy('created_at')->implode('id', ', '); }}],
+                            labels: [{!! implode(', ', $labels); !!}],
                             datasets: [{
                                     label: 'Price',
                                     data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(50)->get()->sortBy('created_at')->implode('price', ', '); }}],
@@ -129,8 +134,8 @@
                             aspectRatio: 2,
                             scales: {
                                 y: {
-                                    suggestedMin: 0.08,
-                                    suggestedMax: 0.14,
+                                    suggestedMin: {{ $bot->price - ( ( $bot->price / 100 ) * ( $bot->loss + 10 ) ) }},
+                                    suggestedMax: {{ $bot->price + ( ( $bot->price / 100 ) * ( $bot->profit + 10 ) ) }},
                                 }
                             }
                         },
