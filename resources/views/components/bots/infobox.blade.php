@@ -23,7 +23,7 @@
         </div>
     </div>
     <div class="grid grid-cols-12 bg-white shadow-lg p-4 bg-no-repeat "
-        style="background-image: url('http://robohash.org/{{ $bot->name }}?size=200x200'); background-position: right -60px bottom"
+        style="background-image: url('http://robohash.org/{{ $bot->name }}{{ $bot->id }}?size=200x200'); background-position: right -60px bottom"
     >
 
         {{-- Info table --}}
@@ -91,19 +91,19 @@
                 const myChart{{ $bot->id }} = new Chart(ctx{{ $bot->id }}, {
                     type: 'line',
                     data: {
-                        labels: [{{ $bot->history->implode('id', ', '); }}],
+                        labels: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(72)->orderBy('created_at', 'asc')->get()->implode('id', ', '); }}],
                         datasets: [{
                                 label: 'Price',
-                                data: [{{ $bot->history->implode('price', ', '); }}],
+                                data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(72)->orderBy('created_at', 'asc')->get()->implode('price', ', '); }}],
 
                             } , {
                                 label: 'Target',
-                                data: [{{ $bot->history->implode('target_price', ', '); }}],
+                                data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(72)->orderBy('created_at', 'asc')->get()->implode('target_price', ', '); }}],
                                 borderColor: 'rgb(0, 162, 0)'
 
                             }, {
                                 label: 'Stop Loss',
-                                data: [{{ $bot->history->implode('stop_loss', ', '); }}],
+                                data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(72)->orderBy('created_at', 'asc')->get()->implode('stop_loss', ', '); }}],
                                 borderColor: 'rgb(162, 0, 0)'
 
                             },
