@@ -48,47 +48,39 @@
         </div>
     </div>
     <div class="grid grid-cols-12 bg-white shadow-lg p-4 bg-no-repeat "
-        style="background-image: url('https://robohash.org/{{ $bot->name }}{{ $bot->id }}?size=200x200'); background-position: right -60px bottom"
+        style="background-image: url('https://robohash.org/{{ $bot->name }}{{ $bot->id }}?size=200x200'); background-position: right -20px bottom"
     >
 
         {{-- Info table --}}
-        <div class="col-span-3">
+        <div class="col-span-10">
 
-            <table class="w-full text-sm mt-4">
+            <table class="w-full text-sm">
 
                 <tr class="hover:bg-gray-100">
                     <th class="text-left py-1">Born</th>
-                    <td class="text-left py-1 text-xs">{{ $bot->created_at }}</td>
+                    <td class="text-left py-1 text-xs" colspan="3">{{ $bot->created_at }}</td>
                 </tr>
                 <tr class="hover:bg-gray-100">
                     <th class="text-left py-1">Age</th>
-                    <td class="text-left py-1">{{ $bot->created_at->diffForHumans(null, true) }}</td>
+                    <td class="text-left py-1 w-1/4">{{ $bot->created_at->diffForHumans(null, true) }}</td>
+                    <th class="text-left py-1">Quantity</th>
+                    <td class="text-left py-1 w-1/4 hover:bg-gray-100">{{ number_format($bot->quantity) }}</td>
                 </tr>
                 <tr class="hover:bg-gray-100">
                     <th class="text-left py-1">Target</th>
                     <td class="text-left py-1">{{ $bot->profit; }}%</td>
+                    <th class="text-left py-1">Exposure</th>
+                    <td class="text-left py-1 hover:bg-red-100">£{{ number_format($bot->getExposure(), 2) }}</td>
                 </tr>
                 <tr class="hover:bg-gray-100">
                     <th class="text-left py-1">Stop Loss</th>
                     <td class="text-left py-1">{{ $bot->loss; }}%</td>
+                    <th class="text-left py-1">Risk</th>
+                    <td class="text-left py-1 hover:bg-red-500 hover:text-white">£{{ number_format($bot->getRisk(), 2) }}</td>
                 </tr>
                 <tr class="hover:bg-gray-100">
                     <th class="text-left py-1 pr-1">Entry price</th>
                     <td class="text-left py-1 hover:bg-gray-100">£{{ number_format($bot->price, 4) }}</td>
-                </tr>
-                <tr class="hover:bg-gray-100">
-                    <th class="text-left py-1">Quantity</th>
-                    <td class="text-left py-1 hover:bg-gray-100">{{ number_format($bot->quantity) }}</td>
-                </tr>
-                <tr class="hover:bg-red-100">
-                    <th class="text-left py-1">Exposure</th>
-                    <td class="text-left py-1 hover:bg-red-100">£{{ number_format($bot->getExposure(), 2) }}</td>
-                </tr>
-                <tr class="hover:bg-red-500 hover:text-white">
-                    <th class="text-left py-1">Risk</th>
-                    <td class="text-left py-1 hover:bg-red-500 hover:text-white">£{{ number_format($bot->getRisk(), 2) }}</td>
-                </tr>
-                <tr class="hover:bg-green-500 hover:text-white">
                     <th class="text-left py-1">Gain</th>
                     <td class="text-left py-1 hover:bg-green-500 hover:text-white">£{{ number_format($bot->getGain(), 2) }}</td>
                 </tr>
@@ -147,13 +139,13 @@
                             data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(5000)->get()->sortBy('created_at')->implode('price', ', '); }}],
                             borderColor: 'rgb(100, 100, 162)',
                             borderWidth: 2,
-
+                            pointRadius: 0,
                         } , {
                             label: 'Target',
                             data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(5000)->get()->sortBy('created_at')->implode('target_price', ', '); }}],
                             borderColor: 'rgb(0, 162, 0)',
                             borderWidth: 2,
-                            pointRadius: 2,
+                            pointRadius: 0,
                             pointHoverRadius: 2,
 
                         }, {
@@ -161,7 +153,7 @@
                             data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(5000)->get()->sortBy('created_at')->implode('stop_loss', ', '); }}],
                             borderColor: 'rgb(162, 0, 0)',
                             borderWidth: 2,
-                            pointRadius: 2,
+                            pointRadius: 0,
                             pointHoverRadius: 2,
 
                         }, {
@@ -169,7 +161,7 @@
                             data: [{{ implode(', ', $buyPrices) }}],
                             borderColor: 'rgb(162, 162, 162)',
                             borderWidth: 1,
-                            pointRadius: 2,
+                            pointRadius: 0,
                             pointHoverRadius: 2,
 
                         },
