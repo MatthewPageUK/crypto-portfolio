@@ -2,27 +2,23 @@
 
 namespace App\Support;
 
-use App\Interfaces\BackupInterface;
-use App\Models\Token;
-use App\Models\Transaction;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Exceptions\PriceOracleFailureException;
+use App\Interfaces\PriceOracleInterface;
 
-class Coinmarketcap
+class Coinmarketcap implements PriceOracleInterface
 {
-    public $url = 'https://pro-api.coinmarketcap.com/';
-
-    public function __construct()
-    {
-
-    }
+    private $url = 'https://pro-api.coinmarketcap.com';
 
     // Nasty hacky throw it in code ...
 
-    public function getPrice()
+    /**
+     *
+     * @return float
+     * @throws PriceOracleFailureException
+     */
+    public function getPrice(): float
     {
-        $url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest';
+        $url = $this->url . '/v1/cryptocurrency/quotes/latest';
 
         $parameters = [
             'convert' => 'GBP',
@@ -34,37 +30,34 @@ class Coinmarketcap
           'X-CMC_PRO_API_KEY: '.config('app.cmckey')
         ];
 
-        $qs = http_build_query($parameters); // query string encode the parameters
-        $request = "{$url}?{$qs}"; // create the request URL
+        $qs = http_build_query($parameters);
+        $request = "{$url}?{$qs}";
 
-
-        $curl = curl_init(); // Get cURL resource
-        // Set cURL options
+        $curl = curl_init();
         curl_setopt_array($curl, array(
-          CURLOPT_URL => $request,            // set the request URL
-          CURLOPT_HTTPHEADER => $headers,     // set the headers
-          CURLOPT_RETURNTRANSFER => 1         // ask for raw response instead of bool
+          CURLOPT_URL => $request,
+          CURLOPT_HTTPHEADER => $headers,
+          CURLOPT_RETURNTRANSFER => 1
         ));
 
-        $response = curl_exec($curl); // Send the request, save the response
+        $response = curl_exec($curl);
 
-        $data = json_decode($response); // print json decoded response
+        if(curl_error($curl)) {
+          throw new PriceOracleFailureException(curl_error($curl));
+        }
 
-        if(curl_error($curl)) return curl_error($curl);
+        // @todo - error checking is buggy
 
-        //return $data;
-
+        $data = json_decode($response);
+        curl_close($curl);
+        // temp
         $var1 = (string) "CHZ";
+
+        if(! $data->data?->$var1?->quote?->GBP?->price > 0) {
+          throw new PriceOracleFailureException('Invalid response in JSON data');
+        }
 
         return $data->data->$var1->quote->GBP->price;
 
-        curl_close($curl); // Close request
-
     }
-
-
 }
-
-
-
-?>

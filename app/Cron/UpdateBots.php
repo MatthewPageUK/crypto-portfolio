@@ -2,6 +2,7 @@
 
 namespace App\Cron;
 
+use App\Exceptions\PriceOracleFailureException;
 use App\Models\Bot;
 use App\Models\BotHistory;
 use App\Support\Coinmarketcap;
@@ -14,8 +15,15 @@ class UpdateBots
      */
     public function __invoke()
     {
-        $cmc = new Coinmarketcap();
-        $price = $cmc->getPrice();
+        $note = '';
+
+        try {
+            $cmc = new Coinmarketcap();
+            $price = $cmc->getPrice();
+        } catch (PriceOracleFailureException $e) {
+            $price = 0;
+            $note = $e->getMessage();
+        }
 
         foreach (Bot::all() as $bot)
         {
@@ -28,11 +36,10 @@ class UpdateBots
                     'target_price' => $bot->targetPrice(),
                     'stop_loss' => $bot->stopPrice(),
                     'price' => $price,
-                    'note' => '...',
+                    'note' => $note,
                 ]);
 
             }
         }
     }
-
 }

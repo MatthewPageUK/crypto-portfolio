@@ -38,28 +38,6 @@ class Bot extends Model
     ];
 
     /**
-     * Start the bot running
-     *
-     */
-    public function start()
-    {
-        $this->started = \Carbon\Carbon::now();
-        $this->save();
-
-    }
-
-    /**
-     * Stop the bot running
-     *
-     */
-    public function stop()
-    {
-        $this->stopped = \Carbon\Carbon::now();
-        $this->save();
-
-    }
-
-    /**
      * The token this bot is trading
      */
     public function token(): BelongsTo
@@ -92,36 +70,108 @@ class Bot extends Model
     {
         return $this->stopped !== null;
     }
+
     /**
-     * History for this bot's actions
+     * The initial target price
      *
-     * @return HasMany
+     * @return float
      */
-    // public function botHistory(): HasMany
-    // {
-    //     return $this->hasMany(BotHistory::class)->orderByDesc('created_at');
-    // }
-
-
-
     public function targetPrice()
     {
         return $this->price + ( ( $this->price / 100 ) * $this->profit );
     }
+
+    /**
+     * The initial stop price
+     *
+     * @return float
+     */
     public function stopPrice()
     {
         return $this->price - ( ( $this->price / 100 ) * $this->loss );
     }
+
+    /**
+     * Current value of tokens held based on last price
+     *
+     * @return float
+     */
     public function getCurrentValue()
     {
         $lastPrice = $this->history->last()?->price;
 
         return $lastPrice * $this->quantity;
     }
+
+    /**
+     * How much exposure this bot has (how much we put in)
+     *
+     * @return float
+     */
+    public function getExposure()
+    {
+        return $this->price * $this->quantity;
+    }
+
+    /**
+     * How much profit or loss are we in based on last price
+     *
+     * @return float
+     */
     public function getProfitLoss()
     {
-        $lastPrice = $this->history->last()?->price;
+        return $this->getCurrentValue() - $this->getExposure();
+    }
 
-        return $this->getCurrentValue() - ( $this->price * $this->quantity );
+    /**
+     * The potential gains if target is hit
+     *
+     * @return float
+     */
+    public function getGain()
+    {
+        return ( $this->getExposure() / 100 ) * $this->profit;
+    }
+
+    /**
+     * The potential risk if stop loss is triggered
+     *
+     * @return float
+     */
+    public function getRisk()
+    {
+        return ( $this->getExposure() / 100 ) * $this->loss;
+    }
+
+    /**
+     * Get the animal type :)
+     *
+     * @return string
+     */
+    public function getAnimal()
+    {
+        return $this->direction === 'up' ? 'Bull' : 'Bear';
+    }
+
+    /**
+     * Start the bot running
+     *
+     * @return void
+     */
+    public function start(): void
+    {
+        $this->started = \Carbon\Carbon::now();
+        $this->save();
+    }
+
+    /**
+     * Stop the bot running
+     *
+     * @return void
+     */
+    public function stop(): void
+    {
+        $this->stopped = \Carbon\Carbon::now();
+        $this->save();
     }
 }

@@ -1,16 +1,12 @@
 @props(['bot'])
 
-@php
-    $classes = '';
-@endphp
-
 {{-- Bot Info Box --}}
 <div class="opacity-90 hover:opacity-100">
 
     {{-- Header --}}
     <div class="grid grid-cols-12 items-center bg-gray-200 shadow-lg rounded-t-xl py-2 px-4">
         <div class="col-span-4 text-xl">
-            <strong>{{ $bot->name }}</strong> is {{ $bot->direction === 'up' ? 'Bullish' : 'Bearish' }} on
+            <strong>{{ $bot->name }}</strong> is {{ $bot->getAnimal() }}ish on
             <x-tokens.link :token="$bot->token" class="hover:text-yellow-400">
                 {{ $bot->token->name }}
             </x-tokens.link>
@@ -23,7 +19,7 @@
         </div>
     </div>
     <div class="grid grid-cols-12 bg-white shadow-lg p-4 bg-no-repeat "
-        style="background-image: url('http://robohash.org/{{ $bot->name }}{{ $bot->id }}?size=200x200'); background-position: right -60px bottom"
+        style="background-image: url('https://robohash.org/{{ $bot->name }}{{ $bot->id }}?size=200x200'); background-position: right -60px bottom"
     >
 
         {{-- Info table --}}
@@ -57,15 +53,15 @@
                 </tr>
                 <tr class="hover:bg-red-100">
                     <th class="text-left py-1">Exposure</th>
-                    <td class="text-left py-1 hover:bg-red-100">£{{ $bot->quantity * $bot->price }}</td>
+                    <td class="text-left py-1 hover:bg-red-100">£{{ number_format($bot->getExposure(), 2) }}</td>
                 </tr>
                 <tr class="hover:bg-red-500 hover:text-white">
                     <th class="text-left py-1">Risk</th>
-                    <td class="text-left py-1 hover:bg-red-500 hover:text-white">£{{ number_format((( $bot->quantity * $bot->price ) / 100 ) * $bot->loss, 2) }}</td>
+                    <td class="text-left py-1 hover:bg-red-500 hover:text-white">£{{ number_format($bot->getRisk(), 2) }}</td>
                 </tr>
                 <tr class="hover:bg-green-500 hover:text-white">
                     <th class="text-left py-1">Gain</th>
-                    <td class="text-left py-1 hover:bg-green-500 hover:text-white">£{{ number_format((($bot->quantity * $bot->price ) / 100 ) * $bot->profit, 2) }}</td>
+                    <td class="text-left py-1 hover:bg-green-500 hover:text-white">£{{ number_format($bot->getGain(), 2) }}</td>
                 </tr>
             </table>
 
@@ -87,41 +83,58 @@
 
                 <canvas id="myChart{{ $bot->id }}" width="400" height="400"></canvas>
                 <script>
-                const ctx{{ $bot->id }} = document.getElementById('myChart{{ $bot->id }}').getContext('2d');
-                const myChart{{ $bot->id }} = new Chart(ctx{{ $bot->id }}, {
-                    type: 'line',
-                    data: {
-                        labels: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(72)->get()->sortBy('created_at')->implode('id', ', '); }}],
-                        datasets: [{
-                                label: 'Price',
-                                data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(72)->get()->sortBy('created_at')->implode('price', ', '); }}],
+                    @php
+                        $cnt = $bot->history()->orderBy('created_at', 'desc')->limit(50)->count();
+                        $buyPrices = array_fill(0, $cnt, $bot->price);
+                    @endphp
+                    const ctx{{ $bot->id }} = document.getElementById('myChart{{ $bot->id }}').getContext('2d');
+                    const myChart{{ $bot->id }} = new Chart(ctx{{ $bot->id }}, {
+                        type: 'line',
+                        data: {
+                            labels: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(50)->get()->sortBy('created_at')->implode('id', ', '); }}],
+                            datasets: [{
+                                    label: 'Price',
+                                    data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(50)->get()->sortBy('created_at')->implode('price', ', '); }}],
+                                    borderColor: 'rgb(100, 100, 162)',
+                                    borderWidth: 2,
 
-                            } , {
-                                label: 'Target',
-                                data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(72)->get()->sortBy('created_at')->implode('target_price', ', '); }}],
-                                borderColor: 'rgb(0, 162, 0)'
+                                } , {
+                                    label: 'Target',
+                                    data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(50)->get()->sortBy('created_at')->implode('target_price', ', '); }}],
+                                    borderColor: 'rgb(0, 162, 0)',
+                                    borderWidth: 2,
+                                    pointRadius: 2,
+                                    pointHoverRadius: 2,
 
-                            }, {
-                                label: 'Stop Loss',
-                                data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(72)->get()->sortBy('created_at')->implode('stop_loss', ', '); }}],
-                                borderColor: 'rgb(162, 0, 0)'
+                                }, {
+                                    label: 'Stop Loss',
+                                    data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(50)->get()->sortBy('created_at')->implode('stop_loss', ', '); }}],
+                                    borderColor: 'rgb(162, 0, 0)',
+                                    borderWidth: 2,
+                                    pointRadius: 2,
+                                    pointHoverRadius: 2,
 
-                            },
-                        ]
-                    },
-                    options: {
-                        aspectRatio: 2,
-                        scales: {
-                            y: {
-                                suggestedMin: 0.08,
-                                suggestedMax: 0.14,
+                                }, {
+                                    label: 'Buy price',
+                                    data: [{{ implode(', ', $buyPrices) }}],
+                                    borderColor: 'rgb(162, 162, 162)',
+                                    borderWidth: 1,
+                                    pointRadius: 2,
+                                    pointHoverRadius: 2,
+
+                                },
+                            ]
+                        },
+                        options: {
+                            aspectRatio: 2,
+                            scales: {
+                                y: {
+                                    suggestedMin: 0.08,
+                                    suggestedMax: 0.14,
+                                }
                             }
-                        }
-                    },
-                });
-
-
-
+                        },
+                    });
                 </script>
             </div>
         </div>
@@ -147,8 +160,6 @@
             <x-button>Sell</x-button>
         </div>
 
-
     </div>
-
 
 </div>
