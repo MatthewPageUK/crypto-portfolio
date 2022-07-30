@@ -91,19 +91,19 @@
                 const myChart{{ $bot->id }} = new Chart(ctx{{ $bot->id }}, {
                     type: 'line',
                     data: {
-                        labels: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(72)->orderBy('created_at', 'asc')->get()->implode('id', ', '); }}],
+                        labels: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(72)->get()->sortBy('created_at')->implode('id', ', '); }}],
                         datasets: [{
                                 label: 'Price',
-                                data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(72)->orderBy('created_at', 'asc')->get()->implode('price', ', '); }}],
+                                data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(72)->get()->sortBy('created_at')->implode('price', ', '); }}],
 
                             } , {
                                 label: 'Target',
-                                data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(72)->orderBy('created_at', 'asc')->get()->implode('target_price', ', '); }}],
+                                data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(72)->get()->sortBy('created_at')->implode('target_price', ', '); }}],
                                 borderColor: 'rgb(0, 162, 0)'
 
                             }, {
                                 label: 'Stop Loss',
-                                data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(72)->orderBy('created_at', 'asc')->get()->implode('stop_loss', ', '); }}],
+                                data: [{{ $bot->history()->orderBy('created_at', 'desc')->limit(72)->get()->sortBy('created_at')->implode('stop_loss', ', '); }}],
                                 borderColor: 'rgb(162, 0, 0)'
 
                             },
