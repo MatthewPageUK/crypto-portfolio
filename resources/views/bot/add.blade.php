@@ -64,7 +64,10 @@
                                 >
                                     <option value="">{{ __('Choose your market')}}</option>
                                     @foreach($tokens as $token)
-                                        <option x-text="'{{ $token->symbol }} - {{ $token->name }}'" value="{{ $token->id }}">{{ $token->symbol }} - {{ $token->name }}</option>
+                                        <option x-text="'{{ $token->symbol }} - {{ $token->name }}'"
+                                            value="{{ $token->id }}"
+                                            {{ $token->symbol !== 'CHZ' ? 'disabled' : '' }}
+                                        >{{ $token->symbol }} - {{ $token->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -80,21 +83,17 @@
                                     />
 
                                     <div class="flex mt-2 space-x-2">
-
+@php
+    $token = App\Models\Token::where('symbol', 'CHZ')->first();
+    $price = App\Support\Prices\PriceService::latest($token);
+@endphp
                                         <button
                                             class="px-3 py-2 text-sm bg-gray-100 rounded-full hover:bg-yellow-400 hover:text-white"
-                                            x-on:click.prevent="price = 0.38"
-                                        >Price now £0.38</button>
-
-                                        <button
-                                            class="px-3 py-2 text-sm bg-gray-100 rounded-full hover:bg-yellow-400 hover:text-white"
-                                            x-on:click.prevent="price = 0.75"
-                                        >Avg buy price £0.75</button>
-
-                                        <button
-                                            class="px-3 py-2 text-sm bg-gray-100 rounded-full hover:bg-yellow-400 hover:text-white"
-                                            x-on:click.prevent="price = 0.65"
-                                        >Last buy price £0.65</button>
+                                            x-on:click.prevent="price = {{ number_format($price, 4) }}"
+                                        >
+                                            Last
+                                            £{{ number_format($price, 4) }}
+                                        </button>
 
                                     </div>
                                 </div>

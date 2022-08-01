@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Token;
 use App\Models\Bot;
+use App\Models\BotHistory;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class BotController extends Controller
@@ -68,10 +70,22 @@ class BotController extends Controller
 
 
         $faker = \Faker\Factory::create();
-        $request->merge( array( 'name' => $faker->firstName(),
-            'status' => 'waiting' ) );
+        $request->merge( array(
+            'name' => $faker->firstName(),
+            'status' => 'waiting',
+            'started' => Carbon::now() ) );
 
-        Bot::create( $request->all() );
+        $bot = Bot::create( $request->all() );
+        $bot->stop_price = $bot->stopPrice();
+        $bot->save();
+
+        $bh = BotHistory::create([
+            'bot_id' => $bot->id,
+            'target_price' => $bot->targetPrice(),
+            'stop_loss' => $bot->stop_price,
+            'price' => 0,
+            'note' => 'Bot started....',
+        ]);
 
         return redirect()
             ->route('bot.index')

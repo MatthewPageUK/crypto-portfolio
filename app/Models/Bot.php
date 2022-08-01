@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use App\Support\Currency;
-use App\Support\Quantity;
-use App\Interfaces\TokenInterface;
-
+use App\Support\Prices\PriceService;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -32,6 +30,7 @@ class Bot extends Model
         'quantity',
         'profit',
         'loss',
+        'stop_price',
         'status',
         'started',
         'stopped',
@@ -51,6 +50,57 @@ class Bot extends Model
     public function history(): hasMany
     {
         return $this->hasMany(BotHistory::class);
+    }
+
+
+    public function wakeUp(Price $price)
+    {
+        $note = 'NOP';
+
+        if ($this->isRunning()) {
+
+            // Rule 1 : Sell on stop loss
+            if($price->price < $this->stop_price) {
+                $note = "Stop loss!";
+                $this->stopped = Carbon::now();
+                $this->save();
+            } else {
+
+                if ($price->price > $this->targetPrice()) {
+
+                    // Rule 2 : If above target activate trailing stop
+
+                    // Are we already over the target
+                    if($this->stop_price > $this->stopPrice()) {
+
+                        // Is this an ATH price ?
+                        $ath = PriceService::highSince($this->token, $this->created_at, $price);
+
+                        if($price->price > $ath) {
+                            // Set new stop loss
+                            $this->stop_price = $price->price - ( ( $price->price / 100 ) * $this->loss );
+                            $note = "Moved trailing stop";
+                        }
+
+                    } else {
+                        // First time over target
+                        $this->stop_price = $this->targetPrice();
+                        $note = "Target Hit - trailing stop active";
+                    }
+
+                    $this->save();
+                }
+
+            }
+
+            $bh = BotHistory::create([
+                'bot_id' => $this->id,
+                'target_price' => $this->targetPrice(),
+                'stop_loss' => $this->stop_price,
+                'price' => $price->price,
+                'note' => $note,
+            ]);
+        }
     }
 
     /**
