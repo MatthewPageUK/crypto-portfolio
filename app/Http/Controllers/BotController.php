@@ -83,7 +83,7 @@ class BotController extends Controller
             'bot_id' => $bot->id,
             'target_price' => $bot->targetPrice(),
             'stop_loss' => $bot->stop_price,
-            'price' => 0,
+            'price' => $bot->price,
             'note' => 'Bot started....',
         ]);
 
