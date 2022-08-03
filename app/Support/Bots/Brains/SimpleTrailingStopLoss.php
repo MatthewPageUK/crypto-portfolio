@@ -2,6 +2,7 @@
 
 namespace App\Support\Bots\Brains;
 
+use App\Interfaces\BotBrainInterface;
 use App\Models\Bot;
 use App\Models\BotHistory;
 use App\Models\Price;
@@ -12,7 +13,7 @@ use Carbon\Carbon;
  * A bot brain..
  *
  */
-class SimpleTrailingStopLoss
+class SimpleTrailingStopLoss implements BotBrainInterface
 {
 
     private Bot $bot;
