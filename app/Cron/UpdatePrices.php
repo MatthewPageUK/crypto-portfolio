@@ -6,6 +6,7 @@ use App\Exceptions\PriceOracleFailureException;
 use App\Models\Token;
 use App\Models\Price;
 use App\Support\Coinmarketcap;
+use App\Support\KucoinPrice;
 
 class UpdatePrices
 {
@@ -16,11 +17,12 @@ class UpdatePrices
     public function __invoke()
     {
         $note = '';
-        $token = Token::where('symbol', 'CHZ')->first();
+        $token = Token::where('symbol', 'VET')->first();
 
         // Retrieve the price from the oracle
         try {
-            $cmc = new Coinmarketcap();
+            // $cmc = new Coinmarketcap();
+            $cmc = new KucoinPrice();
             $price = $cmc->getPrice();
         } catch (PriceOracleFailureException $e) {
             $price = 0;

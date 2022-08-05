@@ -61,6 +61,26 @@ class Bot extends Model
     }
 
 
+    /**
+     * Buy some crypto
+     *
+     */
+    public function buy($quantity, Price $price)
+    {
+        // Call exchange API
+
+    }
+
+    /**
+     * Sell some crypto
+     *
+     */
+    public function sell($quantity, Price $price)
+    {
+        // Call exchange API
+
+    }
+
     public function wakeUp(Price $price)
     {
         if ($this->isRunning()) {

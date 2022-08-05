@@ -66,7 +66,7 @@
                                     @foreach($tokens as $token)
                                         <option x-text="'{{ $token->symbol }} - {{ $token->name }}'"
                                             value="{{ $token->id }}"
-                                            {{ $token->symbol !== 'CHZ' ? 'disabled' : '' }}
+                                            {{ $token->symbol !== 'VET' ? 'disabled' : '' }}
                                         >{{ $token->symbol }} - {{ $token->name }}</option>
                                     @endforeach
                                 </select>
@@ -84,7 +84,7 @@
 
                                     <div class="flex mt-2 space-x-2">
 @php
-    $token = App\Models\Token::where('symbol', 'CHZ')->first();
+    $token = App\Models\Token::where('symbol', 'VET')->first();
     $price = App\Support\Prices\PriceService::latest($token);
 @endphp
                                         <button
