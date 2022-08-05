@@ -7,6 +7,7 @@ use App\Models\Bot;
 use App\Models\BotHistory;
 use App\Models\Price;
 use App\Support\Prices\PriceService;
+use App\Support\KucoinOrder;
 use Carbon\Carbon;
 
 /**
@@ -35,7 +36,13 @@ class SimpleTrailingStopLoss implements BotBrainInterface
         if ($price->price < $this->bot->stop_price) {
 
             // Rule 1 : Sell on stop loss
-            $note = "Stop loss!";
+            try {
+                $exchange = new KucoinOrder();
+                $order = $exchange->marketSell($this->bot->token, $this->bot->quantity);
+                $note = "Stop loss! ".$order['orderId'];
+            } catch(\Exception $e) {
+                $note = "Failed to place sell order - ".$e->getMessage();
+            }
             $this->bot->stopped = Carbon::now();
             $this->bot->save();
 

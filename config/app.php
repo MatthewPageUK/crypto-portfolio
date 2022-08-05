@@ -20,6 +20,14 @@ return [
 
     'cmckey' => env('CMC_KEY'),
 
+    'kucoin' => [
+        'api' => [
+            'key' => env('KUCOIN_API_KEY'),
+            'secret' => env('KUCOIN_API_SECRET'),
+            'passphrase' => env('KUCOIN_API_PASSPHRASE'),
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
