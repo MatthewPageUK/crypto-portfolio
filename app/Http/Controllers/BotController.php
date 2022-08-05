@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Token;
 use App\Models\Bot;
 use App\Models\BotHistory;
+use App\Support\KucoinOrder;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -79,12 +80,23 @@ class BotController extends Controller
         $bot->stop_price = $bot->stopPrice();
         $bot->save();
 
+        $note = "Bot started....";
+
+        // Buy the tokens....
+        try {
+            $exchange = new KucoinOrder();
+            $order = $exchange->marketBuy($bot->token, $bot->quantity);
+            $note = "Bot started....Buy Order placed ".$order['orderId'];
+        } catch(\Exception $e) {
+            $note = "Bot started....Failed to place Buy order - ".$e->getMessage();
+        }
+
         $bh = BotHistory::create([
             'bot_id' => $bot->id,
             'target_price' => $bot->targetPrice(),
             'stop_loss' => $bot->stop_price,
             'price' => $bot->price,
-            'note' => 'Bot started....',
+            'note' => $note,
         ]);
 
         return redirect()
