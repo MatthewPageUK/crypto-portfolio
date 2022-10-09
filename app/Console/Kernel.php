@@ -2,7 +2,6 @@
 
 namespace App\Console;
 
-use App\Cron\UpdatePrices;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -25,8 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // Update the prices and call bot wake ups
-        $schedule->call(new UpdatePrices)->everyFiveMinutes();
+
     }
 
     /**

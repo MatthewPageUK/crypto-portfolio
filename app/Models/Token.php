@@ -39,16 +39,6 @@ class Token extends Model implements TokenInterface
     }
 
     /**
-     * Bots trading this token
-     *
-     * @return HasMany
-     */
-    public function bots(): HasMany
-    {
-        return $this->hasMany(Bot::class);
-    }
-
-    /**
      * The balance for this token
      *
      * @param Carbon $at        Return the balance at this date
