@@ -20,10 +20,11 @@ class CreateTransactionsTable extends Migration
             $table->foreign('token_id')->references('id')->on('tokens')->onDelete('cascade');
             $table->unsignedDecimal('quantity', 36, 18);
             $table->unsignedDecimal('price', 36, 18);
-            $table->enum('type', [Transaction::BUY, Transaction::SELL]);
+            $table->string('type', 50)->default(Transaction::BUY);
+            $table->text('note')->nullable();
             $table->dateTime('time')->useCurrent();
-            $table->timestamps($precision = 0);
-            $table->softDeletes($column = 'deleted_at');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

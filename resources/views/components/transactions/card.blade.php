@@ -31,6 +31,11 @@
                 <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal py-3 px-6 text-right border-l-8 border-{{ $transaction->colour() }}-500">{{ __('Type') }}</th>
                 <td class="py-3 px-6 text-left font-bold">{{ ucwords($transaction->type); }}</td>
             </tr>
+            {{-- Note --}}
+            <tr class="border-b border-gray-200">
+                <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal py-3 px-6 text-right border-l-8 border-{{ $transaction->colour() }}-500">{{ __('Note') }}</th>
+                <td class="py-3 px-6 text-left font-bold">{{ $transaction->note; }}</td>
+            </tr>
             {{-- Price --}}
             <tr class="border-b border-gray-200">
                 <th class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal py-3 px-6 text-right border-l-8 border-{{ $transaction->colour() }}-500">{{ __('Price') }}</th>

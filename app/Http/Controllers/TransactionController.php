@@ -91,7 +91,7 @@ class TransactionController extends Controller
     }
 
     /**
-     * Validates the transactions to ensure there are no negative 
+     * Validates the transactions to ensure there are no negative
      * balance errors and removes the transaction from storage.
      *
      * @param  \App\Models\Transaction  $transaction

@@ -40,6 +40,7 @@ class Transaction extends Model implements TransactionInterface
         'quantity',
         'price',
         'type',
+        'note',
         'time',
     ];
 
@@ -70,8 +71,8 @@ class Transaction extends Model implements TransactionInterface
 
     /**
      * The total value of this transaction
-     * 
-     * @return Currency  
+     *
+     * @return Currency
      */
     public function total(): Currency
     {
@@ -97,14 +98,14 @@ class Transaction extends Model implements TransactionInterface
     /**
      * Replicate this transaction with the original ID
      * ak Clone ?
-     * 
+     *
      * @return Transaction
      */
     public function replicateWithId(): Transaction
     {
         $transaction = $this->replicate();
         $transaction->id = $this->id;
-        
+
         return $transaction;
     }
 
@@ -112,7 +113,7 @@ class Transaction extends Model implements TransactionInterface
      * Related transactions
      * Buy order - find the transaction where these were sold
      * Sell order - find the transactions where these were puchased
-     * 
+     *
      * @return TransactionCollection
      */
     public function related(): TransactionCollection

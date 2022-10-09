@@ -27,6 +27,7 @@ class TransactionFactory extends Factory
             'quantity' => rand(1, 90000) / 1000,
             'price' => rand(1, 24500000) / 1000,
             'type' => (rand(0,1)==1) ? Transaction::BUY : Transaction::SELL,
+            'note' => $this->faker->sentence(),
             'time' => $this->faker->dateTimeBetween(),
         ];
     }

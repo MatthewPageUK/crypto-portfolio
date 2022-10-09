@@ -28,7 +28,7 @@ class StoreTransactionRequest extends FormRequest
         // todo make a copy of the transactions and test on that ... not the original
         $token = Token::find($this->input('token_id'));
         $token->transactions->push(new Transaction([
-            'token_id' => $token->id, 
+            'token_id' => $token->id,
             'quantity' => $this->input('quantity'),
             'price' => $this->input('price'),
             'type' => $this->input('type'),
@@ -39,18 +39,18 @@ class StoreTransactionRequest extends FormRequest
          * Validate the transactions
          */
         $this->merge(['validtransactions' => $token->transactions->isValid()]);
-    }    
+    }
 
     /**
      * Get the validation rules that apply to the request.
-     * 
+     *
      * @return array
      */
     public function rules()
-    {       
+    {
         return [
             'token_id' => [
-                'required', 
+                'required',
                 'exists:tokens,id',
             ],
             'quantity' => ['required', 'gt:0'],
@@ -59,12 +59,15 @@ class StoreTransactionRequest extends FormRequest
                 'gte:0',
             ],
             'type' => [
-                'required', 
+                'required',
                 Rule::in(Transaction::BUY, Transaction::SELL),
             ],
+            'note' => [
+                'nullable',
+            ],
             'time' => [
-                'required', 
-                'date', 
+                'required',
+                'date',
                 'before:'.now()->format('Y-m-d\TH:i:s'),
             ],
             'validtransactions' => [
