@@ -6,7 +6,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\DiaryController;
 use App\Http\Controllers\BackupController;
-use App\Http\Controllers\BotController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,14 +45,6 @@ Route::group(['prefix' => 'transaction', 'middleware' => 'auth', 'as'=> 'transac
     Route::get('/{transaction}/delete', [TransactionController::class, 'destroy'])->name('delete');
     Route::get('/{transaction}/edit', [TransactionController::class, 'edit'])->name('edit');
     Route::post('/{transaction}/edit', [TransactionController::class, 'update'])->name('update');
-});
-
-Route::group(['prefix' => 'bot', 'middleware' => 'auth', 'as'=> 'bot.'], function () {
-    Route::get('/', [BotController::class, 'index'])->name('index');
-    Route::get('/create', [BotController::class, 'create'])->name('create');
-    Route::post('/store', [BotController::class, 'store'])->name('store');
-    Route::get('/{bot}', [BotController::class, 'show'])->name('show');
-    Route::get('/{bot}/memories', [BotController::class, 'memories'])->name('memories');
 });
 
 require __DIR__.'/auth.php';

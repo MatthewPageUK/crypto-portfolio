@@ -17,13 +17,6 @@ interface TokenInterface
     public function transactions(): HasMany;
 
     /**
-     * Bots trading this token
-     *
-     * @return HasMany
-     */
-    public function bots(): HasMany;
-
-    /**
      * The balance for this token
      *
      * @param Carbon $at        Return the balance at this date
