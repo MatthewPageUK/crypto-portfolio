@@ -38,7 +38,7 @@ class SimpleTrailingStopLoss implements BotBrainInterface
             // Rule 1 : Sell on stop loss
             try {
                 $exchange = new KucoinOrder();
-                $order = $exchange->marketSell($this->bot->token, $this->bot->quantity);
+                //$order = $exchange->marketSell($this->bot->token, $this->bot->quantity);
                 $note = "Stop loss! ".$order['orderId'];
             } catch(\Exception $e) {
                 $note = "Failed to place sell order - ".$e->getMessage();

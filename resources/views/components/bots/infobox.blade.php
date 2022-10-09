@@ -1,7 +1,7 @@
 @props(['bot'])
 
 {{-- Bot Info Box --}}
-<div class="opacity-90 hover:opacity-100">
+<div class="opacity-90 hover:opacity-100" x-data="{ open: {{ $bot->stopped ? 'false' : 'true' }} }">
 
     {{-- Header --}}
     <div class="grid grid-cols-12 items-center bg-gray-200 shadow-lg rounded-t-xl py-2 px-4">
@@ -14,11 +14,17 @@
         <div class="col-span-4 text-center text-sm">
             Active {{ $bot->history->last()?->created_at->diffForHumans(); }}
         </div>
-        <div class="col-span-4 text-right text-sm">
+        <div class="col-span-3 text-right text-sm">
             Status : {{ Str::title($bot->status) }} / {{ $bot->isRunning() ? 'Running' : 'Stopped' }}
         </div>
+        <div class="col-span-1 text-right text-sm">
+            <button @click="open = ! open">
+                <span x-show="open">^</span>
+                <span x-show="! open">v</span>
+            </button>
+        </div>
     </div>
-    <div class="grid grid-cols-12 bg-white shadow-lg p-4 bg-no-repeat "
+    <div x-show="open" class="grid grid-cols-12 bg-white shadow-lg p-4 bg-no-repeat "
         style="background-image: url('https://robohash.org/{{ $bot->name }}{{ $bot->id }}?size=200x200'); background-position: right -60px bottom"
     >
 

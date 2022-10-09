@@ -18,7 +18,7 @@ class BotController extends Controller
      */
     public function index()
     {
-        $bots = Bot::all();
+        $bots = Bot::orderBy('stopped')->get();
 
         return view('bot.home')
             ->with('bots', $bots);
@@ -85,7 +85,7 @@ class BotController extends Controller
         // Buy the tokens....
         try {
             $exchange = new KucoinOrder();
-            $order = $exchange->marketBuy($bot->token, $bot->quantity);
+            //$order = $exchange->marketBuy($bot->token, $bot->quantity);
             $note = "Bot started....Buy Order placed ".$order['orderId'];
         } catch(\Exception $e) {
             $note = "Bot started....Failed to place Buy order - ".$e->getMessage();
