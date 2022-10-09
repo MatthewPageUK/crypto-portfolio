@@ -25,26 +25,26 @@ class UpdateTransactionRequest extends FormRequest
         $isValid = true;
         $transaction = $this->route('transaction');
         $token = Token::find($transaction->token_id);
-        
+
         /**
          * Filter out the current transaction
          */
         $filtered = $token->transactions->where('id', '!=', $transaction->id);
 
         /**
-         * Selected a different token so we need to push this transaction to that 
+         * Selected a different token so we need to push this transaction to that
          * list.
          */
         if( $this->input('token_id') !== $token->id )
         {
             $newToken = Token::find( $this->input('token_id') );
             $newToken->transactions->push(new Transaction([
-                'token_id' => $newToken->id, 
+                'token_id' => $newToken->id,
                 'quantity' => $this->input('quantity'),
                 'price' => $this->input('price'),
                 'type' => $this->input('type'),
                 'time' => $this->input('time'),
-            ])); 
+            ]));
 
             $isValid = $newToken->transactions->isValid();
         }
@@ -54,12 +54,12 @@ class UpdateTransactionRequest extends FormRequest
              * Push updated transaction
              */
             $filtered->push(new Transaction([
-                'token_id' => $token->id, 
+                'token_id' => $token->id,
                 'quantity' => $this->input('quantity'),
                 'price' => $this->input('price'),
                 'type' => $this->input('type'),
                 'time' => $this->input('time'),
-            ])); 
+            ]));
         }
 
         $isValid = ( $isValid ) ? $filtered->isValid() : false;
@@ -80,21 +80,24 @@ class UpdateTransactionRequest extends FormRequest
     {
         return [
             'token_id' => [
-                'required', 
+                'required',
                 'exists:tokens,id',
             ],
             'quantity' => ['required', 'gt:0'],
             'price' => [
-                'required', 
+                'required',
                 'gte:0',
             ],
             'type' => [
-                'required', 
+                'required',
                 Rule::in(Transaction::BUY, Transaction::SELL),
             ],
+            'note' => [
+                'nullable',
+            ],
             'time' => [
-                'required', 
-                'date', 
+                'required',
+                'date',
                 'before:'.now()->format('Y-m-d\TH:i:s'),
             ],
             'validtransactions' => [

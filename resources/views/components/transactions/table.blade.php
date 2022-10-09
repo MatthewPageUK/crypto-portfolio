@@ -1,7 +1,7 @@
-{{-- 
+{{--
     transactions - collection of transactions
     totals - bool, show totals in footer
-    ignore - array, ignore these fields 
+    ignore - array, ignore these fields
 --}}
 @props(['transactions', 'totals', 'ignore'])
 
@@ -41,7 +41,7 @@
                                 {{-- Profit and Loss --}}
                                 @if ( ! in_array('profitLoss', $ignore) )
                                     <th class="py-3 px-6 text-right">Profit</th>
-                                @endif    
+                                @endif
 
                                 {{-- Buttons --}}
                                 <th class="py-3 px-6 text-center"> </th>
@@ -51,8 +51,8 @@
                         <tbody class="text-gray-800">
 
                             @foreach ($transactions as $transaction)
-                            
-                                <tr class="border-b border-gray-200 hover:bg-{{ $transaction->colour() }}-100">
+
+                                <tr class="@if (!$transaction->note) border-b @endif border-gray-200 hover:bg-{{ $transaction->colour() }}-100">
 
                                     {{-- Date --}}
                                     <td class="py-3 px-6 text-left border-l-8 border-{{ $transaction->colour() }}-500">
@@ -64,7 +64,7 @@
                                     @if ( ! in_array('type', $ignore) )
                                         <td class="py-3 px-6 text-center hidden md:table-cell">
                                             {{ ucwords($transaction->type) }}
-                                        </td>   
+                                        </td>
                                     @endif
 
                                     {{-- Quantity --}}
@@ -93,7 +93,7 @@
                                     @if ( ! in_array('profitLoss', $ignore) )
                                         <td class="py-3 px-6 text-right">
                                             <x-currency :amount="$transaction->profitLoss" />
-                                        </td>        
+                                        </td>
                                     @endif
 
                                     {{-- Buttons --}}
@@ -108,9 +108,18 @@
 
                                         <x-transactions.link :transaction="$transaction" class="transform hover:scale-110">
                                             <x-icons.eye class="hover:text-green-500" />
-                                        </x-transactions.link>                 
+                                        </x-transactions.link>
                                     </td>
                                 </tr>
+
+                                {{-- Note --}}
+                                @if ($transaction->note)
+                                    <tr class="border-b border-gray-200">
+                                        <td colspan="{{ 8 - sizeof($ignore) }}" class="text-sm pb-3 px-6 border-l-8 border-{{ $transaction->colour() }}-500">
+                                            {{ $transaction->note }}
+                                        </td>
+                                    </tr>
+                                @endif
 
                             @endforeach
 
@@ -131,7 +140,7 @@
                                     </td>
 
                                     {{-- Avg price --}}
-                                    <td class="py-3 px-6 text-right">{{ __('Avg.') }} 
+                                    <td class="py-3 px-6 text-right">{{ __('Avg.') }}
                                         @if ( $transactions->first()->isSell() )
                                             <x-currency :amount="$transactions->averageSellPrice()" />
                                         @else

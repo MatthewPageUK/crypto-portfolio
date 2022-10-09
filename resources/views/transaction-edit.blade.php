@@ -54,6 +54,13 @@
                 <x-input id="price" class="block mt-1 w-full" type="text" name="price" :value="old('price', $transaction->price->getValue())" required />
             </div>
 
+            <!-- Note -->
+            <div class="mt-4">
+                <x-label for="note" :value="__('Note')" />
+
+                <x-input id="note" class="block mt-1 w-full" type="text" name="note" :value="old('note', $transaction->note)" />
+            </div>
+
             <div class="flex items-center justify-end mt-4">
                 <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('token.show', $transaction->token_id) }}">
                     {{ __('Cancel') }}
