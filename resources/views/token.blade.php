@@ -5,7 +5,7 @@
                 <h2 class="flex-grow font-semibold text-xl text-gray-800 leading-tight">
 
                     {{-- Title --}}
-                    {{ __($token->symbol . ' - ' . $token->name) }} 
+                    {{ __($token->symbol . ' - ' . $token->name) }}
 
                     {{-- Edit link --}}
                     <x-tokens.link-edit :token="$token" class="w-4 inline-block ml-2 text-gray-500 transform hover:scale-110">
@@ -17,7 +17,7 @@
                         <x-icons.bin class="h-4 w-4 hover:text-red-500" />
                     </x-tokens.link-delete>
 
-                </h2>   
+                </h2>
             </div>
             <div class="flex flex-shrink">
 
@@ -62,9 +62,37 @@
 
         {{-- TradingView Ticker --}}
         <x-widgets.stats-box title="" class="pt-4 pb-4">
-            <x-tokens.tradingview-ticker :token="$token" />                
-        </x-widgets.stats-box>     
-            
+            <x-tokens.tradingview-ticker :token="$token" />
+        </x-widgets.stats-box>
+
+    </div>
+
+    <div class="flex items-center justify-center mx-12 mb-16" style="height: 600px">
+
+        <!-- TradingView Widget BEGIN -->
+        <div class="tradingview-widget-container w-full h-full">
+            <div id="tradingview_2a63b h-full"></div>
+            <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/BTCGBP/?exchange=COINBASE" rel="noopener" target="_blank"><span class="blue-text">BTCGBP Chart</span></a> by TradingView</div>
+            <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+            <script type="text/javascript">
+            new TradingView.widget(
+            {
+            "autosize": true,
+            "symbol": "COINBASE:BTCGBP",
+            "interval": "D",
+            "timezone": "Etc/UTC",
+            "theme": "light",
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#f1f3f6",
+            "enable_publishing": false,
+            "allow_symbol_change": true,
+            "container_id": "tradingview_2a63b"
+        }
+            );
+            </script>
+        </div>
+        <!-- TradingView Widget END -->
     </div>
 
     {{-- Transactions table --}}
